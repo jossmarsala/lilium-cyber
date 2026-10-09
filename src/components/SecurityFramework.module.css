@@ -67,10 +67,81 @@
   top: 48px;
   left: calc(100% / 6);
   right: calc(100% / 6);
-  height: 1.5px;
-  background: #e5e5e5;
+  height: 2px;
+  background: #e4e4e7;
+  border-radius: 999px;
   z-index: 1;
   pointer-events: none;
+  overflow: visible;
+}
+
+/* Interactive progress segment connecting steps */
+.timelineTrackProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #18181b 0%, #27272a 100%);
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(24, 24, 27, 0.25);
+  transition:
+    width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease;
+  pointer-events: none;
+}
+
+/* Subtle ambient energy beam running continuously along the line */
+.timelineTrackBeam {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 72px;
+  height: 2px;
+  transform: translateY(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(24, 24, 27, 0.12) 20%,
+    rgba(24, 24, 27, 0.8) 50%,
+    rgba(24, 24, 27, 0.12) 80%,
+    transparent 100%
+  );
+  border-radius: 999px;
+  animation: trackBeamTravel 4.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  pointer-events: none;
+}
+
+/* Cute luminous spark leading the energy beam */
+.timelineTrackSpark {
+  position: absolute;
+  top: 50%;
+  right: 32px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #18181b;
+  transform: translateY(-50%);
+  box-shadow:
+    0 0 6px rgba(24, 24, 27, 0.55),
+    0 0 12px rgba(24, 24, 27, 0.25);
+  pointer-events: none;
+}
+
+@keyframes trackBeamTravel {
+  0% {
+    left: -72px;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
 }
 
 .timelineGrid {
@@ -91,11 +162,92 @@
 }
 
 .timelinePill {
+  position: relative;
   transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
+    border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
     color 0.25s ease,
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+/* Subtle cute idle float staggered across Capa 1, 2, 3 */
+.timelineStep:nth-child(1) .timelinePill {
+  animation: pillGentleFloat 4.2s ease-in-out infinite 0s;
+}
+.timelineStep:nth-child(2) .timelinePill {
+  animation: pillGentleFloat 4.2s ease-in-out infinite 0.7s;
+}
+.timelineStep:nth-child(3) .timelinePill {
+  animation: pillGentleFloat 4.2s ease-in-out infinite 1.4s;
+}
+
+@keyframes pillGentleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Badge styling & cute micro-interactions */
+.timelineBadge {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+  will-change: transform;
+}
+
+/* Subtle ambient glint sweeping across badge numbers */
+.timelineBadge::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -120%;
+  width: 80%;
+  height: 200%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 80%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.timelineStep:nth-child(1) .timelineBadge::after {
+  animation: badgeGlint 5.2s ease-in-out infinite 0.4s;
+}
+.timelineStep:nth-child(2) .timelineBadge::after {
+  animation: badgeGlint 5.2s ease-in-out infinite 2.1s;
+}
+.timelineStep:nth-child(3) .timelineBadge::after {
+  animation: badgeGlint 5.2s ease-in-out infinite 3.8s;
+}
+
+@keyframes badgeGlint {
+  0%, 65% {
+    left: -120%;
+    opacity: 0;
+  }
+  70% {
+    opacity: 1;
+  }
+  85% {
+    left: 200%;
+    opacity: 1;
+  }
+  90%, 100% {
+    left: 200%;
+    opacity: 0;
+  }
 }
 
 .timelineNode {
@@ -109,10 +261,11 @@
   justify-content: center;
   box-shadow: 0 0 0 4px #ffffff;
   transition:
-    border-color 0.25s ease,
-    background-color 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+    border-color 0.28s ease,
+    background-color 0.28s ease,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.28s ease;
+  position: relative;
 }
 
 .timelineNodeInner {
@@ -120,21 +273,72 @@
   height: 3px;
   border-radius: 50%;
   background: transparent;
-  transition: background 0.2s ease;
+  transition:
+    background-color 0.25s ease,
+    transform 0.25s ease;
 }
 
 /* Active / Hovered Stepper States */
 .timelineStepActive .timelinePill,
 .timelineStep:hover .timelinePill {
-  transform: translateY(-1px);
+  animation: none;
+  transform: translateY(-3.5px) scale(1.02);
+}
+
+/* Cute bouncy pop & playful tilt on the badge */
+.timelineStepActive .timelineBadge,
+.timelineStep:hover .timelineBadge {
+  animation: cuteBadgePop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  box-shadow:
+    0 0 0 2px rgba(24, 24, 27, 0.08),
+    0 3px 10px rgba(0, 0, 0, 0.16);
+}
+
+@keyframes cuteBadgePop {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  45% {
+    transform: scale(1.2) rotate(-3.5deg);
+  }
+  75% {
+    transform: scale(1.06) rotate(1.2deg);
+  }
+  100% {
+    transform: scale(1.12) rotate(0deg);
+  }
 }
 
 .timelineStepActive .timelineNode,
 .timelineStep:hover .timelineNode {
   border-color: #18181b;
   background: #18181b;
-  transform: scale(1.15);
-  box-shadow: 0 0 0 4px #e4e4e7;
+  transform: scale(1.24);
+  animation: cuteNodeRipple 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.timelineStepActive .timelineNodeInner,
+.timelineStep:hover .timelineNodeInner {
+  background: #ffffff;
+  transform: scale(1.2);
+}
+
+@keyframes cuteNodeRipple {
+  0% {
+    box-shadow:
+      0 0 0 4px #e4e4e7,
+      0 0 0 0 rgba(24, 24, 27, 0.35);
+  }
+  70% {
+    box-shadow:
+      0 0 0 4px #e4e4e7,
+      0 0 0 9px rgba(24, 24, 27, 0);
+  }
+  100% {
+    box-shadow:
+      0 0 0 4px #e4e4e7,
+      0 0 0 0 rgba(24, 24, 27, 0);
+  }
 }
 
 /* ─────────────────────────────────────────────────────
@@ -460,5 +664,17 @@
 
   .referencesGrid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timelineStep:nth-child(n) .timelinePill,
+  .timelineBadge::after,
+  .timelineTrackBeam,
+  .timelineStepActive .timelineBadge,
+  .timelineStep:hover .timelineBadge,
+  .timelineStepActive .timelineNode,
+  .timelineStep:hover .timelineNode {
+    animation: none !important;
   }
 }

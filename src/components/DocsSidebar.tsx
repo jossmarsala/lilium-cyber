@@ -85,24 +85,35 @@ export default function DocsSidebar({ sections, activeSectionId, activeSubSectio
 
   return (
     <aside className={styles.sidebar} aria-label="Documentation navigation">
-      <BranchedMenu
-        items={items}
-        defaultOpen={defaultOpen}
-        defaultActive={defaultActive}
-        onSelect={handleSelect}
-        color="#1a1a1a"
-        accentColor="#000"
-        lineColor="#d4d4d4"
-        width={280}
-        rowHeight={34}
-        indent={36}
-        trunk={12}
-        radius={8}
-        lineWidth={1.5}
-        fontSize={13}
-        drawDuration={400}
-        foldDuration={280}
-      />
+      {/* Up and bottom gradient borders that blend seamlessly */}
+      <div className={styles.topBorder} aria-hidden="true" />
+      <div className={styles.bottomBorder} aria-hidden="true" />
+      <div className={styles.rightBorder} aria-hidden="true" />
+
+      {/* Top and bottom subtle gradient fades for scrolling list */}
+      <div className={styles.topFade} aria-hidden="true" />
+      <div className={styles.bottomFade} aria-hidden="true" />
+
+      <div className={styles.scrollArea}>
+        <BranchedMenu
+          items={items}
+          defaultOpen={defaultOpen}
+          defaultActive={defaultActive}
+          onSelect={handleSelect}
+          color="#1a1a1a"
+          accentColor="#000"
+          lineColor="rgba(0, 0, 0, 0.09)"
+          width={280}
+          rowHeight={34}
+          indent={36}
+          trunk={12}
+          radius={8}
+          lineWidth={1.25}
+          fontSize={13}
+          drawDuration={400}
+          foldDuration={280}
+        />
+      </div>
     </aside>
   )
 }

@@ -53,9 +53,9 @@ These references serve different purposes and are used where relevant. TULIP doe
 
 ## 👥 Who Is It For?
 
-- 🏢 Small and medium-sized businesses seeking practical security guidance.
-- 📘 Students and self-learners building cybersecurity fundamentals.
-- 💻 Developers and system owners responsible for securing applications and infrastructure.
+- Small and medium-sized businesses seeking practical security guidance.
+- Students and self-learners building cybersecurity fundamentals.
+- Developers and system owners responsible for securing applications and infrastructure.
 
 No advanced cybersecurity background should be required to begin.
 

@@ -10,6 +10,7 @@ export interface PillProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: PillSize
   badge?: ReactNode
   badgeVariant?: 'contrast' | 'accent' | 'subtle'
+  badgeClassName?: string
   pointer?: boolean
   dot?: boolean
   dotActive?: boolean
@@ -25,6 +26,7 @@ export function Pill({
   size = 'md',
   badge,
   badgeVariant = 'contrast',
+  badgeClassName = '',
   pointer = false,
   dot = false,
   dotActive = false,
@@ -68,7 +70,7 @@ export function Pill({
 
       {badge !== undefined && badge !== null && (
         <span
-          className={`${styles.badge} ${styles[`badge_${badgeVariant}`]}`}
+          className={`${styles.badge} ${styles[`badge_${badgeVariant}`]} ${badgeClassName}`.trim()}
         >
           {badge}
         </span>

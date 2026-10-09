@@ -229,7 +229,7 @@
 }
 
 .cardBadgeRight:hover {
-  background: #000000;
+  background: #e0e0e0;
   border-color: rgba(255, 255, 255, 0.4);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
 }
@@ -252,7 +252,10 @@
   cursor: default;
   user-select: none;
   white-space: nowrap;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .tulipInfoCard:hover {

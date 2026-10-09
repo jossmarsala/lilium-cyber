@@ -1,19 +1,110 @@
 .sidebar {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   width: 320px;
-  height: 100%;
+  height: calc(100vh - 56px);
+  min-height: calc(100vh - 56px);
+  max-height: calc(100vh - 56px);
   background: #fafafb;
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
-  border-left: none;
-  border-top: none;
-  border-bottom: none;
-  border-radius: 0;
+  border: none;
   margin: 0;
-  padding: 1.5rem 0.85rem 1.5rem 1.25rem;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Gradient top border blending from transparent to soft hairline */
+.topBorder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.03) 6%,
+    rgba(0, 0, 0, 0.075) 25%,
+    rgba(0, 0, 0, 0.075) 75%,
+    rgba(0, 0, 0, 0.03) 94%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Gradient bottom border blending from transparent to soft hairline */
+.bottomBorder {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.03) 6%,
+    rgba(0, 0, 0, 0.075) 25%,
+    rgba(0, 0, 0, 0.075) 75%,
+    rgba(0, 0, 0, 0.03) 94%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Eased vertical right divider line blending smoothly at top and bottom */
+.rightBorder {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.03) 3%,
+    rgba(0, 0, 0, 0.065) 12%,
+    rgba(0, 0, 0, 0.06) 82%,
+    rgba(0, 0, 0, 0.025) 94%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Soft top & bottom gradient blends for scrolling content */
+.topFade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 1px;
+  height: 24px;
+  background: linear-gradient(to bottom, #fafafb 0%, rgba(250, 250, 251, 0) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.bottomFade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 1px;
+  height: 32px;
+  background: linear-gradient(to top, #fafafb 0%, rgba(250, 250, 251, 0) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Inner scroll container */
+.scrollArea {
+  width: 100%;
+  height: 100%;
   overflow-y: auto;
+  padding: 1.5rem 0.85rem 1.75rem 1.25rem;
   box-sizing: border-box;
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.08) transparent;
 }

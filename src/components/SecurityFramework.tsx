@@ -99,7 +99,25 @@ export default function SecurityFramework() {
 
       {/* ── Timeline Section (Pills + Connecting line + Node dots) ── */}
       <div className={styles.timelineWrapper}>
-        <div className={styles.timelineTrackLine} aria-hidden="true" />
+        <div className={styles.timelineTrackLine} aria-hidden="true">
+          <div
+            className={styles.timelineTrackProgress}
+            style={{
+              width:
+                hoveredLayerIndex === null
+                  ? '0%'
+                  : hoveredLayerIndex === 0
+                    ? '0%'
+                    : hoveredLayerIndex === 1
+                      ? '50%'
+                      : '100%',
+              opacity: hoveredLayerIndex === null ? 0 : 1,
+            }}
+          />
+          <div className={styles.timelineTrackBeam}>
+            <div className={styles.timelineTrackSpark} />
+          </div>
+        </div>
         <div className={styles.timelineGrid}>
           {LAYERS.map((layer, index) => {
             const isHovered = hoveredLayerIndex === index
@@ -114,6 +132,7 @@ export default function SecurityFramework() {
                   variant={isHovered ? 'dark' : 'light'}
                   size="lg"
                   badge={layer.num}
+                  badgeClassName={styles.timelineBadge}
                   pointer={true}
                   className={styles.timelinePill}
                 >
