@@ -1,0 +1,111 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Tulip Playbook — Design System Variables
+   Neutral palette inspired by minimal, clean UI with subtle surfaces.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Colour Palette ─────────────────────────────────────── */
+  /* Background layers */
+  --color-bg: #e8e8e8; /* outermost page canvas  */
+  --color-surface-1: #f0f0f0; /* panel / card surface   */
+  --color-surface-2: #f7f7f7; /* inner card / hover bg  */
+  --color-surface-white: #ffffff; /* selected / active item */
+
+  /* Borders & Dividers */
+  --color-border: #d4d4d4; /* default border         */
+  --color-border-subtle: #e2e2e2; /* divider / hairline     */
+  --divider-color: #111111; /* unified divider line color */
+  --divider-thickness: 1px;
+  --divider-radius: 0;
+
+  /* Text */
+  --color-text-primary: #1a1a1a; /* headings, strong text  */
+  --color-text-secondary: #555555; /* body copy              */
+  --color-text-muted: #999999; /* captions, breadcrumbs  */
+  --color-text-inverse: #ffffff; /* text on dark fill      */
+
+  /* Interactive states */
+  --color-hover: #ebebeb; /* subtle row hover       */
+  --color-active-bg: #1a1a1a; /* active pill (dark)     */
+  --color-active-text: #ffffff; /* text on active pill    */
+  --color-selected-bg: #f0f0f0; /* secondary selected     */
+
+  /* ── Accent Color System ───────────────────────────────────
+     Strategic accent color. Change --color-accent to any custom color
+     (e.g. #059669 emerald, #10b981 cyber-mint, #6366f1 indigo, #0284c7 sky, #e11d48 rose)
+     and all strategic accents across the app will update seamlessly! */
+  --color-accent: #ff3366; /* primary brand accent */
+  --color-accent-hover: #e52e5c; /* darker/richer accent for hover */
+  --color-accent-subtle: color-mix(
+    in srgb,
+    var(--color-accent) 12%,
+    transparent
+  ); /* soft background tint */
+  --color-accent-subtle-hover: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  --color-accent-border: color-mix(
+    in srgb,
+    var(--color-accent) 35%,
+    transparent
+  ); /* tinted border */
+  --color-accent-glow: transparent; /* no glow shadow */
+  --color-accent-text: var(--color-accent); /* text with accent */
+  --color-accent-contrast: #ffffff; /* foreground text on accent fill */
+
+  /* Badges & counters */
+  --color-badge-bg: var(--color-accent);
+  --color-badge-text: var(--color-accent-contrast);
+
+  /* ── Gradients ──────────────────────────────────────────── */
+  --gradient-surface: linear-gradient(160deg, #f7f7f7 0%, #efefef 100%);
+  --gradient-panel: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 100%);
+  --gradient-nav: linear-gradient(180deg, #f8f8f8 0%, #f0f0f0 100%);
+
+  /* ── Shadows ────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
+
+  /* ── Border Radius ──────────────────────────────────────── */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* ── Typography ─────────────────────────────────────────── */
+  --font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-brand: var(--font-family);
+  --font-body: var(--font-family);
+  --font-mono: var(--font-family);
+
+  --text-xs: 0.6875rem; /*  11px */
+  --text-sm: 0.8125rem; /*  13px */
+  --text-base: 0.9375rem; /*  15px */
+  --text-md: 1rem; /*  16px */
+  --text-lg: 1.125rem; /*  18px */
+  --text-xl: 1.375rem; /*  22px */
+  --text-2xl: 1.75rem; /*  28px */
+
+  /* ── Spacing ────────────────────────────────────────────── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* ── Transitions ────────────────────────────────────────── */
+  --transition-fast: 0.12s ease;
+  --transition-base: 0.18s ease;
+  --transition-slow: 0.28s ease;
+
+  /* ── Layout ─────────────────────────────────────────────── */
+  --nav-height: 56px;
+  --sidebar-width: 240px;
+  --icon-nav-width: 60px;
+}

@@ -1,0 +1,19 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 290px;
+  height: 100%;
+  background: #fafafb;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  border-left: none;
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  margin: 0;
+  padding: 1.5rem 0.85rem 1.5rem 1.25rem;
+  overflow-y: auto;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}

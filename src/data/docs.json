@@ -1,0 +1,210 @@
+[
+  {
+    "id": "layer-1",
+    "title": "1) Comprender",
+    "overview": "Everything you need to set up and run the Cyber Range locally for the first time.",
+    "subsections": [
+      {
+        "id": "introduction",
+        "title": "Fundamentos",
+        "icon": "Book02Icon",
+        "content": "Node.js ≥ 18 and npm ≥ 9 are required. Clone the repository and run `npm install` from the project root.",
+        "blocks": [
+          {
+            "type": "callout",
+            "variant": "note",
+            "text": "Node.js ≥ 18 and npm ≥ 9 are required. Check your versions with `node -v` and `npm -v` before continuing."
+          },
+          {
+            "type": "group",
+            "title": "Required Tools",
+            "description": "System Requirements",
+            "rows": [
+              {
+                "keyLabel": "Node.js",
+                "badge": "required",
+                "text": "Version 18 or higher. Download from `nodejs.org`."
+              },
+              {
+                "keyLabel": "npm",
+                "badge": "required",
+                "text": "Version 9 or higher (bundled with Node.js 18+)."
+              },
+              {
+                "keyLabel": "Git",
+                "badge": "optional",
+                "text": "Needed to clone the repository. Any recent version works."
+              }
+            ]
+          },
+          {
+            "type": "table",
+            "columns": [
+              "Tool",
+              "Min version",
+              "Check"
+            ],
+            "rows": [
+              [
+                "Node.js",
+                "18.0.0",
+                "`node -v`"
+              ],
+              [
+                "npm",
+                "9.0.0",
+                "`npm -v`"
+              ],
+              [
+                "Git",
+                "any",
+                "`git --version`"
+              ]
+            ],
+            "caption": "Version requirements for local development"
+          }
+        ]
+      },
+      {
+        "id": "threats",
+        "title": "Panorama de Amenazas",
+        "icon": "AlertDiamondIcon",
+        "content": "Start the development server with `npm run dev`. The app will be available at http://localhost:5173 with hot module replacement enabled.",
+        "blocks": [
+          {
+            "type": "steps",
+            "items": [
+              {
+                "title": "Clone the repository",
+                "code": {
+                  "lang": "bash",
+                  "content": "git clone https://github.com/your-org/cyber-range.git\ncd cyber-range"
+                }
+              },
+              {
+                "title": "Install dependencies",
+                "code": {
+                  "lang": "bash",
+                  "content": "npm install"
+                },
+                "outcome": "node_modules installed — takes ~30s on first run"
+              },
+              {
+                "title": "Start the dev server",
+                "code": {
+                  "lang": "bash",
+                  "content": "npm run dev"
+                },
+                "outcome": "App available at http://localhost:5173",
+                "description": "Hot module replacement is enabled — changes reflect instantly without a full reload."
+              }
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "text": "Run `npm run dev -- --host` to expose the server on your local network, useful for testing on mobile devices."
+          }
+        ]
+      },
+      {
+        "id": "frameworks-references",
+        "title": "Frameworks y Referencias",
+        "icon": "Bookmark01Icon",
+        "content": "The source tree follows a feature-based layout:\n\nsrc/\n  components/   # Shared, reusable UI components\n  data/         # Static JSON / typed data files (docs, lab manifests, …)\n  features/     # Feature modules (labs/, scenarios/, simulations/)\n  hooks/        # Custom React hooks\n  layouts/      # Page shell / persistent UI wrappers\n  pages/        # Route-level page components\n  router/       # Centralised routing config\n  types/        # Shared TypeScript interfaces",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "The source tree follows a feature-based layout:"
+          },
+          {
+            "type": "fileTree",
+            "title": "Project Structure",
+            "content": "src/\n  components/   # Shared, reusable UI components\n  data/         # Static JSON / typed data files (docs, lab manifests, …)\n  features/     # Feature modules (labs/, scenarios/, simulations/)\n  hooks/        # Custom React hooks\n  layouts/      # Page shell / persistent UI wrappers\n  pages/        # Route-level page components\n  router/       # Centralised routing config\n  types/        # Shared TypeScript interfaces"
+          }
+        ]
+      },
+      {
+        "id": "toolkit",
+        "title": "Kit de Herramientas",
+        "icon": "ToolsIcon",
+        "content": "The source tree follows a feature-based layout:\n\nsrc/\n  components/   # Shared, reusable UI components\n  data/         # Static JSON / typed data files (docs, lab manifests, …)\n  features/     # Feature modules (labs/, scenarios/, simulations/)\n  hooks/        # Custom React hooks\n  layouts/      # Page shell / persistent UI wrappers\n  pages/        # Route-level page components\n  router/       # Centralised routing config\n  types/        # Shared TypeScript interfaces",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "The source tree follows a feature-based layout:"
+          },
+          {
+            "type": "fileTree",
+            "title": "Project Structure",
+            "content": "src/\n  components/   # Shared, reusable UI components\n  data/         # Static JSON / typed data files (docs, lab manifests, …)\n  features/     # Feature modules (labs/, scenarios/, simulations/)\n  hooks/        # Custom React hooks\n  layouts/      # Page shell / persistent UI wrappers\n  pages/        # Route-level page components\n  router/       # Centralised routing config\n  types/        # Shared TypeScript interfaces"
+          }
+        ]
+      },
+      {
+        "id": "networks-operating-systems",
+        "title": "Redes y Sistema Operativo",
+        "icon": "ServerIcon",
+        "content": "The source tree follows a feature-based layout:\n\nsrc/\n  components/   # Shared, reusable UI components\n  data/         # Static JSON / typed data files (docs, lab manifests, …)\n  features/     # Feature modules (labs/, scenarios/, simulations/)\n  hooks/        # Custom React hooks\n  layouts/      # Page shell / persistent UI wrappers\n  pages/        # Route-level page components\n  router/       # Centralised routing config\n  types/        # Shared TypeScript interfaces",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "The source tree follows a feature-based layout:"
+          },
+          {
+            "type": "fileTree",
+            "title": "Project Structure",
+            "content": "src/\n  components/   # Shared, reusable UI components\n  data/         # Static JSON / typed data files (docs, lab manifests, …)\n  features/     # Feature modules (labs/, scenarios/, simulations/)\n  hooks/        # Custom React hooks\n  layouts/      # Page shell / persistent UI wrappers\n  pages/        # Route-level page components\n  router/       # Centralised routing config\n  types/        # Shared TypeScript interfaces"
+          }
+        ]
+      },
+      {
+        "id": "security-mentality",
+        "title": "Mentalidad de Seguridad",
+        "icon": "BrainIcon",
+        "content": "The source tree follows a feature-based layout:\n\nsrc/\n  components/   # Shared, reusable UI components\n  data/         # Static JSON / typed data files (docs, lab manifests, …)\n  features/     # Feature modules (labs/, scenarios/, simulations/)\n  hooks/        # Custom React hooks\n  layouts/      # Page shell / persistent UI wrappers\n  pages/        # Route-level page components\n  router/       # Centralised routing config\n  types/        # Shared TypeScript interfaces",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "The source tree follows a feature-based layout:"
+          },
+          {
+            "type": "fileTree",
+            "title": "Project Structure",
+            "content": "src/\n  components/   # Shared, reusable UI components\n  data/         # Static JSON / typed data files (docs, lab manifests, …)\n  features/     # Feature modules (labs/, scenarios/, simulations/)\n  hooks/        # Custom React hooks\n  layouts/      # Page shell / persistent UI wrappers\n  pages/        # Route-level page components\n  router/       # Centralised routing config\n  types/        # Shared TypeScript interfaces"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "layer-2",
+    "title": "2) Descubrir",
+    "overview": "High-level design decisions and conventions used across the codebase.",
+    "subsections": []
+  },
+  {
+    "id": "layer-3",
+    "title": "3) Diseñar",
+    "overview": "High-level design decisions and conventions used across the codebase.",
+    "subsections": []
+  },
+  {
+    "id": "layer-4",
+    "title": "4) Proteger",
+    "overview": "High-level design decisions and conventions used across the codebase.",
+    "subsections": []
+  },
+  {
+    "id": "layer-5",
+    "title": "5) Detectar",
+    "overview": "High-level design decisions and conventions used across the codebase.",
+    "subsections": []
+  },
+  {
+    "id": "layer-6",
+    "title": "3) Responder y Recuperar",
+    "overview": "High-level design decisions and conventions used across the codebase.",
+    "subsections": []
+  }
+]

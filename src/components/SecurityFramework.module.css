@@ -1,0 +1,464 @@
+/* ═══════════════════════════════════════════════════════════════════
+   SecurityFramework.module.css — Minimal Premium Milestone Layout
+   ═══════════════════════════════════════════════════════════════════ */
+
+.section {
+  width: 100%;
+  padding: 5.5rem 2rem;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  scroll-margin-top: 80px;
+}
+
+/* ─────────────────────────────────────────────────────
+   SECTION HEADER
+   ───────────────────────────────────────────────────── */
+.header {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto 3.75rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-family);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 450;
+  letter-spacing: -0.035em;
+  line-height: 1.14;
+  color: #111111;
+  margin: 0;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.subtitle {
+  font-family: var(--font-family);
+  font-size: clamp(0.7rem, 1vw, 1rem);
+  font-weight: 400;
+  color: #737373;
+  margin: 1.35rem 0 0 0;
+  max-width: 580px;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ─────────────────────────────────────────────────────
+   TIMELINE STEPPER (Pills + Connecting line + Node dots)
+   ───────────────────────────────────────────────────── */
+.timelineWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 2.5rem;
+}
+
+/* Continuous connecting horizontal track line */
+.timelineTrackLine {
+  position: absolute;
+  top: 48px;
+  left: calc(100% / 6);
+  right: calc(100% / 6);
+  height: 1.5px;
+  background: #e5e5e5;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.timelineGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.timelineStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.timelinePill {
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timelineNode {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #a1a1aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 4px #ffffff;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.timelineNodeInner {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+/* Active / Hovered Stepper States */
+.timelineStepActive .timelinePill,
+.timelineStep:hover .timelinePill {
+  transform: translateY(-1px);
+}
+
+.timelineStepActive .timelineNode,
+.timelineStep:hover .timelineNode {
+  border-color: #18181b;
+  background: #18181b;
+  transform: scale(1.15);
+  box-shadow: 0 0 0 4px #e4e4e7;
+}
+
+/* ─────────────────────────────────────────────────────
+   3-CARD MILESTONE CHECKLIST GRID
+   ───────────────────────────────────────────────────── */
+.cardsGrid {
+  width: 100%;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  margin-bottom: 4rem;
+  box-sizing: border-box;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.25rem 2rem;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 22px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  box-sizing: border-box;
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+  overflow: hidden;
+}
+
+.cardActive,
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 16px 36px -4px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.75rem;
+}
+
+.cardBadgeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.cardBadge {
+  font-family: var(--font-family);
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2.5px 9px;
+  border-radius: 999px;
+  background: #f4f4f5;
+  color: #52525b;
+  border: 1px solid #e4e4e7;
+}
+
+.cardTitle {
+  font-family: var(--font-family);
+  font-size: 1.45rem;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  color: #111111;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.cardSubtitle {
+  font-family: var(--font-family);
+  font-size: 0.86rem;
+  font-weight: 400;
+  color: #666666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Checklist */
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.checkItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.checkItem:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.checkIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: #f4f4f5;
+  color: #52525b;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.checkItem:hover .checkIconWrapper,
+.cardActive .checkIconWrapper {
+  color: #18181b;
+  background: #e4e4e7;
+  transform: scale(1.05);
+}
+
+.fnIcon {
+  transition: transform 0.2s ease;
+}
+
+.checkContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.functionCodeRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.functionCode {
+  font-family: var(--font-family);
+  font-size: 0.81rem;
+  font-weight: 750;
+  color: #111111;
+  letter-spacing: -0.01em;
+}
+
+.checkBadgeIcon {
+  color: #18181b;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.checkItem:hover .checkBadgeIcon,
+.cardActive .checkBadgeIcon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.functionName {
+  font-family: var(--font-family);
+  font-size: 0.83rem;
+  font-weight: 400;
+  color: #666666;
+  line-height: 1.45;
+}
+
+/* ─────────────────────────────────────────────────────
+   COMPACT REFERENCES SECTION
+   ───────────────────────────────────────────────────── */
+.referencesWrap {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.referencesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 1.75rem;
+}
+
+.refHeaderIcon {
+  color: #71717a;
+}
+
+.referencesTitle {
+  font-family: var(--font-family);
+  font-size: 1.15rem;
+  font-weight: 450;
+  letter-spacing: -0.02em;
+  color: #111111;
+  margin: 0;
+  text-align: center;
+}
+
+.referencesGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.refCard {
+  padding: 1.5rem 1.35rem;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.refCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.refCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  gap: 8px;
+}
+
+.refName {
+  font-family: var(--font-family);
+  font-size: 0.88rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: #111111;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.refCard:hover .refName {
+  color: #111111;
+}
+
+.refTag {
+  font-family: var(--font-family);
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1.5px 6px;
+  border-radius: 4px;
+  background: #f4f4f5;
+  color: #71717a;
+  white-space: nowrap;
+}
+
+.refDesc {
+  font-family: var(--font-family);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: #737373;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.disclaimer {
+  font-family: var(--font-family);
+  font-size: 0.76rem;
+  font-weight: 400;
+  color: #8c8c8c;
+  line-height: 1.5;
+  text-align: center;
+  max-width: 720px;
+  margin: 1.5rem auto 0 auto;
+}
+
+/* ─────────────────────────────────────────────────────
+   RESPONSIVE
+   ───────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .timelineWrapper {
+    display: none;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .referencesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .section {
+    padding: 3.5rem 1.25rem;
+  }
+
+  .referencesGrid {
+    grid-template-columns: 1fr;
+  }
+}

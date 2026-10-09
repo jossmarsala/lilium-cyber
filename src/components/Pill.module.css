@@ -1,0 +1,261 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Pill.module.css — Unified Signature Pill Design System
+   Matches Playbook v1.0 Pill Specification (Light & Dark Variants)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-family: var(--font-family);
+  letter-spacing: -0.01em;
+  pointer-events: auto;
+  user-select: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
+  cursor: default;
+}
+
+/* ─────────────────────────────────────────────────────
+   SIZES
+   ───────────────────────────────────────────────────── */
+.size_sm {
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: 0.68rem;
+  font-weight: 550;
+}
+
+.size_sm.hasBadge {
+  padding: 3px 4px 3px 10px;
+}
+
+.size_md {
+  gap: 8px;
+  padding: 4px 14px;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.size_md.hasBadge {
+  padding: 4px 5px 4px 14px;
+}
+
+.size_lg {
+  gap: 10px;
+  padding: 6px 18px;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.size_lg.hasBadge {
+  padding: 6px 6px 6px 18px;
+}
+
+/* ─────────────────────────────────────────────────────
+   VARIANT: DARK (Signature Playbook v1.0 Style)
+   ───────────────────────────────────────────────────── */
+.dark {
+  background: #111111;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.28),
+    0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.dark.hasPointer::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #111111;
+  pointer-events: none;
+  transition: border-top-color 0.25s ease;
+}
+
+.dark:hover,
+.dark.active {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.38),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1.5px);
+}
+
+.dark:hover.hasPointer::after,
+.dark.active.hasPointer::after {
+  border-top-color: #000000;
+}
+
+/* ─────────────────────────────────────────────────────
+   VARIANT: LIGHT (Signature Clean Inverted Style)
+   ───────────────────────────────────────────────────── */
+.light {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.light.hasPointer::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #ffffff;
+  pointer-events: none;
+  transition: border-top-color 0.25s ease;
+}
+
+.light:hover,
+.light.active {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.26);
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+  color: #111111;
+  transform: translateY(-1.5px);
+}
+
+.light:hover.hasPointer::after,
+.light.active.hasPointer::after {
+  border-top-color: #ffffff;
+}
+
+/* ─────────────────────────────────────────────────────
+   LABEL & ICON
+   ───────────────────────────────────────────────────── */
+.label {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.1;
+}
+
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────
+   STATUS DOT
+   ───────────────────────────────────────────────────── */
+.dot {
+  width: 5.5px;
+  height: 5.5px;
+  border-radius: 50%;
+  background: #a1a1aa;
+  flex-shrink: 0;
+  transition:
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.dark .dot {
+  background: #71717a;
+}
+
+.pill:hover .dot {
+  transform: scale(1.2);
+}
+
+.dotActive,
+.active .dot {
+  background: var(--color-accent, #10b981);
+  transform: scale(1.2);
+}
+
+/* ─────────────────────────────────────────────────────
+   EMBEDDED INNER BADGE (Like "v1.0" in Playbook Pill)
+   ───────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  flex-shrink: 0;
+  user-select: none;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.size_sm .badge {
+  font-size: 0.62rem;
+  padding: 2px 7px;
+}
+
+.size_md .badge {
+  font-size: 0.7rem;
+  padding: 3px 9px;
+}
+
+.size_lg .badge {
+  font-size: 0.76rem;
+  padding: 3.5px 11px;
+}
+
+/* Contrast Badge: White on Dark Pill, Black on Light Pill */
+.dark .badge_contrast {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+.light .badge_contrast {
+  background: #111111;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* Accent Badge */
+.badge_accent {
+  background: var(--color-accent, #111111);
+  color: var(--color-accent-contrast, #ffffff);
+}
+
+/* Subtle Badge */
+.dark .badge_subtle {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.light .badge_subtle {
+  background: #d2d2d2;
+  color: #52525b;
+}
+
+/* Hover dynamics on badge */
+.pill:hover .badge,
+.active .badge {
+  transform: scale(1.02);
+}

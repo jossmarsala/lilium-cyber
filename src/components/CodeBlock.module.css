@@ -1,0 +1,162 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CodeBlock — Light theme code block with keyword color accents
+   Aligned to Tulip Playbook minimal design system
+   ═══════════════════════════════════════════════════════════════════ */
+
+.container {
+  position: relative;
+  margin: 1rem 0;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.3rem 0.65rem;
+  background: #fafafb;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  user-select: none;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dots span {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dots span:nth-child(1) {
+  background: #ff5f56;
+  opacity: 0.85;
+}
+
+.dots span:nth-child(2) {
+  background: #ffbd2e;
+  opacity: 0.85;
+}
+
+.dots span:nth-child(3) {
+  background: #27c93f;
+  opacity: 0.85;
+}
+
+.headerMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.label {
+  font-family: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.filename {
+  font-family: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+}
+
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-xs);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-family);
+  font-size: 0.65rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.copyButton:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--color-text-primary);
+}
+
+.copyButtonCopied {
+  background: rgba(39, 201, 64, 0.08);
+  color: #16a34a;
+}
+
+.pre {
+  margin: 0;
+  padding: 0.75rem 0.85rem 0.85rem;
+  overflow-x: auto;
+  font-family: 'SF Mono', ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+  font-size: 0.785rem;
+  line-height: 1.65;
+  color: #1e293b;
+  white-space: pre;
+  -webkit-overflow-scrolling: touch;
+  background: #ffffff;
+}
+
+/* ── Code Color Accents for Keywords & Tokens ── */
+.tokenKeyword {
+  color: #e3587f;
+  font-weight: 600;
+}
+
+.tokenString {
+  color: #059669;
+}
+
+.tokenComment {
+  color: #64748b;
+  font-style: italic;
+}
+
+.tokenFlag {
+  color: #0284c7;
+  font-weight: 500;
+}
+
+.tokenType {
+  color: #62b06f;
+  font-weight: 600;
+}
+
+.tokenNumber {
+  color: #d97706;
+  font-weight: 500;
+}
+
+.tokenPath {
+  color: #62b06f;
+}
+
+.tokenPunctuation {
+  color: #64748b;
+}
+
+.tokenPlain {
+  color: #1e293b;
+}

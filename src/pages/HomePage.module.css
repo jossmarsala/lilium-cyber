@@ -1,0 +1,500 @@
+/* ═══════════════════════════════════════════════════
+   HomePage — hero landing layout
+   Replicates the split-panel reference image.
+   ═══════════════════════════════════════════════════ */
+
+/* ── Full-height page wrapper ── */
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* Fill the remaining viewport below the navbar */
+  min-height: calc(100vh - var(--nav-height));
+  background: #ffffff;
+}
+
+/* ─────────────────────────────────────────────────────
+   HERO — 50/50 split
+   Left: copy   |   Right: WebGL terminal
+   ───────────────────────────────────────────────────── */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex: 1;
+  min-height: calc(94vh - var(--nav-height));
+}
+
+/* Left column */
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(3rem, 6vh, 5rem) clamp(2.5rem, 4.5vw, 4.5rem);
+  background: #ffffff;
+}
+
+.heroHeading {
+  font-family: var(--font-family);
+  font-size: clamp(3.2rem, 4.8vw, 4.65rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: #111111;
+  margin: 0 0 1.5rem 0;
+}
+
+.heroDesc {
+  font-family: var(--font-family);
+  font-size: clamp(1.05rem, 1.25vw, 1.15rem);
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+  max-width: 530px;
+  margin: 0 0 2.25rem 0;
+}
+
+/* CTA row */
+.heroCta {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.75rem 1.5rem;
+  background: #111111;
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btnPrimary:hover {
+  background: #333333;
+  transform: translateY(-1px);
+  color: #ffffff;
+}
+
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.75rem 1.25rem;
+  background: transparent;
+  color: #111111;
+  font-family: var(--font-family);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btnSecondary:hover {
+  opacity: 0.65;
+  color: #111111;
+}
+
+.playIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid #111111;
+  border-radius: var(--radius-pill);
+  font-size: 0.5rem;
+  line-height: 1;
+  padding-left: 1px;
+  flex-shrink: 0;
+}
+
+/* Right column — two rows: WebGL canvas wrapper + stats */
+.heroRight {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid var(--divider-color);
+  background: #ffffff;
+}
+
+.heroVisual {
+  position: relative;
+  flex: 1;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 3.5vw, 3.5rem);
+  overflow: visible;
+  perspective: 1200px;
+}
+
+/* ── Container wrapper: bounds the aspect ratio and lets badges float offside ── */
+.terminalWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* ── The rounded square card that contains the terminal ── */
+.terminalCard {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 16px 40px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+  isolation: isolate;
+}
+
+.cardInnerOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* ── Badge row (top of card) ── */
+.cardBadgeRow {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.cardBadgeRight {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  font-family: var(--font-family);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: 0.02em;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.28),
+    0 1px 3px rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
+  cursor: default;
+  user-select: none;
+}
+
+.cardBadgeDark {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  font-family: var(--font-family);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.28),
+    0 1px 3px rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
+  cursor: default;
+  user-select: none;
+}
+
+.cardBadgeRight:hover {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
+}
+
+/* ── Tulip info card: floats offside the left edge ── */
+.tulipInfoCard {
+  position: absolute;
+  left: -28px;
+  bottom: 82px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 10px 14px;
+  box-shadow:
+    0 12px 32px -4px rgba(0, 0, 0, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+  z-index: 6;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.tulipInfoCard:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 16px 36px -4px rgba(0, 0, 0, 0.14),
+    0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.tulipCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tulipCardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--color-accent-subtle, #f0fdf4);
+  color: var(--color-accent, #16a34a);
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.tulipCardMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tulipCardTitle {
+  font-family: var(--font-family);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #111111;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.tulipCardSub {
+  font-family: var(--font-family);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: #71717a;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+/* ── Reference-style pointer tag (Lab 1 cursor) ── */
+.cursorTag {
+  position: absolute;
+  right: 28px;
+  top: 42%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px 4px 8px;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 9999px;
+  font-family: var(--font-family);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  z-index: 8;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.28),
+    0 1px 3px rgba(0, 0, 0, 0.15);
+  cursor: grab;
+  user-select: none;
+  white-space: nowrap;
+  transition:
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.cursorTag:hover {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.38);
+}
+
+.cursorTagFollowing {
+  pointer-events: none;
+  z-index: 20;
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.38),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.cursorArrow {
+  transform: rotate(-15deg);
+  margin-left: -1px;
+  color: var(--color-accent, #ffffff);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+/* ── Status pill: floats offside the bottom-right edge ── */
+.statusPill {
+  position: absolute;
+  right: -24px;
+  bottom: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  background: #ffffff;
+  border: 1.5px solid rgba(0, 0, 0, 0.14);
+  border-radius: 999px;
+  font-family: var(--font-family);
+  font-size: 0.74rem;
+  font-weight: 750;
+  color: #000000;
+  letter-spacing: 0.01em;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.05),
+    0 16px 32px -4px rgba(0, 0, 0, 0.16);
+  z-index: 6;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.statusPill:hover {
+  border-color: rgba(0, 0, 0, 0.26);
+  box-shadow:
+    0 6px 12px rgba(0, 0, 0, 0.08),
+    0 22px 40px -4px rgba(0, 0, 0, 0.22);
+}
+
+.statusIcon {
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────
+   DIVIDER between hero and sections below
+   ───────────────────────────────────────────────────── */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--divider-color);
+}
+
+/* ─────────────────────────────────────────────────────
+   STAT STRIP — bottom row of right column
+   ───────────────────────────────────────────────────── */
+.stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  min-height: 98px;
+  padding: 1.5rem var(--space-8);
+  gap: var(--space-4);
+  background: #ffffff;
+  border-top: 1px solid var(--divider-color);
+  flex-shrink: 0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.statLabel {
+  font-family: var(--font-family);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}
+
+.statValue {
+  font-family: var(--font-family);
+  font-size: clamp(1.45rem, 1.8vw, 1.8rem);
+  font-weight: 700;
+  color: #111111;
+  letter-spacing: -0.02em;
+}
+
+/* ─────────────────────────────────────────────────────
+   RESPONSIVE
+   ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .heroRight {
+    border-left: none;
+    border-top: 1px solid var(--divider-color);
+  }
+
+  .heroVisual {
+    min-height: auto;
+    padding: 2.5rem 1.5rem;
+    overflow: hidden;
+  }
+
+  .terminalWrapper {
+    max-width: 360px;
+  }
+
+  .tulipInfoCard {
+    left: 4px;
+    bottom: 54px;
+    width: 240px;
+    padding: 12px 14px;
+  }
+
+  .statusPill {
+    right: 4px;
+    bottom: 12px;
+    font-size: 0.7rem;
+    padding: 6px 12px;
+  }
+
+  .cursorTag {
+    display: none;
+  }
+
+  .heroContent {
+    padding: var(--space-10) var(--space-6);
+  }
+
+  .heroDesc {
+    margin: 0 0 var(--space-6) 0;
+  }
+
+  .stats {
+    padding: var(--space-6);
+    justify-content: space-around;
+    gap: var(--space-6);
+  }
+}

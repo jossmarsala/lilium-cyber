@@ -1,0 +1,348 @@
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  height: 168px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+/* Subtle dot grid pattern */
+.dotGrid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1.2px, transparent 1.2px);
+  background-size: 15px 15px;
+  background-position: center center;
+  mask-image: radial-gradient(circle at center, black 60%, transparent 95%);
+  -webkit-mask-image: radial-gradient(circle at center, black 60%, transparent 95%);
+  pointer-events: none;
+}
+
+/* Top row containing the 4 source pills */
+.topPillsRow {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 0 6px;
+  z-index: 3;
+}
+
+.sourcePill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 4px 3px 10px;
+  border-radius: 9999px;
+  background: #111111;
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: 0.68rem;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.sourcePill::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #111111;
+}
+
+.sourcePillLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sourcePillBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #000000;
+  font-weight: 700;
+  font-size: 0.62rem;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.sourcePill:hover,
+.sourcePillActive,
+.containerHovered .sourcePill {
+  transform: translateY(-2px);
+  background: #000000;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+}
+
+/* Cables SVG layer */
+.cablesSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Base static track lines */
+.cableTrack {
+  stroke: rgba(0, 0, 0, 0.11);
+  stroke-width: 1.4;
+  fill: none;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.cableTrackActive {
+  stroke: rgba(0, 0, 0, 0.28);
+  stroke-width: 1.8;
+}
+
+/* Flowing cable light beams - subtle constant ambient flow, intensified on hover */
+.cableBeam {
+  fill: none;
+  stroke: rgba(17, 17, 17, 0.45);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 18 100;
+  stroke-dashoffset: 100;
+  opacity: 0.36;
+  pointer-events: none;
+  animation: flowBeam 2.2s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  transition: opacity 0.35s ease, stroke 0.3s ease, stroke-width 0.3s ease, filter 0.3s ease;
+}
+
+.container:hover .cableBeam,
+.containerHovered .cableBeam {
+  opacity: 0.8;
+  stroke: #111111;
+  stroke-width: 2.2;
+}
+
+.cableBeamActive {
+  opacity: 1 !important;
+  stroke: #000000 !important;
+  stroke-width: 2.8 !important;
+}
+
+@keyframes flowBeam {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: -24;
+  }
+}
+
+/* Tool active indicator micro dot */
+.toolDot {
+  width: 3.5px;
+  height: 3.5px;
+  border-radius: 50%;
+  background: #d4d4d8;
+  margin-left: 2px;
+  transition: all 0.25s ease;
+}
+
+.toolDotActive {
+  background: var(--color-accent);
+  transform: scale(1.2);
+}
+
+/* Connect button in center */
+.connectWrapper {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.connectButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 5px 4px 12px;
+  border-radius: 9999px;
+  background: #111111;
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.connectButton::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #111111;
+}
+
+.connectButtonLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.connectButtonBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #000000;
+  font-weight: 700;
+  font-size: 0.68rem;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  line-height: 1;
+}
+
+.connectButton:hover,
+.containerHovered .connectButton {
+  transform: scale(1.05);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Bottom sync status panel */
+.syncPanel {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 88%;
+  max-width: 380px;
+  background: #ffffff;
+  color: #111111;
+  border-radius: 10px;
+  padding: 6px 12px 7px 12px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+}
+
+.containerHovered .syncPanel,
+.container:hover .syncPanel {
+  transform: translate(-50%, -2px);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.syncHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.syncTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-family);
+  font-size: 0.71rem;
+  font-weight: 650;
+  color: #111111;
+}
+
+.greenDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: pulseGreen 1.8s ease-in-out infinite;
+}
+
+@keyframes pulseGreen {
+  0%, 100% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+.syncCount {
+  font-family: var(--font-family);
+  font-size: 0.67rem;
+  color: #71717a;
+  font-weight: 500;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 4px;
+  background: #f1f1f4;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressBar {
+  position: relative;
+  height: 100%;
+  background: #111111;
+  border-radius: 999px;
+  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.progressShimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmerMove 2s infinite;
+}
+
+@keyframes shimmerMove {
+  100% {
+    transform: translateX(100%);
+  }
+}

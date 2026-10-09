@@ -1,0 +1,13 @@
+/* DocsPage — two-column documentation shell */
+.layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  background: #ffffff;
+  margin: 0;
+}
+
+.layout > aside {
+  flex-shrink: 0;
+  overflow-y: auto;
+}

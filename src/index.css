@@ -1,0 +1,73 @@
+/* ─────────────────────────────────────────────────────────────
+   Global styles — imports design tokens from variables.css.
+   ───────────────────────────────────────────────────────────── */
+@import './variables.css';
+
+/* ── Reset ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* ── Brand typography helpers ── */
+.brand-name {
+  font-family: var(--font-family);
+}
+
+/* ── Links ── */
+a {
+  color: var(--color-accent);
+}
+
+/* ── Monospace ── */
+code,
+pre {
+  font-family: var(--font-family);
+  font-size: 0.875em;
+}
+
+/* ── Headings ── */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: var(--font-family);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
