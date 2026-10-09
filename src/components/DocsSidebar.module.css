@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 290px;
+  width: 320px;
   height: 100%;
   background: #fafafb;
   border-right: 1px solid rgba(0, 0, 0, 0.08);
