@@ -1,0 +1,63 @@
+/* ═══════════════════════════════════════════════════════════════════
+   DocsPagination.module.css — Minimal Bottom Navigation Grid
+   ═══════════════════════════════════════════════════════════════════ */
+
+.container {
+  margin-top: 3.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* Single item alignments */
+.gridOnlyNext {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.gridOnlyNext .slot {
+  max-width: 340px;
+  width: 100%;
+}
+
+.gridOnlyPrev {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.gridOnlyPrev .slot {
+  max-width: 340px;
+  width: 100%;
+}
+
+.slot {
+  display: flex;
+  min-width: 0;
+}
+
+.slotNext {
+  justify-content: flex-end;
+}
+
+.slotPrev {
+  justify-content: flex-start;
+}
+
+/* Responsive collapse on mobile */
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .slotNext,
+  .slotPrev {
+    justify-content: stretch;
+  }
+}

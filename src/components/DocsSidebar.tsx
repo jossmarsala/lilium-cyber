@@ -7,6 +7,8 @@
  * Navigation: BranchedMenu.onSelect → react-router useNavigate
  */
 import { useNavigate } from 'react-router-dom'
+import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
+import { ToolsIcon, Book02Icon } from '@hugeicons/core-free-icons'
 import type { DocSection } from '@/data/docs'
 import BranchedMenu, { type BranchedMenuItem } from './BranchedMenu'
 import { resolveDocIcon } from '@/utils/docIcons'
@@ -63,10 +65,23 @@ function toMenuItems(sections: DocSection[]): BranchedMenuItem[] {
 export default function DocsSidebar({ sections, activeSectionId, activeSubSectionId }: Props) {
   const navigate = useNavigate()
 
-  const items = toMenuItems(sections)
+  const isShowcaseActive =
+    activeSectionId === 'showcase' ||
+    activeSectionId === 'components' ||
+    activeSectionId === 'component-showcase'
+
+  // Filter hidden sections unless currently viewing that section
+  const visibleSections = sections.filter(
+    (s) =>
+      !s.hidden ||
+      s.id === activeSectionId ||
+      ((s.id === 'showcase' || s.id === 'components') && isShowcaseActive),
+  )
+
+  const items = toMenuItems(visibleSections)
 
   /** Which section index should be open on first render */
-  const activeSectionIndex = sections.findIndex((s) => s.id === activeSectionId)
+  const activeSectionIndex = visibleSections.findIndex((s) => s.id === activeSectionId)
   const defaultOpen = activeSectionIndex >= 0 ? activeSectionIndex : 0
 
   /**
@@ -113,6 +128,35 @@ export default function DocsSidebar({ sections, activeSectionId, activeSubSectio
           drawDuration={400}
           foldDuration={280}
         />
+      </div>
+
+      {/* Discreet footer button for hidden Component Showcase */}
+      <div className={styles.sidebarFooter}>
+        <button
+          type="button"
+          onClick={() => navigate(isShowcaseActive ? '/docs/layer-1' : '/docs/showcase')}
+          className={`${styles.footerButton} ${isShowcaseActive ? styles.footerButtonActive : ''}`}
+          title={
+            isShowcaseActive
+              ? 'Volver a la documentación'
+              : 'Explorar Component Showcase (sección oculta)'
+          }
+        >
+          <div className={styles.footerButtonLeft}>
+            <HugeiconsIcon
+              icon={(isShowcaseActive ? Book02Icon : ToolsIcon) as IconSvgElement}
+              size={14}
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+            <span className={styles.footerLabel}>
+              {isShowcaseActive ? 'Volver al Playbook' : 'Component Showcase'}
+            </span>
+          </div>
+          <span className={styles.footerBadge}>
+            {isShowcaseActive ? 'activo' : 'oculto'}
+          </span>
+        </button>
       </div>
     </aside>
   )

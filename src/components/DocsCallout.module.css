@@ -38,20 +38,25 @@
 
 .label {
   font-family: var(--font-family);
-  font-size: var(--text-xs);
-  font-weight: 700;
-  letter-spacing: 0.07em;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   line-height: 1;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.25rem;
 }
 
 .text {
   font-family: var(--font-family);
-  font-size: var(--text-sm);
+  font-size: 0.96875rem;
   color: var(--color-text-secondary);
   margin: 0;
-  line-height: 1.65;
+  line-height: 1.7;
+}
+
+.text strong {
+  font-weight: 650;
+  color: #111111;
 }
 
 /* Inline code inside callouts */

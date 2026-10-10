@@ -1,0 +1,254 @@
+/* ═══════════════════════════════════════════════════════════════════
+   DocsNextButton.module.css — Minimal, Ultra-Premium Subindex Navigation
+   Clean aesthetics inspired by Linear, Stripe & Vercel design systems
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Base interactive link ── */
+.button {
+  position: relative;
+  display: inline-flex;
+  text-decoration: none;
+  font-family: var(--font-family);
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+  user-select: none;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.15s ease;
+}
+
+.button:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   VARIANT 1: CARD (Default — ultra-clean pagination block)
+   ───────────────────────────────────────────────────────────────── */
+.variant_card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.95rem 1.25rem;
+  border-radius: 9px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  min-height: 70px;
+  width: 100%;
+}
+
+.direction_next.variant_card {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.direction_prev.variant_card {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.variant_card:hover {
+  background: #fafafa;
+  border-color: rgba(0, 0, 0, 0.17);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+}
+
+.variant_card:active {
+  transform: translateY(0);
+}
+
+/* Minimal direction caption (e.g. "← ANTERIOR" or "SIGUIENTE →") */
+.captionRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  margin-bottom: 0.35rem;
+  transition: color 0.15s ease;
+}
+
+.variant_card:hover .captionRow {
+  color: #444444;
+}
+
+/* Title */
+.title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #111111;
+  line-height: 1.35;
+  letter-spacing: -0.012em;
+  margin: 0;
+  transition: color 0.15s ease;
+}
+
+.variant_card:hover .title {
+  color: #000000;
+}
+
+/* Refined gliding arrow */
+.arrow {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text-muted);
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.15s ease;
+}
+
+.variant_card:hover .arrow,
+.button:hover .arrow {
+  color: #111111;
+}
+
+.direction_next:hover .arrow {
+  transform: translateX(3px);
+}
+
+.direction_prev:hover .arrow {
+  transform: translateX(-3px);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   VARIANT 2: BANNER (Minimalist wide forward callout)
+   ───────────────────────────────────────────────────────────────── */
+.variant_banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border-radius: 9px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  margin: 1.75rem 0;
+}
+
+.variant_banner:hover {
+  background: #fafafa;
+  border-color: rgba(0, 0, 0, 0.17);
+  transform: translateY(-1px);
+}
+
+.bannerLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.bannerIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555555;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.variant_banner:hover .bannerIcon {
+  color: #111111;
+}
+
+.bannerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.bannerCaption {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.bannerTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #111111;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.bannerArrow {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.15s ease;
+}
+
+.variant_banner:hover .bannerArrow {
+  color: #111111;
+  transform: translateX(3px);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   VARIANT 3: PILL (Inline tag button)
+   ───────────────────────────────────────────────────────────────── */
+.variant_pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-pill);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  font-size: 0.8125rem;
+  font-weight: 550;
+  color: #1a1a1a;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.variant_pill:hover {
+  background: #fafafa;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #000000;
+  transform: translateY(-1px);
+}
+
+.pillText {
+  letter-spacing: -0.01em;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   VARIANT 4: COMPACT (Minimal inline text button)
+   ───────────────────────────────────────────────────────────────── */
+.variant_compact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 550;
+  color: #444444;
+  padding: 0.25rem 0.45rem;
+  border-radius: 5px;
+  transition: color 0.15s ease;
+}
+
+.variant_compact:hover {
+  color: #000000;
+}

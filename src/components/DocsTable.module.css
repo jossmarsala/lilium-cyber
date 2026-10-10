@@ -3,21 +3,27 @@
    Aligned to landing design system (variables.css)
    ═══════════════════════════════════════════════ */
 
+.container {
+  margin: 1.6rem 0;
+  width: 100%;
+}
+
 /* Scroll wrapper so tables don't break narrow viewports */
 .wrapper {
   width: 100%;
   overflow-x: auto;
-  margin: 1.5rem 0;
   border-radius: var(--radius-md);
   border: 1px solid rgba(0, 0, 0, 0.08);
   -webkit-overflow-scrolling: touch;
+  background: #ffffff;
 }
 
 .table {
   width: 100%;
+  min-width: 580px;
   border-collapse: collapse;
   font-family: var(--font-family);
-  font-size: var(--text-sm);
+  font-size: 0.9375rem;
   background: #ffffff;
 }
 
@@ -28,8 +34,8 @@
 }
 
 .th {
-  padding: 0.6rem 1rem;
-  font-size: var(--text-xs);
+  padding: 0.8rem 1.15rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #111111;
   letter-spacing: 0.05em;
@@ -53,16 +59,29 @@
 }
 
 .td {
-  padding: 0.65rem 1rem;
+  padding: 0.8rem 1.15rem;
   color: var(--color-text-secondary);
   vertical-align: top;
-  line-height: 1.55;
+  line-height: 1.65;
+  word-break: break-word;
+}
+
+.td strong {
+  font-weight: 650;
+  color: #111111;
 }
 
 /* First column emphasis */
 .td:first-child {
   font-weight: 500;
   color: #111111;
+  white-space: nowrap;
+}
+
+/* If first column content has a long definition (like plain prose), allow wrap */
+.td:first-child:has(p),
+.td:first-child:not(:has(strong)):not(:has(code)) {
+  white-space: normal;
 }
 
 /* Inline code inside cells */
@@ -85,4 +104,6 @@
   color: var(--color-text-muted);
   margin-top: 0.5rem;
   padding: 0 0.25rem;
+  font-style: italic;
+  display: block;
 }

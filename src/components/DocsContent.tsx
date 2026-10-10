@@ -18,26 +18,15 @@ import { DocsSteps, DocsStep } from './DocsSteps'
 import { DocsList, DocsListItem, DocsGroup, DocsGroupRow } from './DocsList'
 import DocsTable from './DocsTable'
 import CodeBlock from './CodeBlock'
+import DocsUIPreview from './DocsUIPreview'
+import DocsNextButton from './DocsNextButton'
+import DocsPagination from './DocsPagination'
+import DocsSubindexCard from './DocsSubindexCard'
+import { renderInline } from '@/utils/renderInline'
 
 interface Props {
   section?: DocSection
   subSection?: DocSubSection
-}
-
-/* ── Inline `code` highlighter ── */
-function renderInline(text: string, key: string | number) {
-  const parts = text.split(/(`[^`]+`)/g)
-  return (
-    <span key={key}>
-      {parts.map((part, i) =>
-        part.startsWith('`') && part.endsWith('`') && part.length > 2 ? (
-          <code key={i}>{part.slice(1, -1)}</code>
-        ) : (
-          part
-        ),
-      )}
-    </span>
-  )
 }
 
 /* ── Body parser for plain-text / Markdown fallback ── */
@@ -81,13 +70,7 @@ function renderBody(text: string) {
         blockLines.push(lines[i])
         i++
       }
-      nodes.push(
-        <CodeBlock
-          key={i}
-          lang={lang}
-          code={blockLines.join('\n')}
-        />,
-      )
+      nodes.push(<CodeBlock key={i} lang={lang} code={blockLines.join('\n')} />)
       i++
       continue
     }
@@ -98,19 +81,15 @@ function renderBody(text: string) {
     }
 
     const paraLines: string[] = []
-    while (
-      i < lines.length &&
-      lines[i].trim() &&
-      !lines[i].trim().startsWith('```')
-    ) {
+    while (i < lines.length && lines[i].trim() && !lines[i].trim().startsWith('```')) {
       paraLines.push(lines[i])
       i++
     }
 
     nodes.push(
-      <p className={styles.pre} key={i}>
+      <p className={styles.paragraph} key={i}>
         {renderInline(paraLines.join(' '), 'p')}
-      </p>,
+      </p>
     )
   }
 
@@ -122,18 +101,42 @@ function renderBlock(block: DocBlock, index: number): ReactNode {
   switch (block.type) {
     case 'paragraph':
       return (
-        <p className={styles.pre} key={index}>
+        <p className={styles.paragraph} key={index}>
           {renderInline(block.text, index)}
         </p>
       )
 
+    case 'heading':
+      if (block.level === 1) {
+        return (
+          <h2 className={styles.heading1} key={index}>
+            {renderInline(block.text, index)}
+          </h2>
+        )
+      }
+      if (block.level === 3) {
+        return (
+          <h3 className={styles.heading3} key={index}>
+            {renderInline(block.text, index)}
+          </h3>
+        )
+      }
+      if (block.level === 4) {
+        return (
+          <h4 className={styles.heading4} key={index}>
+            {renderInline(block.text, index)}
+          </h4>
+        )
+      }
+      return (
+        <h2 className={styles.heading2} key={index}>
+          {renderInline(block.text, index)}
+        </h2>
+      )
+
     case 'callout':
       return (
-        <DocsCallout
-          key={index}
-          variant={block.variant ?? 'note'}
-          label={block.label}
-        >
+        <DocsCallout key={index} variant={block.variant ?? 'note'} label={block.label}>
           {renderInline(block.text, index)}
         </DocsCallout>
       )
@@ -167,19 +170,18 @@ function renderBlock(block: DocBlock, index: number): ReactNode {
 
     case 'table':
       return (
-        <DocsTable
-          key={index}
-          columns={block.columns}
-          rows={block.rows}
-          caption={block.caption}
-        />
+        <DocsTable key={index} columns={block.columns} rows={block.rows} caption={block.caption} />
       )
 
     case 'list':
       return (
-        <DocsList key={index}>
+        <DocsList key={index} ordered={block.ordered} start={block.start}>
           {block.items.map((item, lIdx) => (
-            <DocsListItem key={lIdx}>
+            <DocsListItem
+              key={lIdx}
+              index={block.ordered ? (block.start ?? 1) + lIdx : undefined}
+              ordered={block.ordered}
+            >
               {renderInline(item, lIdx)}
             </DocsListItem>
           ))}
@@ -188,17 +190,9 @@ function renderBlock(block: DocBlock, index: number): ReactNode {
 
     case 'group':
       return (
-        <DocsGroup
-          key={index}
-          title={block.title}
-          description={block.description}
-        >
+        <DocsGroup key={index} title={block.title} description={block.description}>
           {block.rows.map((row, rIdx) => (
-            <DocsGroupRow
-              key={rIdx}
-              keyLabel={row.keyLabel}
-              badge={row.badge}
-            >
+            <DocsGroupRow key={rIdx} keyLabel={row.keyLabel} badge={row.badge}>
               {renderInline(row.text, rIdx)}
             </DocsGroupRow>
           ))}
@@ -208,11 +202,24 @@ function renderBlock(block: DocBlock, index: number): ReactNode {
     case 'fileTree':
       return (
         <div className={styles.fileTree} key={index}>
-          <div className={styles.fileTreeHeader}>
-            {block.title ?? 'Project Structure'}
-          </div>
+          <div className={styles.fileTreeHeader}>{block.title ?? 'Project Structure'}</div>
           <pre className={styles.fileTreeBody}>{block.content}</pre>
         </div>
+      )
+
+    case 'componentPreview':
+      return <DocsUIPreview key={index} component={block.component} />
+
+    case 'nextButton':
+      return (
+        <DocsNextButton
+          key={index}
+          to={block.to}
+          title={block.title}
+          sectionTitle={block.sectionTitle}
+          description={block.description}
+          variant={block.variant}
+        />
       )
 
     default:
@@ -241,9 +248,7 @@ export default function DocsContent({ section, subSection }: Props) {
     <article className={styles.content}>
       <div className={styles.inner}>
         <header className={styles.header}>
-          <span className={styles.breadcrumb}>
-            {subSection ? section.title : 'Documentation'}
-          </span>
+          <span className={styles.breadcrumb}>{subSection ? section.title : 'Documentation'}</span>
           <h1 className={styles.title}>{title}</h1>
         </header>
 
@@ -261,18 +266,27 @@ export default function DocsContent({ section, subSection }: Props) {
           {/* Section overview → subsection quick-nav cards */}
           {!subSection && section.subsections.length > 0 && (
             <div className={styles.subIndex}>
-              <h2 className={styles.subIndexHeading}>In this section</h2>
-              <ul className={styles.subIndexList}>
-                {section.subsections.map((sub) => (
-                  <li key={sub.id}>
-                    <a href={`#${sub.id}`} className={styles.subIndexLink}>
-                      {sub.title}
-                    </a>
-                  </li>
+              <div className={styles.subIndexHeader}>
+                <h2 className={styles.subIndexHeading}>En esta sección</h2>
+                <span className={styles.subIndexCount}>
+                  {section.subsections.length} subíndices
+                </span>
+              </div>
+              <div className={styles.subIndexGrid}>
+                {section.subsections.map((sub, idx) => (
+                  <DocsSubindexCard
+                    key={sub.id}
+                    sectionId={section.id}
+                    subSection={sub}
+                    index={idx + 1}
+                  />
                 ))}
-              </ul>
+              </div>
             </div>
           )}
+
+          {/* Bottom navigation buttons to go into the next / previous subindex */}
+          <DocsPagination sectionId={section.id} subSectionId={subSection?.id} />
         </div>
       </div>
     </article>

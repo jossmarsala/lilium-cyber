@@ -257,7 +257,7 @@ export default function HomePage() {
                   mouseReact={true}
                   mouseStrength={0.4}
                   pageLoadAnimation={false}
-                  brightness={3.2}
+                  brightness={5}
                   lightMode={true}
                 />
 

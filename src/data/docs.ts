@@ -30,13 +30,23 @@ export interface GroupRowItem {
 
 export type DocBlock =
   | { type: 'paragraph'; text: string }
+  | { type: 'heading'; level?: number; text: string }
   | { type: 'callout'; variant?: CalloutVariant; label?: string; text: string }
   | { type: 'code'; lang?: string; filename?: string; content: string }
   | { type: 'steps'; items: StepItem[] }
   | { type: 'table'; columns: string[]; rows: (string | number)[][]; caption?: string }
-  | { type: 'list'; items: string[] }
+  | { type: 'list'; items: string[]; ordered?: boolean; start?: number }
   | { type: 'group'; title: string; description?: string; rows: GroupRowItem[] }
   | { type: 'fileTree'; title?: string; content: string }
+  | { type: 'componentPreview'; component?: 'specularButton' | 'pills' | 'rubberSegment' | 'all' }
+  | {
+      type: 'nextButton'
+      to?: string
+      title?: string
+      sectionTitle?: string
+      description?: string
+      variant?: 'card' | 'banner' | 'pill' | 'compact'
+    }
 
 export interface DocSubSection {
   id: string
@@ -44,6 +54,7 @@ export interface DocSubSection {
   icon?: string
   content?: string
   blocks?: DocBlock[]
+  hidden?: boolean
 }
 
 export interface DocSection {
@@ -54,6 +65,7 @@ export interface DocSection {
   overview?: string
   blocks?: DocBlock[]
   subsections: DocSubSection[]
+  hidden?: boolean
 }
 
 export const docs: DocSection[] = docsJson as DocSection[]

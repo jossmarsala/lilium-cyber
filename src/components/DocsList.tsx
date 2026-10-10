@@ -21,30 +21,62 @@
  *     <DocsGroupRow keyLabel="VITE_API_URL" badge="required">Base URL for the REST API.</DocsGroupRow>
  *   </DocsGroup>
  */
-import type { ReactNode } from 'react'
+import { createContext, useContext, type ReactNode } from 'react'
 import styles from './DocsList.module.css'
+
+/* ─── List Context ──────────────────────────────── */
+
+interface ListContextValue {
+  ordered: boolean
+  start: number
+}
+
+const ListContext = createContext<ListContextValue>({ ordered: false, start: 1 })
 
 /* ─── DocsList ──────────────────────────────────── */
 
 interface ListProps {
   children: ReactNode
+  ordered?: boolean
+  start?: number
 }
 
-export function DocsList({ children }: ListProps) {
-  return <ul className={styles.list}>{children}</ul>
+export function DocsList({ children, ordered = false, start = 1 }: ListProps) {
+  const Tag = ordered ? 'ol' : 'ul'
+  return (
+    <ListContext.Provider value={{ ordered, start }}>
+      <Tag
+        className={ordered ? styles.orderedList : styles.list}
+        start={ordered ? start : undefined}
+      >
+        {children}
+      </Tag>
+    </ListContext.Provider>
+  )
 }
 
 /* ─── DocsListItem ──────────────────────────────── */
 
 interface ListItemProps {
   children: ReactNode
+  index?: number
+  ordered?: boolean
 }
 
-export function DocsListItem({ children }: ListItemProps) {
+export function DocsListItem({ children, index, ordered: itemOrdered }: ListItemProps) {
+  const ctx = useContext(ListContext)
+  const isOrdered = itemOrdered ?? ctx.ordered
+
   return (
-    <li className={styles.item}>
-      <span className={styles.bullet} aria-hidden="true" />
-      <span>{children}</span>
+    <li className={isOrdered ? styles.orderedItem : styles.item}>
+      {isOrdered ? (
+        <span className={styles.orderNumber} aria-hidden="true">
+          {index !== undefined ? `${index}.` : ''}
+        </span>
+      ) : (
+        <span className={styles.bullet} aria-hidden="true" />
+      )}
+      <div className={styles.itemBody}>{children}</div>
     </li>
   )
 }

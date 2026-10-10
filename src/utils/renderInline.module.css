@@ -1,0 +1,25 @@
+/* ═══════════════════════════════════════════════════
+   renderInline styles — markdown inline elements
+   (bold, italic, code tags)
+   ═══════════════════════════════════════════════════ */
+
+.strong {
+  font-weight: 650;
+  color: #111111;
+}
+
+.em {
+  font-style: italic;
+  color: #1a1a1a;
+}
+
+.code {
+  font-family: 'SF Mono', ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+  font-size: 0.84em;
+  background: rgba(0, 0, 0, 0.055);
+  color: #111111;
+  padding: 0.15em 0.42em;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  letter-spacing: 0;
+}

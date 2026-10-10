@@ -9,6 +9,9 @@
  *     DocsList, DocsListItem,
  *     DocsGroup, DocsGroupRow,
  *     DocsTable,
+ *     DocsNextButton,
+ *     DocsPagination,
+ *     DocsSubindexCard,
  *   } from '@/components/docs'
  */
 
@@ -22,3 +25,13 @@ export { DocsList, DocsListItem, DocsGroup, DocsGroupRow } from './DocsList'
 
 export { default as DocsTable } from './DocsTable'
 export { default as CodeBlock } from './CodeBlock'
+
+export { default as DocsNextButton } from './DocsNextButton'
+export { default as NextSubindexButton } from './DocsNextButton'
+export type { DocsNextButtonProps, DocsButtonVariant, DocsButtonDirection } from './DocsNextButton'
+
+export { default as DocsPagination } from './DocsPagination'
+export type { DocsPaginationProps } from './DocsPagination'
+
+export { default as DocsSubindexCard } from './DocsSubindexCard'
+export type { DocsSubindexCardProps } from './DocsSubindexCard'

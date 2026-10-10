@@ -17,6 +17,7 @@
  * Column headers are rendered bold + uppercase by default.
  */
 import type { ReactNode } from 'react'
+import { renderInline } from '@/utils/renderInline'
 import styles from './DocsTable.module.css'
 
 interface Props {
@@ -30,21 +31,17 @@ interface Props {
 
 function renderCell(cell: ReactNode): ReactNode {
   if (typeof cell !== 'string') return cell
-  if (!cell.includes('`')) return cell
-  const parts = cell.split(/(`[^`]+`)/g)
-  return parts.map((part, i) =>
-    part.startsWith('`') && part.endsWith('`') && part.length > 2 ? (
-      <code key={i}>{part.slice(1, -1)}</code>
-    ) : (
-      part
-    ),
-  )
+  return renderInline(cell)
 }
 
 export default function DocsTable({ columns, rows, caption }: Props) {
   return (
-    <>
-      <div className={styles.wrapper} role="region" aria-label={typeof caption === 'string' ? caption : undefined}>
+    <div className={styles.container}>
+      <div
+        className={styles.wrapper}
+        role="region"
+        aria-label={typeof caption === 'string' ? caption : undefined}
+      >
         <table className={styles.table}>
           <thead className={styles.thead}>
             <tr>
@@ -58,9 +55,9 @@ export default function DocsTable({ columns, rows, caption }: Props) {
           <tbody className={styles.tbody}>
             {rows.map((row, ri) => (
               <tr key={ri} className={styles.tr}>
-                {row.map((cell, ci) => (
+                {columns.map((_, ci) => (
                   <td key={ci} className={styles.td}>
-                    {renderCell(cell)}
+                    {renderCell(row[ci] ?? '')}
                   </td>
                 ))}
               </tr>
@@ -68,7 +65,7 @@ export default function DocsTable({ columns, rows, caption }: Props) {
           </tbody>
         </table>
       </div>
-      {caption && <p className={styles.caption}>{caption}</p>}
-    </>
+      {caption ? <p className={styles.caption}>{renderInline(caption)}</p> : null}
+    </div>
   )
 }

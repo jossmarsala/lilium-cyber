@@ -30,7 +30,12 @@ export default function DocsPage() {
     }
   }, [sectionId, navigate])
 
-  const activeSection = docs.find((s) => s.id === sectionId) ?? docs[0]
+  // Support aliases: /docs/components or /docs/component-showcase -> /docs/showcase
+  const resolvedSectionId =
+    sectionId === 'components' || sectionId === 'component-showcase' ? 'showcase' : sectionId
+
+  const activeSection =
+    docs.find((s) => s.id === resolvedSectionId || s.id === sectionId) ?? docs[0]
   const activeSubSection = subSectionId
     ? activeSection?.subsections.find((ss) => ss.id === subSectionId)
     : undefined

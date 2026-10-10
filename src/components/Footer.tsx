@@ -60,11 +60,11 @@ export default function Footer({ id = 'contact', className }: FooterProps) {
               dither={8}
               curvature={0.25}
               tint="#00ff66"
-              tintThreat="#ff0055"
+              tintThreat="#ff0055ff"
               mouseReact={true}
               mouseStrength={0.4}
               pageLoadAnimation={false}
-              brightness={3.2}
+              brightness={5}
               lightMode={true}
             />
             <div className={styles.terminalOverlay} />
