@@ -94,7 +94,6 @@
 @media (hover: hover) and (pointer: fine) {
   .branched-menu__head:hover {
     color: var(--bm-ink);
-    background: rgba(0, 0, 0, 0.035);
   }
 }
 

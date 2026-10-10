@@ -17,7 +17,7 @@
 .inner {
   width: 100%;
   max-width: 760px;
-  padding: clamp(2.5rem, 5vh, 4rem) clamp(2rem, 4vw, 3.5rem) clamp(2.5rem, 5vh, 4rem) 2.25rem;
+  padding: calc(var(--nav-height, 56px) + clamp(2rem, 4vh, 3.25rem)) clamp(2rem, 4vw, 3.5rem) clamp(2.5rem, 5vh, 4rem) 2.25rem;
 }
 
 /* ── Header ── */
