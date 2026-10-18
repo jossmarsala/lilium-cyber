@@ -1,0 +1,140 @@
+import type { SystemProcess } from './types';
+
+/**
+ * Creates the initial process and services table.
+ * Includes system daemons, network listeners, the active threat, and the false positive.
+ */
+export function createInitialProcesses(): SystemProcess[] {
+  return [
+    {
+      pid: 1,
+      user: 'root',
+      cpu: 0.1,
+      mem: 0.4,
+      command: '/sbin/init splash',
+      serviceName: 'systemd',
+      status: 'running',
+      edrClassification: 'clean',
+      edrResolved: true,
+    },
+    {
+      pid: 480,
+      user: 'syslog',
+      cpu: 0.2,
+      mem: 0.8,
+      command: '/usr/sbin/rsyslogd -n -iNONE',
+      serviceName: 'rsyslog.service',
+      status: 'running',
+      edrClassification: 'clean',
+      edrResolved: true,
+    },
+    {
+      pid: 502,
+      user: 'root',
+      cpu: 0.1,
+      mem: 0.5,
+      command: '/usr/sbin/cron -f',
+      serviceName: 'cron.service',
+      status: 'running',
+      edrClassification: 'clean',
+      edrResolved: true,
+    },
+    // Insecure Telnet Service transmitting cleartext credentials until stopped
+    {
+      pid: 842,
+      user: 'root',
+      cpu: 0.2,
+      mem: 0.6,
+      command: '/usr/sbin/in.telnetd -debug 23',
+      serviceName: 'telnet.service',
+      status: 'running',
+      port: 23,
+      proto: 'tcp',
+      listenAddress: '0.0.0.0',
+      edrClassification: 'threat',
+      edrResolved: false,
+    },
+    // Secure SSH Service
+    {
+      pid: 888,
+      user: 'root',
+      cpu: 0.3,
+      mem: 1.1,
+      command: '/usr/sbin/sshd -D',
+      serviceName: 'ssh.service',
+      status: 'running',
+      port: 22,
+      proto: 'tcp',
+      listenAddress: '0.0.0.0',
+      edrClassification: 'clean',
+      edrResolved: true,
+    },
+    // Internal Greenhouse Nginx Web Server
+    {
+      pid: 1024,
+      user: 'www-data',
+      cpu: 1.2,
+      mem: 2.5,
+      command: 'nginx: master process /usr/sbin/nginx -g daemon on;',
+      serviceName: 'nginx.service',
+      status: 'running',
+      port: 80,
+      proto: 'tcp',
+      listenAddress: '0.0.0.0',
+      edrClassification: 'clean',
+      edrResolved: true,
+    },
+    // Botanical Spectral Telemetry Monitor
+    {
+      pid: 1150,
+      user: 'cuidador',
+      cpu: 1.4,
+      mem: 3.1,
+      command: 'python3 /opt/sensores/monitor_espectro.py',
+      serviceName: 'telemetria-botanica.service',
+      status: 'running',
+      edrClassification: 'clean',
+      edrResolved: true,
+    },
+    // False Positive (EDR Alert): Legitimate fern-watering script flagged for running at 03:00 AM
+    {
+      pid: 2108,
+      user: 'cuidador',
+      cpu: 0.8,
+      mem: 1.2,
+      command: '/bin/bash /opt/sensores/riego_nocturno.sh',
+      status: 'running',
+      edrClassification: 'false_positive',
+      edrResolved: false,
+    },
+    // Real Threat (EDR Alert): Masqueraded C2 beacon consuming 68.4% CPU
+    {
+      pid: 4412,
+      user: 'www-data',
+      cpu: 68.4,
+      mem: 14.8,
+      command: './polilla_emisora --c2 198.51.100.44',
+      status: 'running',
+      port: 4444,
+      proto: 'tcp',
+      listenAddress: '0.0.0.0',
+      edrClassification: 'threat',
+      edrResolved: false,
+    },
+    // NTP Service (initially dead, causing SIEM timeline scrambling)
+    {
+      pid: 0,
+      user: 'ntp',
+      cpu: 0.0,
+      mem: 0.0,
+      command: '/usr/sbin/ntpd -p /var/run/ntpd.pid -g -u 112:118',
+      serviceName: 'ntp.service',
+      status: 'dead',
+      port: 123,
+      proto: 'udp',
+      listenAddress: '0.0.0.0',
+      edrClassification: 'clean',
+      edrResolved: true,
+    },
+  ];
+}

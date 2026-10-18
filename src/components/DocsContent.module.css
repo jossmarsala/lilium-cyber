@@ -9,16 +9,22 @@
   overflow-y: auto;
   background: #ffffff;
   display: flex;
-  justify-content: flex-start;
-  margin-left: 5rem;
+  flex-direction: column;
 }
 
 /* ── Inner scroll column ── */
 .inner {
   width: 100%;
   max-width: 900px;
+  margin-left: 5rem;
   padding: calc(var(--nav-height, 56px) + clamp(2rem, 4vh, 3.25rem)) clamp(2rem, 4vw, 3.5rem)
     clamp(2.5rem, 5vh, 4rem) 2.25rem;
+  box-sizing: border-box;
+}
+
+.docsFooter {
+  margin-top: auto;
+  width: 100%;
 }
 
 /* ── Header ── */
@@ -81,6 +87,11 @@
 
 .paragraph:last-child {
   margin-bottom: 0;
+}
+
+.refParagraph {
+  margin: 0.65rem 0 1.65rem;
+  line-height: normal;
 }
 
 /* ── Pre / code-block ── */
@@ -226,7 +237,11 @@
   font-size: 0.8125rem;
   line-height: 1.75;
   color: #1e293b;
-  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
   background: #ffffff;
 }

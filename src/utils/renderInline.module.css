@@ -23,3 +23,156 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   letter-spacing: 0;
 }
+
+/* ═══════════════════════════════════════════════════
+   External Reference Link — Minimal & Premium Card/Pill
+   e.g. [Referencia oficial](nist.gov/cyberframework 'NIST CSF')
+   ═══════════════════════════════════════════════════ */
+
+.externalRefLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem 0.35rem 0.65rem;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, sans-serif);
+  font-size: 0.8125rem;
+  color: #1a1a1a;
+  text-decoration: none;
+  line-height: 1.35;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  margin: 0.15rem 0;
+}
+
+.externalRefLink:hover {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.22);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+  transform: translateY(-0.5px);
+}
+
+.externalRefLink:active {
+  transform: translateY(0);
+  background: #f7f7f7;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+/* Leading external icon */
+.refIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #888888;
+  flex-shrink: 0;
+  transition: color 0.16s ease;
+}
+
+.externalRefLink:hover .refIcon {
+  color: var(--color-accent, #ff3366);
+}
+
+/* Primary label text (e.g. "Referencia oficial") */
+.refLabel {
+  font-weight: 550;
+  color: #111111;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+
+/* Subtle hairline divider */
+.refDivider {
+  width: 1px;
+  height: 11px;
+  background: rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+/* Tag/pill for the title (e.g. "NIST CSF") */
+.refBadge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #444444;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.externalRefLink:hover .refBadge {
+  background: rgba(0, 0, 0, 0.065);
+  color: #111111;
+  border-color: rgba(0, 0, 0, 0.11);
+}
+
+/* Trailing arrow (↗) */
+.refArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #888888;
+  flex-shrink: 0;
+  transition:
+    transform 0.16s ease,
+    color 0.16s ease;
+}
+
+.externalRefLink:hover .refArrow {
+  color: var(--color-accent, #ff3366);
+  transform: translate(1.5px, -1.5px);
+}
+
+/* ═══════════════════════════════════════════════════
+   Standard Inline Link
+   ═══════════════════════════════════════════════════ */
+
+.inlineLink {
+  color: var(--color-text-primary, #1a1a1a);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.22);
+  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
+}
+
+.inlineLink:hover {
+  color: var(--color-accent, #ff3366);
+  text-decoration-color: var(--color-accent, #ff3366);
+}
+
+.inlineLinkArrow {
+  opacity: 0.6;
+  flex-shrink: 0;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.inlineLink:hover .inlineLinkArrow {
+  opacity: 1;
+  transform: translate(1px, -1px);
+}

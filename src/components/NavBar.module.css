@@ -33,7 +33,9 @@
   border-bottom-right-radius: 24px;
   filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.05));
   pointer-events: auto;
-  transition: filter var(--transition-base), border-color var(--transition-base);
+  transition:
+    filter var(--transition-base),
+    border-color var(--transition-base);
 }
 
 /* Negative / inverted border radius for top-left corner */
@@ -49,7 +51,7 @@
   background-position: left top;
   pointer-events: none;
   z-index: 1;
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2225%22%20height%3D%2224%22%20viewBox%3D%220%200%2025%2024%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M%200%200%20A%2024%2024%200%200%201%2024%2024%20H%2025%20V%200%20Z%22%20fill%3D%22%23ffffff%22%2F%3E%3Cpath%20d%3D%22M%200%200%20A%2024%2024%200%200%201%2024%2024%22%20stroke%3D%22rgba(0%2C0%2C0%2C0.08)%22%20stroke-width%3D%221%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E");
+  background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2225%22%20height%3D%2224%22%20viewBox%3D%220%200%2025%2024%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M%200%200%20A%2024%2024%200%200%201%2024%2024%20H%2025%20V%200%20Z%22%20fill%3D%22%23ffffff%22%2F%3E%3Cpath%20d%3D%22M%200%200%20A%2024%2024%200%200%201%2024%2024%22%20stroke%3D%22rgba(0%2C0%2C0%2C0.08)%22%20stroke-width%3D%221%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E');
 }
 
 /* Negative / inverted border radius for top-right corner */
@@ -65,7 +67,7 @@
   background-position: right top;
   pointer-events: none;
   z-index: 1;
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2225%22%20height%3D%2224%22%20viewBox%3D%220%200%2025%2024%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M%2025%200%20A%2024%2024%200%200%200%201%2024%20H%200%20V%200%20Z%22%20fill%3D%22%23ffffff%22%2F%3E%3Cpath%20d%3D%22M%2025%200%20A%2024%2024%200%200%200%201%2024%22%20stroke%3D%22rgba(0%2C0%2C0%2C0.08)%22%20stroke-width%3D%221%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E");
+  background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2225%22%20height%3D%2224%22%20viewBox%3D%220%200%2025%2024%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M%2025%200%20A%2024%2024%200%200%200%201%2024%20H%200%20V%200%20Z%22%20fill%3D%22%23ffffff%22%2F%3E%3Cpath%20d%3D%22M%2025%200%20A%2024%2024%200%200%200%201%2024%22%20stroke%3D%22rgba(0%2C0%2C0%2C0.08)%22%20stroke-width%3D%221%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E');
 }
 
 /* Brand container takes 1/3 of space */
@@ -178,6 +180,59 @@
   flex: 1;
 }
 
+/* ── Bottom border fade progress bar (docs subindexes reading) ── */
+.progressBarTrack {
+  position: absolute;
+  bottom: -1px;
+  left: var(--space-6);
+  right: var(--space-6);
+  height: 1.5px;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.4s cubic-bezier(0.2, 1, 0.3, 0.2),
+    visibility 0.4s;
+  z-index: 10;
+}
+
+.progressBarTrack.visible {
+  opacity: 0.8;
+  visibility: visible;
+}
+
+.progressBarTrack.visible.idle {
+  opacity: 0.4;
+}
+
+.progressBarTrack.visible.scrolling {
+  opacity: 0.9;
+}
+
+.progressBarFill {
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 51, 102, 0.2) 15%,
+    var(--color-accent, #ff3366) 100%
+  );
+  border-radius: 999px;
+  position: relative;
+  transition: transform 0.08s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressBarTrack,
+  .progressBarFill {
+    transition: none;
+  }
+}
+
 @media (max-width: 768px) {
   .header {
     padding: 0 var(--space-6);
@@ -186,6 +241,11 @@
   .nav {
     padding: 0 var(--space-4);
     height: 52px;
+  }
+
+  .progressBarTrack {
+    left: var(--space-4);
+    right: var(--space-4);
   }
 
   .middleLinks {

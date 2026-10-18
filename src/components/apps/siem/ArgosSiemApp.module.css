@@ -1,0 +1,578 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Argos SIEM — Fluent Windows 11 File Explorer Aesthetic
+   Exact match to Reference Image 2 (Documents / Modern Explorer)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.windowContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--rui-surface, #ffffff);
+  color: var(--rui-text, #1c1c1c);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  user-select: text;
+}
+
+/* ─────────────────────────────────────────────────────
+   1. TOP TABS (Matches Image 2 top window tabs)
+   ───────────────────────────────────────────────────── */
+.topTabBar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(240, 240, 240, 0.75);
+  backdrop-filter: blur(15px);
+  padding: 6px 10px 0 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+:global([data-theme="dark"]) .topTabBar,
+:global(.theme-dark) .topTabBar {
+  background: rgba(30, 30, 30, 0.75);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.windowTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 6px 6px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  color: inherit;
+  border: 1px solid transparent;
+  border-bottom: none;
+  transition: all 0.12s ease;
+}
+
+.windowTabActive {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  font-weight: 600;
+}
+
+:global([data-theme="dark"]) .windowTabActive,
+:global(.theme-dark) .windowTabActive {
+  background: #252525 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.tabCloseBtn {
+  opacity: 0.5;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.newTabBtn {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─────────────────────────────────────────────────────
+   2. MENU BAR (Matches Image 2 File, Home, Share, View)
+   ───────────────────────────────────────────────────── */
+.menuBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 14px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 12px;
+}
+
+:global([data-theme="dark"]) .menuBar,
+:global(.theme-dark) .menuBar {
+  background: #252525;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.menuItem {
+  opacity: 0.75;
+  cursor: pointer;
+  padding: 2px 0;
+  position: relative;
+  transition: opacity 0.12s ease;
+}
+
+.menuItem:hover {
+  opacity: 1;
+}
+
+.menuItemActive {
+  opacity: 1;
+  font-weight: 600;
+  color: #0067b8;
+}
+
+:global([data-theme="dark"]) .menuItemActive,
+:global(.theme-dark) .menuItemActive {
+  color: #60cdff;
+}
+
+.menuItemActive::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  background: #0067b8;
+  border-radius: 2px;
+}
+
+:global([data-theme="dark"]) .menuItemActive::after {
+  background: #60cdff;
+}
+
+/* ─────────────────────────────────────────────────────
+   3. ACTION RIBBON (Matches Image 2 Toolbar ribbon)
+   ───────────────────────────────────────────────────── */
+.actionRibbon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #fbfbfb;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  flex-wrap: wrap;
+}
+
+:global([data-theme="dark"]) .actionRibbon,
+:global(.theme-dark) .actionRibbon {
+  background: #202020;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ribbonButton {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 4px 9px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.ribbonButton:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme="dark"]) .ribbonButton:hover:not(:disabled),
+:global(.theme-dark) .ribbonButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ribbonDivider {
+  width: 1px;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 0 4px;
+}
+
+:global([data-theme="dark"]) .ribbonDivider {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ─────────────────────────────────────────────────────
+   4. ADDRESS & SEARCH BAR (Matches Image 2 Address bar)
+   ───────────────────────────────────────────────────── */
+.navAddressBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme="dark"]) .navAddressBar,
+:global(.theme-dark) .navAddressBar {
+  background: #252525;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.navArrowsGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.arrowBtn {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  opacity: 0.7;
+}
+
+.arrowBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  opacity: 1;
+}
+
+.addressBox {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  color: inherit;
+  gap: 6px;
+}
+
+:global([data-theme="dark"]) .addressBox,
+:global(.theme-dark) .addressBox {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.searchBox {
+  width: 200px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  padding: 4px 10px;
+  gap: 6px;
+}
+
+:global([data-theme="dark"]) .searchBox,
+:global(.theme-dark) .searchBox {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.searchBoxInput {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 11.5px;
+  color: inherit;
+  width: 100%;
+}
+
+/* ─────────────────────────────────────────────────────
+   5. TWO-PANEL EXPLORER BODY (Sidebar + Table)
+   ───────────────────────────────────────────────────── */
+.explorerBody {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Left Sidebar (Matches Image 2 left navigation tree) */
+.leftSidebar {
+  width: 210px;
+  min-width: 180px;
+  max-width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(246, 246, 246, 0.7);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 12px 8px;
+  gap: 12px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+:global([data-theme="dark"]) .leftSidebar,
+:global(.theme-dark) .leftSidebar {
+  background: rgba(30, 30, 30, 0.7);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebarSectionTitle {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  padding: 0 8px;
+  margin-bottom: 4px;
+}
+
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  color: inherit;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  transition: background 0.1s ease;
+}
+
+.sidebarItem:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+:global([data-theme="dark"]) .sidebarItem:hover,
+:global(.theme-dark) .sidebarItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebarItemActive {
+  background: rgba(0, 103, 184, 0.12) !important;
+  color: #0067b8 !important;
+  font-weight: 600;
+}
+
+:global([data-theme="dark"]) .sidebarItemActive,
+:global(.theme-dark) .sidebarItemActive {
+  background: rgba(96, 205, 255, 0.15) !important;
+  color: #60cdff !important;
+}
+
+.sidebarBadge {
+  margin-left: auto;
+  font-size: 10.5px;
+  opacity: 0.65;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Main Content Area (Matches Image 2 File list) */
+.mainFileListArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  gap: 12px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Large Folder Header (Matches Image 2 Documents folder icon + title) */
+.folderHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.folderBigIcon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.folderTitle {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.folderSubtext {
+  font-size: 11.5px;
+  opacity: 0.65;
+  margin: 2px 0 0 0;
+}
+
+/* ─────────────────────────────────────────────────────
+   TABLE VIEW (Matches Image 2 List & Selection Style)
+   ───────────────────────────────────────────────────── */
+.tableWrapper {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.tableHeaderRow {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme="dark"]) .tableHeaderRow,
+:global(.theme-dark) .tableHeaderRow {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.thCell {
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.tableRow {
+  cursor: pointer;
+  transition: background 0.1s ease;
+  border-radius: 4px;
+}
+
+.tableRow:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+:global([data-theme="dark"]) .tableRow:hover,
+:global(.theme-dark) .tableRow:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Exact selection state match to Reference Image 2 */
+.tableRowSelected {
+  background: rgba(0, 103, 184, 0.1) !important;
+  color: #0067b8 !important;
+}
+
+:global([data-theme="dark"]) .tableRowSelected,
+:global(.theme-dark) .tableRowSelected {
+  background: rgba(96, 205, 255, 0.15) !important;
+  color: #60cdff !important;
+}
+
+.tdCell {
+  padding: 6px 10px;
+  vertical-align: middle;
+}
+
+.circleCheckbox {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+}
+
+.circleChecked {
+  background: #0067b8;
+  border-color: #0067b8;
+  color: #ffffff;
+}
+
+/* ─────────────────────────────────────────────────────
+   INSPECTOR CARD (Matches Context Flyout in Image 2)
+   ───────────────────────────────────────────────────── */
+.inspectorCard {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  margin-top: auto;
+}
+
+:global([data-theme="dark"]) .inspectorCard,
+:global(.theme-dark) .inspectorCard {
+  background: #252525;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.inspectorTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.inspectorTitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.inspectorFieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  font-size: 11px;
+}
+
+@media (max-width: 800px) {
+  .inspectorFieldsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.fieldItem {
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.02);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+:global([data-theme="dark"]) .fieldItem,
+:global(.theme-dark) .fieldItem {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.fieldKey {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  opacity: 0.6;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.fieldVal {
+  font-size: 11px;
+  font-weight: 500;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rawLogCode {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  line-height: 1.45;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  word-break: break-all;
+  white-space: pre-wrap;
+  color: #0067b8;
+}
+
+:global([data-theme="dark"]) .rawLogCode,
+:global(.theme-dark) .rawLogCode {
+  background: rgba(0, 0, 0, 0.3);
+  color: #60cdff;
+}

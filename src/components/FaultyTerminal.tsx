@@ -325,19 +325,100 @@ export default function FaultyTerminal({
     const ctn = containerRef.current
     if (!ctn) return
 
-    // ── Renderer ──────────────────────────────────────────
-    const renderer = new Renderer({ dpr })
-    const gl = renderer.gl
+    let renderer: Renderer | null = null
+    let gl: Renderer['gl'] | null = null
+    let canvas: HTMLCanvasElement | null = null
+    let isContextLost = false
+
+    try {
+      renderer = new Renderer({ dpr })
+      gl = renderer.gl
+    } catch {
+      // Fallback if WebGL is unavailable
+    }
+
+    if (!renderer || !gl) {
+      // Render animated 2D phosphor canvas fallback
+      const fallbackCanvas = document.createElement('canvas')
+      fallbackCanvas.style.display = 'block'
+      fallbackCanvas.style.width = '100%'
+      fallbackCanvas.style.height = '100%'
+      fallbackCanvas.style.position = 'absolute'
+      fallbackCanvas.style.top = '0'
+      fallbackCanvas.style.left = '0'
+      ctn.appendChild(fallbackCanvas)
+
+      const ctx = fallbackCanvas.getContext('2d')
+      let frameId = 0
+      const resizeFallback = () => {
+        if (!ctn || !ctx) return
+        fallbackCanvas.width = ctn.offsetWidth
+        fallbackCanvas.height = ctn.offsetHeight
+      }
+      const roFb = new ResizeObserver(() => resizeFallback())
+      roFb.observe(ctn)
+      resizeFallback()
+
+      let fbTime = 0
+      const drawFallback = () => {
+        frameId = requestAnimationFrame(drawFallback)
+        if (!ctx) return
+        fbTime += 0.03 * timeScale
+        const w = fallbackCanvas.width
+        const h = fallbackCanvas.height
+        if (w === 0 || h === 0) return
+
+        ctx.fillStyle = lightMode ? '#ffffff' : '#08090d'
+        ctx.fillRect(0, 0, w, h)
+
+        ctx.font = '10px monospace'
+        ctx.fillStyle = tint
+        ctx.globalAlpha = 0.4
+        const chars = '0123456789ABCDEF'
+        const cols = Math.floor(w / 18)
+        const rows = Math.floor(h / 14)
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const ch = chars[Math.floor(Math.abs(Math.sin(r * 3 + c * 7 + fbTime) * 16)) % chars.length]
+            ctx.fillText(ch, c * 18 + 4, r * 14 + 10)
+          }
+        }
+        ctx.globalAlpha = 1.0
+      }
+      frameId = requestAnimationFrame(drawFallback)
+
+      return () => {
+        cancelAnimationFrame(frameId)
+        roFb.disconnect()
+        if (fallbackCanvas.parentElement === ctn) ctn.removeChild(fallbackCanvas)
+      }
+    }
+
     gl.clearColor(lightMode ? 1 : 0, lightMode ? 1 : 0, lightMode ? 1 : 0, 1)
 
     // Make the canvas fill its parent container
-    const canvas = gl.canvas as HTMLCanvasElement
+    canvas = gl.canvas as HTMLCanvasElement
     canvas.style.display = 'block'
     canvas.style.width = '100%'
     canvas.style.height = '100%'
     canvas.style.position = 'absolute'
     canvas.style.top = '0'
     canvas.style.left = '0'
+
+    const handleContextLost = (e: Event) => {
+      e.preventDefault()
+      isContextLost = true
+      cancelAnimationFrame(rafRef.current)
+    }
+
+    const handleContextRestored = () => {
+      isContextLost = false
+      rafRef.current = requestAnimationFrame(update)
+    }
+
+    canvas.addEventListener('webglcontextlost', handleContextLost, false)
+    canvas.addEventListener('webglcontextrestored', handleContextRestored, false)
 
     const geometry = new Triangle(gl)
 
@@ -375,7 +456,7 @@ export default function FaultyTerminal({
 
     // ── Resize ────────────────────────────────────────────
     function resize() {
-      if (!ctn) return
+      if (!ctn || !renderer || !gl || isContextLost) return
       const w = ctn.offsetWidth
       const h = ctn.offsetHeight
       if (w === 0 || h === 0) return
@@ -396,6 +477,7 @@ export default function FaultyTerminal({
     // ── Animation loop ────────────────────────────────────
     const update = (t: number) => {
       rafRef.current = requestAnimationFrame(update)
+      if (isContextLost || !gl || gl.isContextLost()) return
 
       if (pageLoadAnimation && loadAnimationStartRef.current === 0) {
         loadAnimationStartRef.current = t
@@ -424,7 +506,11 @@ export default function FaultyTerminal({
         mu[1] = sm.y
       }
 
-      renderer.render({ scene: mesh })
+      try {
+        renderer.render({ scene: mesh })
+      } catch {
+        // Guard against render errors if context was evicted
+      }
     }
 
     rafRef.current = requestAnimationFrame(update)
@@ -435,9 +521,13 @@ export default function FaultyTerminal({
     return () => {
       cancelAnimationFrame(rafRef.current)
       ro.disconnect()
+      if (canvas) {
+        canvas.removeEventListener('webglcontextlost', handleContextLost)
+        canvas.removeEventListener('webglcontextrestored', handleContextRestored)
+      }
       if (mouseReact) ctn.removeEventListener('mousemove', handleMouseMove)
-      if (canvas.parentElement === ctn) ctn.removeChild(canvas)
-      gl.getExtension('WEBGL_lose_context')?.loseContext()
+      if (canvas && canvas.parentElement === ctn) ctn.removeChild(canvas)
+      if (gl) gl.getExtension('WEBGL_lose_context')?.loseContext()
       loadAnimationStartRef.current = 0
       timeOffsetRef.current = Math.random() * 100
     }

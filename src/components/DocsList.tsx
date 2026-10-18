@@ -55,26 +55,60 @@ export function DocsList({ children, ordered = false, start = 1 }: ListProps) {
   )
 }
 
-/* ─── DocsListItem ──────────────────────────────── */
-
 interface ListItemProps {
   children: ReactNode
   index?: number
   ordered?: boolean
+  level?: number
 }
 
-export function DocsListItem({ children, index, ordered: itemOrdered }: ListItemProps) {
+function getOrderLabel(index: number, level: number): string {
+  if (level === 2) {
+    // 1 -> a), 2 -> b), etc.
+    const char = String.fromCharCode(96 + ((index - 1) % 26) + 1)
+    return `${char})`
+  }
+  return `${index}.`
+}
+
+export function DocsListItem({
+  children,
+  index,
+  ordered: itemOrdered,
+  level = 1,
+}: ListItemProps) {
   const ctx = useContext(ListContext)
   const isOrdered = itemOrdered ?? ctx.ordered
 
+  const itemClass = [
+    isOrdered ? styles.orderedItem : styles.item,
+    level === 2 ? styles.level2 : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const bulletClass = [
+    styles.bullet,
+    level === 2 ? styles.bulletLevel2 : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const orderClass = [
+    styles.orderNumber,
+    level === 2 ? styles.orderNumberLevel2 : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <li className={isOrdered ? styles.orderedItem : styles.item}>
+    <li className={itemClass}>
       {isOrdered ? (
-        <span className={styles.orderNumber} aria-hidden="true">
-          {index !== undefined ? `${index}.` : ''}
+        <span className={orderClass} aria-hidden="true">
+          {index !== undefined ? getOrderLabel(index, level) : ''}
         </span>
       ) : (
-        <span className={styles.bullet} aria-hidden="true" />
+        <span className={bulletClass} aria-hidden="true" />
       )}
       <div className={styles.itemBody}>{children}</div>
     </li>
@@ -87,9 +121,9 @@ type BadgeKind = 'required' | 'optional' | 'default'
 
 interface GroupProps {
   /** Header title (monospace-style label) */
-  title: string
+  title: ReactNode
   /** Optional muted descriptor shown on the right of the header */
-  description?: string
+  description?: ReactNode
   /** Optional header icon (16×16 SVG element) */
   icon?: ReactNode
   children: ReactNode
@@ -97,9 +131,17 @@ interface GroupProps {
 
 export function DocsGroup({ title, description, icon, children }: GroupProps) {
   return (
-    <div className={styles.group} role="region" aria-label={title}>
+    <div
+      className={styles.group}
+      role="region"
+      aria-label={typeof title === 'string' ? title : undefined}
+    >
       <div className={styles.groupHeader}>
-        {icon && <span className={styles.groupIcon} aria-hidden="true">{icon}</span>}
+        {icon && (
+          <span className={styles.groupIcon} aria-hidden="true">
+            {icon}
+          </span>
+        )}
         <h3 className={styles.groupTitle}>{title}</h3>
         {description && <span className={styles.groupDesc}>{description}</span>}
       </div>
@@ -121,7 +163,7 @@ interface GroupRowProps {
 const BADGE_CLASS: Record<BadgeKind, string> = {
   required: styles.badgeRequired,
   optional: styles.badgeOptional,
-  default:  styles.badgeDefault,
+  default: styles.badgeDefault,
 }
 
 export function DocsGroupRow({ keyLabel, badge, children }: GroupRowProps) {
@@ -129,11 +171,7 @@ export function DocsGroupRow({ keyLabel, badge, children }: GroupRowProps) {
     <div className={styles.row}>
       <span className={styles.rowKey}>{keyLabel}</span>
       <span className={styles.rowVal}>{children}</span>
-      {badge && (
-        <span className={`${styles.rowBadge} ${BADGE_CLASS[badge]}`}>
-          {badge}
-        </span>
-      )}
+      {badge && <span className={`${styles.rowBadge} ${BADGE_CLASS[badge]}`}>{badge}</span>}
     </div>
   )
 }

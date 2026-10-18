@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
 import {
+  ArrowUpRight01Icon,
   CheckIcon,
   Search01Icon,
   Layers01Icon,
@@ -11,6 +12,12 @@ import {
 } from '@hugeicons/core-free-icons'
 import styles from './SecurityFramework.module.css'
 import { Pill } from './Pill'
+
+interface ReferenceItem {
+  name: string
+  description: string
+  url: string
+}
 
 interface FunctionItem {
   code: string
@@ -32,8 +39,12 @@ const LAYERS: LayerItem[] = [
     title: 'Comprender.',
     subtitle: 'Conocer el entorno antes de tomar decisiones de seguridad.',
     functions: [
-      { code: '01. UNDERSTAND', name: 'Comprender contexto y gobernanza', icon: Search01Icon },
-      { code: '02. DISCOVER', name: 'Identificar e inventariar activos', icon: Layers01Icon },
+      { code: '01. UNDERSTAND', name: 'Aprender fundamentos teóricos', icon: Search01Icon },
+      {
+        code: '02. DISCOVER',
+        name: 'Identificar activos y riesgos en la PyME',
+        icon: Layers01Icon,
+      },
     ],
   },
   {
@@ -56,26 +67,26 @@ const LAYERS: LayerItem[] = [
   },
 ]
 
-const REFERENCES = [
+const REFERENCES: ReferenceItem[] = [
   {
-    name: 'NIST CSF 2.0',
+    name: 'NIST CSF y RMF',
     description: 'Gestión de riesgos y funciones de ciberseguridad.',
-    tag: 'Framework',
+    url: 'https://www.nist.gov/cyberframework',
   },
   {
     name: 'MITRE ATT&CK',
     description: 'Tácticas y técnicas de adversarios para contextualizar amenazas y detecciones.',
-    tag: 'Matriz',
+    url: 'https://attack.mitre.org/',
   },
   {
     name: 'CIS Controls',
     description: 'Salvaguardas priorizadas para reducir riesgos comunes.',
-    tag: 'Controles',
+    url: 'https://www.cisecurity.org/controls/',
   },
   {
     name: 'OWASP',
     description: 'Guías y metodologías para la seguridad de aplicaciones web.',
-    tag: 'Guía Web',
+    url: 'https://owasp.org/',
   },
 ]
 
@@ -202,12 +213,28 @@ export default function SecurityFramework() {
 
         <div className={styles.referencesGrid}>
           {REFERENCES.map((ref) => (
-            <div key={ref.name} className={styles.refCard}>
+            <a
+              key={ref.name}
+              href={ref.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.refCard}
+              title={`Visitar sitio oficial de ${ref.name}`}
+              aria-label={`${ref.name}: ${ref.description} (abre enlace externo en una nueva pestaña)`}
+            >
               <div className={styles.refCardHeader}>
                 <h4 className={styles.refName}>{ref.name}</h4>
+                <span className={styles.refLinkSignifier} aria-hidden="true">
+                  <HugeiconsIcon
+                    icon={ArrowUpRight01Icon as IconSvgElement}
+                    size={13}
+                    strokeWidth={2.2}
+                    className={styles.refLinkIcon}
+                  />
+                </span>
               </div>
               <p className={styles.refDesc}>{ref.description}</p>
-            </div>
+            </a>
           ))}
         </div>
       </div>

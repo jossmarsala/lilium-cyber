@@ -7,9 +7,10 @@ import styles from './Footer.module.css'
 export interface FooterProps {
   id?: string
   className?: string
+  showCta?: boolean
 }
 
-export default function Footer({ id = 'contact', className }: FooterProps) {
+export default function Footer({ id = 'contact', className, showCta = true }: FooterProps) {
   const handleScrollToStats = (e: React.MouseEvent) => {
     const statsEl = document.getElementById('stats')
     if (statsEl) {
@@ -40,10 +41,14 @@ export default function Footer({ id = 'contact', className }: FooterProps) {
   }
 
   return (
-    <footer className={`${styles.footerSection}${className ? ` ${className}` : ''}`} id={id}>
+    <footer
+      className={`${styles.footerSection}${!showCta ? ` ${styles.noCta}` : ''}${className ? ` ${className}` : ''}`}
+      id={id}
+    >
       <div className={styles.footerContainer}>
         {/* ── Overlapping CTA Card ── */}
-        <div className={styles.ctaCard}>
+        {showCta && (
+          <div className={styles.ctaCard}>
           {/* Terminal WebGL background */}
           <div className={styles.terminalCanvasWrapper}>
             <FaultyTerminal
@@ -125,6 +130,7 @@ export default function Footer({ id = 'contact', className }: FooterProps) {
             </div>
           </div>
         </div>
+      )}
 
         {/* ── Footer Bottom Row ── */}
         <div className={styles.footerBottom}>

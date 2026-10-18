@@ -13,15 +13,20 @@
  *   </DocsCallout>
  */
 import type { ReactNode } from 'react'
+import { renderInline } from '@/utils/renderInline'
 import styles from './DocsCallout.module.css'
+
+import type { DocListItem } from '@/data/docs'
 
 export type CalloutVariant = 'note' | 'tip' | 'warning' | 'critical'
 
-interface Props {
+export interface DocsCalloutProps {
   variant?: CalloutVariant
   /** Overrides the default label (e.g. "Breaking Change", "Good to know") */
   label?: string
-  children: ReactNode
+  text?: string
+  items?: (string | DocListItem)[]
+  children?: ReactNode
 }
 
 const META: Record<
@@ -72,16 +77,63 @@ const META: Record<
 export default function DocsCallout({
   variant = 'note',
   label,
+  text,
+  items,
   children,
-}: Props) {
+}: DocsCalloutProps) {
   const { defaultLabel, icon } = META[variant]
+
+  let resolvedItems = items
+  let content = children ?? (text ? renderInline(text, 'callout-text') : null)
+
+  // Auto-parse markdown bullet lists if children is a string without explicit items
+  if (!resolvedItems && typeof children === 'string' && /(?:^|\n)\s*[-*]\s+/.test(children)) {
+    const lines = children.split('\n')
+    const prose: string[] = []
+    const parsedList: string[] = []
+    for (const raw of lines) {
+      const line = raw.trim()
+      const m = line.match(/^[-*]\s+(.*)$/)
+      if (m) {
+        parsedList.push(m[1].trim())
+      } else if (line) {
+        prose.push(line)
+      }
+    }
+    content = prose.length > 0 ? renderInline(prose.join(' '), 'parsed-callout-text') : null
+    resolvedItems = parsedList.length > 0 ? parsedList : undefined
+  }
 
   return (
     <div className={`${styles.callout} ${styles[variant]}`} role="note">
       <span className={styles.icon} aria-hidden="true">{icon}</span>
       <div className={styles.body}>
         <span className={styles.label}>{label ?? defaultLabel}</span>
-        <p className={styles.text}>{children}</p>
+        {content && <div className={styles.text}>{content}</div>}
+        {resolvedItems && resolvedItems.length > 0 && (
+          <ul className={styles.list}>
+            {resolvedItems.map((item, idx) => {
+              const isObj = typeof item === 'object' && item !== null
+              const itemText = isObj ? item.text : item
+              const itemLevel = isObj && item.level ? item.level : 1
+
+              return (
+                <li
+                  key={idx}
+                  className={`${styles.item} ${itemLevel === 2 ? styles.level2 : ''}`}
+                >
+                  <span
+                    className={`${styles.bullet} ${itemLevel === 2 ? styles.bulletLevel2 : ''}`}
+                    aria-hidden="true"
+                  />
+                  <span className={styles.itemText}>
+                    {renderInline(itemText, `callout-item-${idx}`)}
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+        )}
       </div>
     </div>
   )

@@ -10,8 +10,20 @@
  *  - Contextual callouts (DocsCallout)
  *  - File trees & prose
  */
-import type { ReactNode } from 'react'
-import type { DocSection, DocSubSection, DocBlock } from '@/data/docs'
+import { type ReactNode, useRef, useEffect, useCallback } from 'react'
+import type { DocSection, DocSubSection, DocBlock, StepItem } from '@/data/docs'
+
+export const DOCS_SCROLL_PROGRESS_EVENT = 'docs-scroll-progress'
+
+export interface DocsScrollProgressDetail {
+  progress: number
+  scrollTop: number
+  maxScroll: number
+  isSubIndex: boolean
+  sectionId?: string
+  subSectionId?: string
+}
+
 import styles from './DocsContent.module.css'
 import DocsCallout from './DocsCallout'
 import { DocsSteps, DocsStep } from './DocsSteps'
@@ -22,6 +34,7 @@ import DocsUIPreview from './DocsUIPreview'
 import DocsNextButton from './DocsNextButton'
 import DocsPagination from './DocsPagination'
 import DocsSubindexCard from './DocsSubindexCard'
+import Footer from './Footer'
 import { renderInline } from '@/utils/renderInline'
 
 interface Props {
@@ -99,12 +112,21 @@ function renderBody(text: string) {
 /* ── Dynamic Block Renderer ── */
 function renderBlock(block: DocBlock, index: number): ReactNode {
   switch (block.type) {
-    case 'paragraph':
+    case 'paragraph': {
+      const isStandaloneRef =
+        block.text.trim().startsWith('[') &&
+        block.text.trim().endsWith(')') &&
+        /referencia/i.test(block.text)
+
       return (
-        <p className={styles.paragraph} key={index}>
+        <p
+          className={`${styles.paragraph}${isStandaloneRef ? ` ${styles.refParagraph}` : ''}`}
+          key={index}
+        >
           {renderInline(block.text, index)}
         </p>
       )
+    }
 
     case 'heading':
       if (block.level === 1) {
@@ -136,8 +158,13 @@ function renderBlock(block: DocBlock, index: number): ReactNode {
 
     case 'callout':
       return (
-        <DocsCallout key={index} variant={block.variant ?? 'note'} label={block.label}>
-          {renderInline(block.text, index)}
+        <DocsCallout
+          key={index}
+          variant={block.variant ?? 'note'}
+          label={block.label}
+          items={block.items}
+        >
+          {block.text ? renderInline(block.text, index) : null}
         </DocsCallout>
       )
 
@@ -157,7 +184,8 @@ function renderBlock(block: DocBlock, index: number): ReactNode {
           {block.items.map((step, sIdx) => (
             <DocsStep
               key={sIdx}
-              title={step.title}
+              title={renderInline(step.title, `step-title-${sIdx}`)}
+              bullets={(step as StepItem & { bullets?: string[] }).bullets}
               code={step.code}
               outcome={step.outcome}
               completed={step.completed}
@@ -173,24 +201,51 @@ function renderBlock(block: DocBlock, index: number): ReactNode {
         <DocsTable key={index} columns={block.columns} rows={block.rows} caption={block.caption} />
       )
 
-    case 'list':
+    case 'list': {
+      let l1Counter = block.start ?? 1
+      let l2Counter = 1
+
       return (
         <DocsList key={index} ordered={block.ordered} start={block.start}>
-          {block.items.map((item, lIdx) => (
-            <DocsListItem
-              key={lIdx}
-              index={block.ordered ? (block.start ?? 1) + lIdx : undefined}
-              ordered={block.ordered}
-            >
-              {renderInline(item, lIdx)}
-            </DocsListItem>
-          ))}
+          {block.items.map((item, lIdx) => {
+            const isObj = typeof item === 'object' && item !== null
+            const itemText = isObj ? item.text : item
+            const itemLevel = isObj && item.level ? item.level : 1
+
+            let itemIndex: number | undefined
+            if (block.ordered) {
+              if (itemLevel === 2) {
+                itemIndex = l2Counter++
+              } else {
+                itemIndex = l1Counter++
+                l2Counter = 1 // Reset sub-level counter for next sub-items
+              }
+            }
+
+            return (
+              <DocsListItem
+                key={lIdx}
+                index={itemIndex}
+                ordered={block.ordered}
+                level={itemLevel}
+              >
+                {renderInline(itemText, lIdx)}
+              </DocsListItem>
+            )
+          })}
         </DocsList>
       )
+    }
 
     case 'group':
       return (
-        <DocsGroup key={index} title={block.title} description={block.description}>
+        <DocsGroup
+          key={index}
+          title={renderInline(block.title, `group-title-${index}`)}
+          description={
+            block.description ? renderInline(block.description, `group-desc-${index}`) : undefined
+          }
+        >
           {block.rows.map((row, rIdx) => (
             <DocsGroupRow key={rIdx} keyLabel={row.keyLabel} badge={row.badge}>
               {renderInline(row.text, rIdx)}
@@ -228,12 +283,91 @@ function renderBlock(block: DocBlock, index: number): ReactNode {
 }
 
 export default function DocsContent({ section, subSection }: Props) {
+  const articleRef = useRef<HTMLElement>(null)
+  const rafRef = useRef<number | null>(null)
+
+  const isSubIndex = Boolean(subSection)
+
+  const emitProgress = useCallback(
+    (overrideScrollTop?: number) => {
+      const el = articleRef.current
+      if (!el) return
+
+      const scrollTop = overrideScrollTop !== undefined ? overrideScrollTop : el.scrollTop
+      const maxScroll = el.scrollHeight - el.clientHeight
+      const progress = maxScroll > 0 ? Math.min(Math.max(scrollTop / maxScroll, 0), 1) : 0
+
+      const detail: DocsScrollProgressDetail = {
+        progress,
+        scrollTop,
+        maxScroll,
+        isSubIndex,
+        sectionId: section?.id,
+        subSectionId: subSection?.id,
+      }
+
+      window.dispatchEvent(new CustomEvent(DOCS_SCROLL_PROGRESS_EVENT, { detail }))
+    },
+    [isSubIndex, section?.id, subSection?.id]
+  )
+
+  const handleScroll = useCallback(() => {
+    if (rafRef.current !== null) return
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null
+      emitProgress()
+    })
+  }, [emitProgress])
+
+  // Reset scroll to top and dispatch 0 progress when section or subsection changes
+  useEffect(() => {
+    if (articleRef.current) {
+      articleRef.current.scrollTop = 0
+    }
+    emitProgress(0)
+
+    const timer = setTimeout(() => {
+      emitProgress()
+    }, 60)
+
+    return () => clearTimeout(timer)
+  }, [section?.id, subSection?.id, emitProgress])
+
+  // Recalculate on window resize
+  useEffect(() => {
+    const handleResize = () => emitProgress()
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current)
+      }
+    }
+  }, [emitProgress])
+
+  // Reset progress when component unmounts
+  useEffect(() => {
+    return () => {
+      window.dispatchEvent(
+        new CustomEvent(DOCS_SCROLL_PROGRESS_EVENT, {
+          detail: {
+            progress: 0,
+            scrollTop: 0,
+            maxScroll: 0,
+            isSubIndex: false,
+          },
+        })
+      )
+    }
+  }, [])
+
   if (!section) {
     return (
       <div className={styles.content}>
         <div className={styles.inner}>
           <p className={styles.empty}>Select a section from the sidebar.</p>
         </div>
+        <Footer showCta={false} className={styles.docsFooter} />
       </div>
     )
   }
@@ -245,7 +379,12 @@ export default function DocsContent({ section, subSection }: Props) {
   const fallbackText = subSection ? subSection.content : section.overview
 
   return (
-    <article className={styles.content}>
+    <article
+      ref={articleRef}
+      id="docs-scroll-container"
+      className={styles.content}
+      onScroll={handleScroll}
+    >
       <div className={styles.inner}>
         <header className={styles.header}>
           <span className={styles.breadcrumb}>{subSection ? section.title : 'Documentation'}</span>
@@ -289,6 +428,9 @@ export default function DocsContent({ section, subSection }: Props) {
           <DocsPagination sectionId={section.id} subSectionId={subSection?.id} />
         </div>
       </div>
+
+      {/* ── Docs Footer ── */}
+      <Footer showCta={false} className={styles.docsFooter} />
     </article>
   )
 }

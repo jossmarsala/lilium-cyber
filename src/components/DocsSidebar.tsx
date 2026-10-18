@@ -42,6 +42,7 @@ function toMenuItems(sections: DocSection[]): BranchedMenuItem[] {
     if (section.subsections.length > 0) {
       return {
         label: section.title,
+        value: section.id,
         children: section.subsections.map((sub) => {
           const icon = resolveDocIcon(sub.icon, sub.id)
 
@@ -75,7 +76,7 @@ export default function DocsSidebar({ sections, activeSectionId, activeSubSectio
     (s) =>
       !s.hidden ||
       s.id === activeSectionId ||
-      ((s.id === 'showcase' || s.id === 'components') && isShowcaseActive),
+      ((s.id === 'showcase' || s.id === 'components') && isShowcaseActive)
   )
 
   const items = toMenuItems(visibleSections)
@@ -114,6 +115,7 @@ export default function DocsSidebar({ sections, activeSectionId, activeSubSectio
           items={items}
           defaultOpen={defaultOpen}
           defaultActive={defaultActive}
+          active={defaultActive}
           onSelect={handleSelect}
           color="#1a1a1a"
           accentColor="#000"
@@ -153,9 +155,7 @@ export default function DocsSidebar({ sections, activeSectionId, activeSubSectio
               {isShowcaseActive ? 'Volver al Playbook' : 'Component Showcase'}
             </span>
           </div>
-          <span className={styles.footerBadge}>
-            {isShowcaseActive ? 'activo' : 'oculto'}
-          </span>
+          <span className={styles.footerBadge}>{isShowcaseActive ? 'activo' : 'oculto'}</span>
         </button>
       </div>
     </aside>

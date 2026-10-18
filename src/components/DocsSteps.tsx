@@ -17,6 +17,7 @@
  */
 import type { ReactNode } from 'react'
 import CodeBlock from './CodeBlock'
+import { renderInline } from '@/utils/renderInline'
 import styles from './DocsSteps.module.css'
 
 /* ── Individual step data ── */
@@ -27,13 +28,15 @@ export interface StepCode {
 }
 
 interface StepProps {
-  title: string
+  title: ReactNode
   /** Optional prose description (supports inline `code` via children) */
   children?: ReactNode
+  /** Optional bullet list items rendered below the description */
+  bullets?: string[]
   /** Optional embedded code block */
   code?: StepCode
   /** Short expected-outcome string shown as a green pill */
-  outcome?: string
+  outcome?: ReactNode
   /** Renders the number bubble as filled/checked */
   completed?: boolean
 }
@@ -49,19 +52,22 @@ export function DocsSteps({ children }: StepsProps) {
 }
 
 /** Individual step */
-export function DocsStep({
-  title,
-  children,
-  code,
-  outcome,
-  completed = false,
-}: StepProps) {
+export function DocsStep({ title, children, bullets, code, outcome, completed = false }: StepProps) {
   return (
     <li className={`${styles.step}${completed ? ` ${styles.completed}` : ''}`}>
       {/* Counter bubble */}
       <span className={styles.number} aria-hidden="true">
         {completed ? (
-          <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <polyline points="2 6 5 9 10 3" />
           </svg>
         ) : null}
@@ -69,10 +75,19 @@ export function DocsStep({
 
       {/* Step body */}
       <div className={styles.body}>
-        <h3 className={styles.title}>{title}</h3>
+        <h3 className={styles.title}>{typeof title === 'string' ? renderInline(title) : title}</h3>
 
-        {children && (
-          <p className={styles.description}>{children}</p>
+        {children && <p className={styles.description}>{children}</p>}
+
+        {bullets && bullets.length > 0 && (
+          <ul className={styles.bulletList}>
+            {bullets.map((item, idx) => (
+              <li key={idx} className={styles.bulletItem}>
+                <span className={styles.bulletDot} aria-hidden="true" />
+                <span className={styles.bulletText}>{renderInline(item, `step-bullet-${idx}`)}</span>
+              </li>
+            ))}
+          </ul>
         )}
 
         {code && (
@@ -98,7 +113,7 @@ export function DocsStep({
             >
               <polyline points="2 6 5 9 10 3" />
             </svg>
-            {outcome}
+            {typeof outcome === 'string' ? renderInline(outcome) : outcome}
           </div>
         )}
       </div>

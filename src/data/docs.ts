@@ -14,6 +14,7 @@ export type BadgeKind = 'required' | 'optional' | 'default'
 export interface StepItem {
   title: string
   description?: string
+  bullets?: string[]
   code?: {
     lang?: string
     content: string
@@ -28,14 +29,25 @@ export interface GroupRowItem {
   text: string
 }
 
+export interface DocListItem {
+  text: string
+  level?: number
+}
+
 export type DocBlock =
   | { type: 'paragraph'; text: string }
   | { type: 'heading'; level?: number; text: string }
-  | { type: 'callout'; variant?: CalloutVariant; label?: string; text: string }
+  | {
+      type: 'callout'
+      variant?: CalloutVariant
+      label?: string
+      text?: string
+      items?: (string | DocListItem)[]
+    }
   | { type: 'code'; lang?: string; filename?: string; content: string }
   | { type: 'steps'; items: StepItem[] }
   | { type: 'table'; columns: string[]; rows: (string | number)[][]; caption?: string }
-  | { type: 'list'; items: string[]; ordered?: boolean; start?: number }
+  | { type: 'list'; items: (string | DocListItem)[]; ordered?: boolean; start?: number }
   | { type: 'group'; title: string; description?: string; rows: GroupRowItem[] }
   | { type: 'fileTree'; title?: string; content: string }
   | { type: 'componentPreview'; component?: 'specularButton' | 'pills' | 'rubberSegment' | 'all' }

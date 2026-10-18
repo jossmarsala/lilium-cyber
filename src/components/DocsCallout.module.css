@@ -60,7 +60,8 @@
 }
 
 /* Inline code inside callouts */
-.text code {
+.text code,
+.itemText code {
   font-family: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
   font-size: 0.82em;
   background: rgba(0, 0, 0, 0.06);
@@ -70,12 +71,116 @@
   border: 1px solid rgba(0, 0, 0, 0.09);
 }
 
+.itemText strong {
+  font-weight: 650;
+  color: #111111;
+}
+
+/* ─── Bullet list inside callouts ────────── */
+.list {
+  list-style: none;
+  margin: 0.45rem 0 0.1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-family: var(--font-family);
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
+
+.item.level2 {
+  margin-left: 1.5rem;
+  font-size: 0.90625rem;
+  gap: 0.55rem;
+}
+
+.bullet {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.65;
+  flex-shrink: 0;
+  margin-top: 0.62rem;
+  transition: opacity var(--transition-fast), transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.item:hover .bullet {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.bullet.bulletLevel2 {
+  background: transparent !important;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.6;
+  margin-top: 0.58rem;
+}
+
+.item.level2:hover .bulletLevel2 {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.itemText {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Fallback for raw HTML/markdown lists inside callout body (only when not using .list component) */
+.body > ul:not(.list),
+.text ul {
+  list-style: none;
+  margin: 0.45rem 0 0.1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.body > ul:not(.list) > li,
+.text ul li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-family: var(--font-family);
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
+
+.body > ul:not(.list) > li::before,
+.text ul li::before {
+  content: '';
+  position: absolute;
+  left: 0.2rem;
+  top: 0.62rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.65;
+}
+
 /* ─── Variant: Note ─────────────────────── */
 .note .icon {
   color: #5a70a0;
 }
 .note .label {
   color: #5a70a0;
+}
+.note .bullet:not(.bulletLevel2),
+.note .body > ul:not(.list) > li::before,
+.note .text ul li::before {
+  background: #5a70a0;
 }
 
 /* ─── Variant: Tip ──────────────────────── */
@@ -85,14 +190,23 @@
 .tip .label {
   color: #2d7d52;
 }
+.tip .bullet:not(.bulletLevel2),
+.tip .body > ul:not(.list) > li::before,
+.tip .text ul li::before {
+  background: #2d7d52;
+}
 
 /* ─── Variant: Warning ──────────────────── */
-
 .warning .icon {
   color: #b07a10;
 }
 .warning .label {
   color: #b07a10;
+}
+.warning .bullet:not(.bulletLevel2),
+.warning .body > ul:not(.list) > li::before,
+.warning .text ul li::before {
+  background: #b07a10;
 }
 
 /* ─── Variant: Critical ─────────────────── */
@@ -102,3 +216,9 @@
 .critical .label {
   color: #b03030;
 }
+.critical .bullet:not(.bulletLevel2),
+.critical .body > ul:not(.list) > li::before,
+.critical .text ul li::before {
+  background: #b03030;
+}
+

@@ -30,7 +30,7 @@ const DEFAULT_ITEMS: BentoItem[] = [
   },
   {
     title: '100% Open-Source',
-    subtitle: 'Todo el software enseñado es gratuito y de código abierto.',
+    subtitle: 'Todo el software aplicado es gratuito y de código abierto.',
   },
   {
     title: 'Aprendizaje, capa por capa',

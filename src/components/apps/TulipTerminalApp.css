@@ -1,0 +1,116 @@
+/* ═══════════════════════════════════════════════════════════════════
+   TULIP Terminal — Styling for headless v86 + Xterm in React UI-OS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Remove default 16px window body padding for seamless edge-to-edge terminal display */
+[data-rui-window="app:terminal"] > div:nth-child(2) {
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #0e1117 !important;
+}
+
+.tulip-terminal-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background: #0e1117;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.tulip-terminal-screen {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  position: relative;
+  background: #0e1117;
+  padding: 8px 12px;
+  overflow: hidden;
+  border: none !important;
+}
+
+/* Discreet, borderless floating restart button in top-right corner */
+.tulip-terminal-floating-reset {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8b949e;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  opacity: 0.25;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.tulip-terminal-container:hover .tulip-terminal-floating-reset {
+  opacity: 0.75;
+}
+
+.tulip-terminal-floating-reset:hover {
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f0f6fc;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tulip-terminal-floating-reset:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tulip-terminal-spin {
+  display: inline-block;
+  animation: tulip-terminal-spin 1s linear infinite;
+}
+
+@keyframes tulip-terminal-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* XTerm internal styling overrides */
+.tulip-terminal-screen .xterm {
+  height: 100%;
+  padding: 0;
+}
+
+.tulip-terminal-screen .xterm-viewport {
+  overflow-y: auto !important;
+  background-color: transparent !important;
+}
+
+.tulip-terminal-screen .xterm-viewport::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.tulip-terminal-screen .xterm-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tulip-terminal-screen .xterm-viewport::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.tulip-terminal-screen .xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}

@@ -125,16 +125,23 @@ export function parseMarkdownToBlocks(markdown) {
       const stepItems = []
       let currentStep = null
       let descLines = []
+      let bulletLines = []
+      let inBullets = false
 
       const commitCurrentStep = () => {
         if (currentStep && currentStep.title) {
           if (descLines.length > 0) {
             currentStep.description = descLines.join(' ').trim()
           }
+          if (bulletLines.length > 0) {
+            currentStep.bullets = bulletLines
+          }
           stepItems.push(currentStep)
         }
         currentStep = null
         descLines = []
+        bulletLines = []
+        inBullets = false
       }
 
       let sIdx = 0
@@ -173,6 +180,7 @@ export function parseMarkdownToBlocks(markdown) {
               content: codeContent.join('\n'),
             }
           }
+          inBullets = false
           continue
         }
 
@@ -183,7 +191,24 @@ export function parseMarkdownToBlocks(markdown) {
           continue
         }
 
+        // Bullet list item inside a step
+        const bulletMatch = sTrim.match(/^[-*]\s+(.+)$/)
+        if (bulletMatch && currentStep) {
+          inBullets = true
+          bulletLines.push(bulletMatch[1].trim())
+          sIdx++
+          continue
+        }
+
+        // Continuation line for a bullet (indented)
+        if (inBullets && (sLine.startsWith('  ') || sLine.startsWith('\t')) && sTrim && currentStep) {
+          bulletLines[bulletLines.length - 1] += ' ' + sTrim
+          sIdx++
+          continue
+        }
+
         if (sTrim && currentStep) {
+          inBullets = false
           descLines.push(sTrim)
         }
         sIdx++
@@ -263,19 +288,31 @@ export function parseMarkdownToBlocks(markdown) {
     if (trimmed.startsWith('>')) {
       const quoteLines = []
       while (i < lines.length && lines[i].trim().startsWith('>')) {
-        quoteLines.push(lines[i].replace(/^>\s?/, '').trim())
+        quoteLines.push(lines[i].replace(/^>\s?/, ''))
         i++
       }
 
-      const first = quoteLines[0] || ''
+      const first = (quoteLines[0] || '').trim()
       let variant = 'note'
       let label = undefined
 
-      const alertMatch = first.match(/^\[!(NOTE|TIP|WARNING|CRITICAL)(?::([^\]]+))?\]/i)
+      const alertMatch = first.match(/^\[!(NOTE|TIP|WARNING|CRITICAL|IMPORTANT|CAUTION)(?::([^\]]+))?\]\s*(.*)$/i)
       if (alertMatch) {
-        variant = alertMatch[1].toLowerCase()
-        label = alertMatch[2]?.trim()
-        quoteLines.shift()
+        const rawKind = alertMatch[1].toUpperCase()
+        if (rawKind === 'IMPORTANT') {
+          variant = 'warning'
+        } else if (rawKind === 'CAUTION') {
+          variant = 'critical'
+        } else {
+          variant = alertMatch[1].toLowerCase()
+        }
+        label = alertMatch[2]?.trim() || (rawKind === 'IMPORTANT' ? 'Importante' : rawKind === 'CAUTION' ? 'Precaución' : undefined)
+        const trailing = alertMatch[3]?.trim()
+        if (trailing) {
+          quoteLines[0] = trailing
+        } else {
+          quoteLines.shift()
+        }
       } else {
         const boldHeaderMatch = first.match(/^\*\*(.*?)\*\*:?$/)
         if (boldHeaderMatch) {
@@ -327,11 +364,54 @@ export function parseMarkdownToBlocks(markdown) {
         }
       }
 
+      // If no explicit label was set and the next non-empty line is a standalone bold header
+      while (quoteLines.length && !quoteLines[0].trim()) {
+        quoteLines.shift()
+      }
+      if (!label && quoteLines.length > 0) {
+        const nextBold = quoteLines[0].trim().match(/^\*\*(.*?)\*\*:?$/)
+        if (nextBold) {
+          label = nextBold[1].trim()
+          quoteLines.shift()
+          while (quoteLines.length && !quoteLines[0].trim()) {
+            quoteLines.shift()
+          }
+        }
+      }
+
+      // Separate prose text lines and bullet list items (- or *)
+      const textLines = []
+      const items = []
+      let collectingList = false
+
+      for (const rawLine of quoteLines) {
+        const line = rawLine.trim()
+        if (!line) continue
+
+        const bulletMatch = line.match(/^[-*]\s+(.*)$/)
+        if (bulletMatch) {
+          collectingList = true
+          items.push(bulletMatch[1].trim())
+        } else if (
+          collectingList &&
+          items.length > 0 &&
+          (rawLine.startsWith('  ') || rawLine.startsWith('\t'))
+        ) {
+          items[items.length - 1] += ' ' + line
+        } else {
+          collectingList = false
+          textLines.push(line)
+        }
+      }
+
+      const text = textLines.join(' ').trim()
+
       blocks.push({
         type: 'callout',
         variant,
         ...(label ? { label } : {}),
-        text: quoteLines.filter(Boolean).join(' '),
+        ...(text ? { text } : {}),
+        ...(items.length > 0 ? { items } : {}),
       })
       continue
     }
@@ -540,7 +620,8 @@ export function parseMarkdownToBlocks(markdown) {
     if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
       const items = []
       while (i < lines.length) {
-        const curTrim = lines[i].trim()
+        const rawLine = lines[i]
+        const curTrim = rawLine.trim()
 
         if (!curTrim) {
           // Lookahead: check if next non-empty line continues this bullet list
@@ -558,22 +639,30 @@ export function parseMarkdownToBlocks(markdown) {
           break
         }
 
-        if (curTrim.startsWith('- ') || curTrim.startsWith('* ')) {
-          let itemText = curTrim.replace(/^[-*]\s+/, '')
+        const bulletMatch = curTrim.match(/^[-*]\s+(.*)$/)
+        if (bulletMatch) {
+          // Determine indentation level: 2+ spaces or tabs denote a level 2 item
+          const indentMatch = rawLine.match(/^(\s*)/)
+          const indentLength = indentMatch ? indentMatch[1].replace(/\t/g, '  ').length : 0
+          const level = indentLength >= 2 ? 2 : 1
+          let itemText = bulletMatch[1]
           i++
-          // Indented continuation lines
+
+          // Continuation lines (wrapped paragraph lines that aren't new bullet items)
           while (
             i < lines.length &&
             lines[i].trim() &&
             (lines[i].startsWith('  ') || lines[i].startsWith('\t')) &&
             !lines[i].trim().startsWith('- ') &&
             !lines[i].trim().startsWith('* ') &&
-            !lines[i].trim().match(/^\d+\.\s+/)
+            !lines[i].trim().match(/^\d+\.\s+/) &&
+            !lines[i].trim().match(/^[a-zA-Z]\)\s+/)
           ) {
             itemText += ' ' + lines[i].trim()
             i++
           }
-          items.push(itemText)
+
+          items.push(level === 2 ? { text: itemText, level: 2 } : itemText)
         } else {
           break
         }
@@ -586,12 +675,13 @@ export function parseMarkdownToBlocks(markdown) {
       continue
     }
 
-    // ── 9. Numbered List: 1. Item ──
-    const numMatch = trimmed.match(/^\d+\.\s+/)
+    // ── 9. Numbered List: 1. Item or 1) Item or indented a) Item ──
+    const numMatch = trimmed.match(/^(\d+\.|\d+\)|[a-zA-Z]\))\s+/)
     if (numMatch) {
       const items = []
       while (i < lines.length) {
-        const curTrim = lines[i].trim()
+        const rawLine = lines[i]
+        const curTrim = rawLine.trim()
 
         if (!curTrim) {
           // Lookahead: check if next non-empty line continues this numbered list
@@ -601,7 +691,7 @@ export function parseMarkdownToBlocks(markdown) {
           }
           if (
             nextIdx < lines.length &&
-            lines[nextIdx].trim().match(/^\d+\.\s+/)
+            lines[nextIdx].trim().match(/^(\d+\.|\d+\)|[a-zA-Z]\))\s+/)
           ) {
             i = nextIdx
             continue
@@ -609,23 +699,28 @@ export function parseMarkdownToBlocks(markdown) {
           break
         }
 
-        const match = curTrim.match(/^\d+\.\s+(.*)$/)
+        const match = curTrim.match(/^(\d+\.|\d+\)|[a-zA-Z]\))\s+(.*)$/)
         if (match) {
-          let itemText = match[1]
+          const indentMatch = rawLine.match(/^(\s*)/)
+          const indentLength = indentMatch ? indentMatch[1].replace(/\t/g, '  ').length : 0
+          const isLetter = /^[a-zA-Z]\)/.test(match[1])
+          const level = (indentLength >= 2 || isLetter) ? 2 : 1
+
+          let itemText = match[2]
           i++
           // Indented continuation lines
           while (
             i < lines.length &&
             lines[i].trim() &&
             (lines[i].startsWith('  ') || lines[i].startsWith('\t')) &&
-            !lines[i].trim().match(/^\d+\.\s+/) &&
+            !lines[i].trim().match(/^(\d+\.|\d+\)|[a-zA-Z]\))\s+/) &&
             !lines[i].trim().startsWith('- ') &&
             !lines[i].trim().startsWith('* ')
           ) {
             itemText += ' ' + lines[i].trim()
             i++
           }
-          items.push(itemText)
+          items.push(level === 2 ? { text: itemText, level: 2 } : itemText)
         } else {
           break
         }

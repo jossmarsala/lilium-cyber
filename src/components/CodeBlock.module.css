@@ -11,6 +11,9 @@
   border: 1px solid rgba(0, 0, 0, 0.07);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .header {
@@ -114,9 +117,19 @@
   font-size: 0.785rem;
   line-height: 1.65;
   color: #1e293b;
-  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
   background: #ffffff;
+}
+
+.line {
+  min-height: 1.65em;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* ── Code Color Accents for Keywords & Tokens ── */

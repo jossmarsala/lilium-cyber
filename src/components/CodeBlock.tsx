@@ -288,7 +288,9 @@ export default function CodeBlock({
 
       <pre className={styles.pre}>
         {lines.map((line, idx) => (
-          <div key={idx}>{highlightLine(line, lang)}</div>
+          <div key={idx} className={styles.line}>
+            {line === '' ? '\u00A0' : highlightLine(line, lang)}
+          </div>
         ))}
       </pre>
     </div>

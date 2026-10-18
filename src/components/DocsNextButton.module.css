@@ -14,6 +14,7 @@
   outline: none;
   box-sizing: border-box;
   user-select: none;
+  margin-bottom: 6rem;
   transition:
     border-color 0.15s ease,
     background-color 0.15s ease,

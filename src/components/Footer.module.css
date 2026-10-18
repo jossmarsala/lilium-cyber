@@ -41,6 +41,17 @@
   min-height: 420px;
 }
 
+/* ── Modifier when CTA card is omitted (Docs, Labs) ── */
+.noCta {
+  padding-top: 0;
+}
+
+.noCta .footerContainer {
+  min-height: auto;
+  padding-top: clamp(2.5rem, 4vw, 3.5rem);
+  padding-bottom: clamp(2.5rem, 4vw, 3.5rem);
+}
+
 /* ───────────────────────────────────────────────────────────────────
    OVERLAPPING CTA CARD
    Sits half above and half inside the top border of footerContainer
@@ -257,6 +268,11 @@
     padding: 0 var(--space-6, 1.5rem) var(--space-8, 2rem) var(--space-6, 1.5rem);
   }
 
+  .noCta .footerContainer {
+    width: 100%;
+    padding: var(--space-8, 2rem) var(--space-6, 1.5rem);
+  }
+
   .ctaCard {
     margin: -120px auto var(--space-8, 2rem) auto;
   }
@@ -271,11 +287,21 @@
     padding-top: 100px;
   }
 
+  .footerSection.noCta {
+    padding-top: 0;
+  }
+
   .footerContainer {
     width: calc(100% - 1.5rem);
     padding: 0 var(--space-4, 1rem) var(--space-8, 2rem) var(--space-4, 1rem);
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
+  }
+
+  .noCta .footerContainer {
+    width: 100%;
+    padding: var(--space-8, 2rem) var(--space-4, 1rem);
+    border-radius: 0;
   }
 
   .ctaCard {
