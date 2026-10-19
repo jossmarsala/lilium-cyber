@@ -79,7 +79,7 @@
   color: inherit;
 }
 
-/* Brand: "tulip" in Arial Black, "playbook" in Arial Regular */
+/* Brand: "lilium" in Arial Black, "playbook" in Arial Regular */
 .brand {
   display: flex;
   align-items: center;
@@ -119,7 +119,7 @@
   line-height: inherit;
 }
 
-/* Tulip logo icon before brand */
+/* Lilium logo icon before brand */
 .brandIcon {
   width: 20px;
   height: 20px;

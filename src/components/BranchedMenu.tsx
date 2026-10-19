@@ -10,7 +10,7 @@ import React, {
   type ReactNode,
 } from 'react'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
-import TulipIcon from './TulipIcon'
+import LiliumIcon from './LiliumIcon'
 import './BranchedMenu.css'
 
 export interface BranchedMenuChild {
@@ -55,7 +55,7 @@ const renderIcon = (icon: ReactNode | IconSvgElement) => {
   if (icon) {
     return <HugeiconsIcon icon={icon as IconSvgElement} size={16} strokeWidth={1.8} />
   }
-  return <TulipIcon size={16} />
+  return <LiliumIcon size={16} />
 }
 
 const toSet = (open: number | number[]) =>

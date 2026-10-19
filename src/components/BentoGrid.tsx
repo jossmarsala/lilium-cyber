@@ -45,7 +45,7 @@ export default function BentoGrid({
     <>
       Explora lo que
       <br />
-      tulip te ofrece
+      lilium te ofrece
     </>
   ),
   subtitle = (

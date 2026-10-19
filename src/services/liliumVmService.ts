@@ -3,13 +3,14 @@ import { V86, type V86Options } from 'v86'
 export type VmStatus = 'booting' | 'ready' | 'stopped'
 export type SerialOutputListener = (byte: number) => void
 export type SerialChunkListener = (chunk: Uint8Array) => void
+export type SerialInputListener = (data: string | Uint8Array) => void
 export type StatusListener = (status: VmStatus) => void
 
 /**
  * Singleton service decoupling the x86 WebAssembly VM lifecycle from React.
  * Keeps the VM running across window minimize, close, reopen actions in React UI-OS.
  */
-class TulipVmService {
+class LiliumVmService {
   private vm: V86 | null = null
   private status: VmStatus = 'stopped'
   private bootPromise: Promise<V86> | null = null
@@ -21,6 +22,7 @@ class TulipVmService {
   // Active listeners
   private serialListeners = new Set<SerialOutputListener>()
   private chunkListeners = new Set<SerialChunkListener>()
+  private inputListeners = new Set<SerialInputListener>()
   private statusListeners = new Set<StatusListener>()
 
   // Pending chunk queue for micro-batching serial writes
@@ -28,6 +30,21 @@ class TulipVmService {
   private chunkFlushScheduled = false
 
   private readyDetected = false
+  private bootDetectionBuffer: number[] = []
+  private isSerialMuted = false
+
+  public setSerialMuted(muted: boolean): void {
+    this.isSerialMuted = muted
+    if (muted) {
+      // Clear any pending un-flushed chunks so they don't leak out
+      this.pendingChunk = []
+      this.serialBuffer = []
+    }
+  }
+
+  public getIsSerialMuted(): boolean {
+    return this.isSerialMuted
+  }
 
   public getStatus(): VmStatus {
     return this.status
@@ -40,7 +57,7 @@ class TulipVmService {
         try {
           listener(newStatus)
         } catch (err) {
-          console.error('[TulipVmService] Error notifying status listener:', err)
+          console.error('[LiliumVmService] Error notifying status listener:', err)
         }
       }
     }
@@ -97,16 +114,13 @@ class TulipVmService {
 
         // Stream serial output from ttyS0
         emulator.add_listener('serial0-output-byte', (byte: number) => {
-          this.serialBuffer.push(byte)
-
-          // Amortized O(1) buffer trimming instead of O(N) shift per byte
-          if (this.serialBuffer.length >= this.maxBufferSize * 1.5) {
-            this.serialBuffer = this.serialBuffer.slice(-this.maxBufferSize)
-          }
-
           // Check for prompt indicators to transition from booting to ready
           if (!this.readyDetected) {
-            const recent = this.getRecentOutput(128)
+            this.bootDetectionBuffer.push(byte)
+            if (this.bootDetectionBuffer.length > 512) {
+              this.bootDetectionBuffer.shift()
+            }
+            const recent = new TextDecoder('utf-8', { fatal: false }).decode(new Uint8Array(this.bootDetectionBuffer))
             if (
               recent.includes('# ') ||
               recent.includes('$ ') ||
@@ -124,12 +138,25 @@ class TulipVmService {
             }
           }
 
+          // When serial is muted (e.g. executing hidden background lab setup commands),
+          // suppress buffering into terminal history and notifying terminal chunk listeners.
+          if (this.isSerialMuted) {
+            return
+          }
+
+          this.serialBuffer.push(byte)
+
+          // Amortized O(1) buffer trimming instead of O(N) shift per byte
+          if (this.serialBuffer.length >= this.maxBufferSize * 1.5) {
+            this.serialBuffer = this.serialBuffer.slice(-this.maxBufferSize)
+          }
+
           // Individual byte listeners
           for (const listener of this.serialListeners) {
             try {
               listener(byte)
             } catch (err) {
-              console.error('[TulipVmService] Error in serial listener:', err)
+              console.error('[LiliumVmService] Error in serial listener:', err)
             }
           }
 
@@ -147,7 +174,7 @@ class TulipVmService {
                     try {
                       cl(chunk)
                     } catch (err) {
-                      console.error('[TulipVmService] Error in chunk listener:', err)
+                      console.error('[LiliumVmService] Error in chunk listener:', err)
                     }
                   }
                 }
@@ -172,7 +199,7 @@ class TulipVmService {
         })
 
         emulator.add_listener('download-error', (err) => {
-          console.error('[TulipVmService] Download error for VM asset:', err)
+          console.error('[LiliumVmService] Download error for VM asset:', err)
           this.setStatus('stopped')
           this.bootPromise = null
           this.vm = null
@@ -188,7 +215,7 @@ class TulipVmService {
         this.setStatus('stopped')
         this.bootPromise = null
         this.vm = null
-        console.error('[TulipVmService] Failed to initialize v86:', err)
+        console.error('[LiliumVmService] Failed to initialize v86:', err)
         reject(err)
       }
     })
@@ -252,12 +279,31 @@ class TulipVmService {
   }
 
   /**
+   * Subscribe to input sent to the serial port ttyS0 (for terminal verifiers and telemetries).
+   */
+  public subscribeSerialInput(listener: SerialInputListener): () => void {
+    this.inputListeners.add(listener)
+    return () => {
+      this.inputListeners.delete(listener)
+    }
+  }
+
+  /**
    * Send text or keystroke sequences directly to serial ttyS0.
    * Encodes strings into UTF-8 bytes to guarantee that pipe (|), redirects (>, >>),
    * accents, and control sequences are transmitted accurately without character corruption.
    */
   public serial0_send(data: string | Uint8Array): void {
     const bytes = typeof data === 'string' ? new TextEncoder().encode(data) : data
+
+    // Notify serial input subscribers (e.g. lab verification engine)
+    for (const listener of this.inputListeners) {
+      try {
+        listener(data)
+      } catch (err) {
+        console.error('[LiliumVmService] Error in serial input listener:', err)
+      }
+    }
 
     const sendBytes = (emulator: V86) => {
       const bus = (emulator as unknown as { bus?: { send: (name: string, value: number) => void } }).bus
@@ -276,7 +322,7 @@ class TulipVmService {
     } else {
       this.boot()
         .then((vm) => sendBytes(vm))
-        .catch((err) => console.error('[TulipVmService] Error sending to serial port:', err))
+        .catch((err) => console.error('[LiliumVmService] Error sending to serial port:', err))
     }
   }
 
@@ -310,12 +356,14 @@ class TulipVmService {
           new Promise((_, reject) => setTimeout(() => reject(new Error('vm.destroy timeout')), 2500)),
         ])
       } catch (err) {
-        console.warn('[TulipVmService] Notice during vm.destroy():', err)
+        console.warn('[LiliumVmService] Notice during vm.destroy():', err)
       }
     }
     this.bootPromise = null
     this.serialBuffer = []
     this.pendingChunk = []
+    this.bootDetectionBuffer = []
+    this.isSerialMuted = false
     this.readyDetected = false
     this.setStatus('booting')
     await this.boot()
@@ -353,4 +401,4 @@ class TulipVmService {
   }
 }
 
-export const tulipVmService = new TulipVmService()
+export const liliumVmService = new LiliumVmService()

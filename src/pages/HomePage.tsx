@@ -162,7 +162,7 @@ export default function HomePage() {
             para tu empresa
           </h1>
           <p className={styles.heroDesc}>
-            Tulip (Threat Understanding Layered Infrastructure Protection) es un playbook enfocado
+            Lilium (Threat Understanding Layered Infrastructure Protection) es un playbook enfocado
             en construir una arquitectura digital segura para tu PyME con laboratorios interactivos.
           </p>
           <div className={styles.heroCta}>
@@ -278,15 +278,15 @@ export default function HomePage() {
                 </TiltMagneticBadge>
               </div>
 
-              {/* ── Add-on: Informative Tulip card (floating offside left) ── */}
+              {/* ── Add-on: Informative Lilium card (floating offside left) ── */}
               <TiltMagneticBadge
-                className={styles.tulipInfoCard}
+                className={styles.liliumInfoCard}
                 maxTilt={3}
                 maxMagnetic={2}
                 baseZ={20}
               >
-                <div className={styles.tulipCardHeader}>
-                  <div className={styles.tulipCardIcon}>
+                <div className={styles.liliumCardHeader}>
+                  <div className={styles.liliumCardIcon}>
                     <svg
                       width="15"
                       height="15"
@@ -301,9 +301,9 @@ export default function HomePage() {
                       <path d="M9 12l2 2 4-4" />
                     </svg>
                   </div>
-                  <div className={styles.tulipCardMeta}>
-                    <span className={styles.tulipCardTitle}>Defensa en Capas</span>
-                    <span className={styles.tulipCardSub}>Metodología Tulip</span>
+                  <div className={styles.liliumCardMeta}>
+                    <span className={styles.liliumCardTitle}>Defensa en Capas</span>
+                    <span className={styles.liliumCardSub}>Metodología Lilium</span>
                   </div>
                 </div>
               </TiltMagneticBadge>

@@ -1,0 +1,661 @@
+/* ═══════════════════════════════════════════════════════════════════
+   LiliumPlaybookApp — Monochrome Frosted Glass Aesthetic
+   Strictly neutral / monochromatic: whites, grays, blacks, transparencies.
+   Zero color accents (no green, yellow, blue, red).
+   ═══════════════════════════════════════════════════════════════════ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  color: inherit;
+  font-family: inherit;
+  font-size: 14.5px;
+  user-select: text;
+  background: transparent;
+}
+
+/* ─────────────────────────────────────────────────────
+   HEADER (CLEAN & DYNAMIC)
+   ───────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: rgba(0, 0, 0, 0.95);
+}
+
+.labBadge {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.headerMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* ─────────────────────────────────────────────────────
+   MILESTONES / PHASES LIST
+   ───────────────────────────────────────────────────── */
+.milestonesList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.milestoneItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.025);
+  transition:
+    background 140ms ease,
+    border-color 140ms ease;
+}
+
+.milestoneItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.milestoneItemCompleted {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.milestoneItemLocked {
+  opacity: 0.72;
+  border-style: dashed;
+}
+
+.phaseBadgeLocked {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.phaseBadgeActive {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(24, 147, 255, 0.15);
+  border: 1px solid rgba(24, 147, 255, 0.35);
+  color: #1893ff;
+}
+
+.phaseBadgeDone {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(63, 185, 80, 0.15);
+  border: 1px solid rgba(63, 185, 80, 0.35);
+  color: #3fb950;
+}
+
+.lockedBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 6px;
+}
+
+.milestoneHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.milestoneCheckbox {
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: #0b0b0b;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.milestoneCheckbox:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.milestoneCheckboxCompleted {
+  border-color: rgba(255, 255, 255, 0.95);
+  background: #1893ff;
+  color: #ffffff;
+}
+
+.milestoneMeta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.milestoneTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.milestoneTitle {
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgba(0, 0, 0, 0.95);
+}
+
+.milestonePhase {
+  font-size: 11.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  opacity: 0.55;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+.milestoneDesc {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.7);
+  margin: 0;
+}
+
+/* ─────────────────────────────────────────────────────
+   SUBPHASES (DIRECTIVES)
+   ───────────────────────────────────────────────────── */
+.subphasesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.subphaseCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 120ms ease;
+}
+
+.subphaseCard:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.subphaseHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.subphaseNumber {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: rgba(0, 0, 0, 0.85);
+  letter-spacing: 0.02em;
+}
+
+.subphaseTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.95);
+  line-height: 1.4;
+}
+
+.subphaseText {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.72);
+}
+
+/* ─────────────────────────────────────────────────────
+   SUBPHASE ACTION BUTTONS: HERRAMIENTAS SUGERIDAS & SOLUCIÓN
+   Strictly neutral / monochrome
+   ───────────────────────────────────────────────────── */
+.subphaseButtonsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.subphaseBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
+  padding: 5px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 120ms ease;
+  user-select: none;
+}
+
+.subphaseBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #000000;
+}
+
+.subphaseBtnActive {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #000000;
+}
+
+/* ─────────────────────────────────────────────────────
+   DROPDOWNS (HERRAMIENTAS & SOLUCIÓN)
+   Neutral frosted container
+   ───────────────────────────────────────────────────── */
+.subphaseDropdown {
+  margin-top: 6px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(163, 163, 163, 0.312);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  animation: fadeIn 120ms ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dropdownTitle {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.inlineCopyBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(139, 139, 139, 0.16);
+  background: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.7);
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  cursor: pointer;
+  transition: all 120ms ease;
+  flex-shrink: 0;
+}
+
+.inlineCopyBtn:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #000000;
+}
+
+.inlineCopyBtnCopied {
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.12);
+  border-color: rgba(22, 163, 74, 0.3);
+}
+
+.inlineCopyBtnCopied:hover {
+  color: #15803d;
+  background: rgba(22, 163, 74, 0.18);
+  border-color: rgba(22, 163, 74, 0.4);
+}
+
+/* Hints / Tools list */
+.hintsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hintItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hintMeta {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.hintTool {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.hintDesc {
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 13px;
+}
+
+/* Code Snippets & Code Blocks */
+.codeBlockRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.codeSnippet {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  font-size: 12.5px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: rgba(255, 255, 255, 0.95);
+  word-break: break-all;
+  flex: 1;
+}
+
+/* Solution / Pedagogical Guide */
+.solutionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.solutionRationale {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.75);
+  padding: 8px 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+.stepsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 2px;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.stepAction {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.stepBullet {
+  color: rgba(0, 0, 0, 0.45);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stepDetail {
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.6);
+  margin-left: 14px;
+}
+
+.emptyNote {
+  margin: 0;
+  font-size: 12.5px;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* ─────────────────────────────────────────────────────
+   VERIFICATION CHECKLIST (NEUTRAL MONOCHROME)
+   ───────────────────────────────────────────────────── */
+.verificationBox {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.verificationTitle {
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.verificationItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  user-select: none;
+}
+
+.verificationItem input[type='checkbox'] {
+  accent-color: #1893ff;
+  cursor: pointer;
+}
+
+.verificationItemChecked {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+/* ─────────────────────────────────────────────────────
+   PRELUDE (MISIÓN & REGLAS DE TRABAJO FROM PLAYBOOK.MD)
+   ───────────────────────────────────────────────────── */
+.preludeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 8px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.85);
+  animation: fadeIn 120ms ease-out;
+  transition: all 140ms ease;
+}
+
+.preludeContainerCollapsed {
+  gap: 0;
+  padding: 8px 14px;
+}
+
+.preludeHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
+  font-family: inherit;
+  color: inherit;
+  text-align: left;
+  width: fit-content;
+}
+
+.preludeHeader:hover .preludeHeading {
+  color: rgba(0, 0, 0, 1);
+}
+
+.preludeHeader:hover .preludeArrow {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.95);
+}
+
+.preludeHeading {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.9);
+  transition: color 120ms ease;
+}
+
+.preludeArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.04);
+  color: rgba(0, 0, 0, 0.55);
+  transition:
+    transform 180ms ease,
+    background 120ms ease,
+    color 120ms ease;
+}
+
+.preludeArrowOpen {
+  transform: rotate(180deg);
+}
+
+.preludeBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeIn 120ms ease-out;
+}
+
+.preludeSubheading {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.preludeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.preludeParagraph {
+  margin: 0;
+  white-space: pre-line;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.rulesList {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ruleItem {
+  color: rgba(0, 0, 0, 0.8);
+}

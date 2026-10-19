@@ -234,8 +234,8 @@
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
 }
 
-/* ── Tulip info card: floats offside the left edge ── */
-.tulipInfoCard {
+/* ── Lilium info card: floats offside the left edge ── */
+.liliumInfoCard {
   position: absolute;
   left: -28px;
   bottom: 82px;
@@ -258,20 +258,20 @@
     border-color 0.25s ease;
 }
 
-.tulipInfoCard:hover {
+.liliumInfoCard:hover {
   border-color: rgba(0, 0, 0, 0.2);
   box-shadow:
     0 16px 36px -4px rgba(0, 0, 0, 0.14),
     0 4px 10px rgba(0, 0, 0, 0.06);
 }
 
-.tulipCardHeader {
+.liliumCardHeader {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.tulipCardIcon {
+.liliumCardIcon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -284,13 +284,13 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
-.tulipCardMeta {
+.liliumCardMeta {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.tulipCardTitle {
+.liliumCardTitle {
   font-family: var(--font-family);
   font-size: 0.82rem;
   font-weight: 700;
@@ -299,7 +299,7 @@
   letter-spacing: -0.01em;
 }
 
-.tulipCardSub {
+.liliumCardSub {
   font-family: var(--font-family);
   font-size: 0.68rem;
   font-weight: 500;
@@ -469,7 +469,7 @@
     max-width: 360px;
   }
 
-  .tulipInfoCard {
+  .liliumInfoCard {
     left: 4px;
     bottom: 54px;
     width: 240px;

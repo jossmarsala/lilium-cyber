@@ -19,8 +19,8 @@ import {
   type DemoThemeChoice,
 } from "@react-ui-os/demo";
 import { exampleApps } from "@react-ui-os/example-apps";
-import { tulipTerminalApp } from "@/os-apps/terminal";
-import { tulipPlaybookApp } from "@/os-apps/playbook";
+import { liliumTerminalApp } from "@/os-apps/terminal";
+import { liliumPlaybookApp } from "@/os-apps/playbook";
 
 import { notesApp } from "@/os-apps/notes";
 import { seedLabNotes } from "./seedLabNotes";
@@ -30,6 +30,7 @@ import { RecentsIcon } from "./RecentsIcon";
 import { StartRecents } from "./StartRecents";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { UbuntuQuickSettings } from "./UbuntuQuickSettings";
+import { labVerificationEngine } from "@/services/verification";
 
 // The apps, per-theme icons, theme builder, and Settings icons all come from
 // the shared @react-ui-os/demo config so the playground and the docs embed
@@ -64,13 +65,14 @@ function DesktopInitializer() {
   const { storage } = useDesktopContext();
   useEffect(() => {
     seedLabNotes(storage);
+    labVerificationEngine.evaluate();
   }, [storage]);
   return null;
 }
 
 const desktopApps: OsApp[] = [
-  tulipPlaybookApp,
-  tulipTerminalApp,
+  liliumPlaybookApp,
+  liliumTerminalApp,
   notesApp,
   ...exampleApps.filter((app) => app.id !== "terminal" && app.id !== "notes"),
 ];

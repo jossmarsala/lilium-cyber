@@ -6,14 +6,19 @@ import { useApp, useTheme } from '@react-ui-os/desktop'
 import { Terminal } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
 import '@xterm/xterm/css/xterm.css'
-import './TulipTerminalApp.css'
-import { tulipVmService } from '@/services/tulipVmService'
-import { seedVmScenario, resetVmSeeder } from '@/services/vmScenarioSeeder'
+import './LiliumTerminalApp.css'
+import { liliumVmService } from '@/services/liliumVmService'
+import {
+  seedVmScenario,
+  resetVmSeeder,
+  onVmSeedingCompleted,
+  isVmSeeded,
+} from '@/services/vmScenarioSeeder'
 
 /** Monospace font stack matching platform terminal fonts */
 const MONO = '"SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace'
 
-export function TulipTerminalApp({ focused }: AppContentProps) {
+export function LiliumTerminalApp({ focused }: AppContentProps) {
   const theme = useTheme()
   const app = useApp('terminal')
   const accent = app?.accent ?? theme.palette.accent ?? '#ff3366'
@@ -37,17 +42,17 @@ export function TulipTerminalApp({ focused }: AppContentProps) {
     }
   }, [])
 
-  // Initialize xterm and connect to tulipVmService
+  // Initialize xterm and connect to liliumVmService
   useEffect(() => {
     if (!terminalRef.current) return
 
     // Ensure the VM is booting, then seed the lab scenario from the SSoT
-    tulipVmService.boot().then(() => {
+    liliumVmService.boot().then(() => {
       seedVmScenario().catch((err) => {
-        console.error('[TulipTerminalApp] Scenario seed error:', err)
+        console.error('[LiliumTerminalApp] Scenario seed error:', err)
       })
     }).catch((err) => {
-      console.error('[TulipTerminalApp] VM boot error:', err)
+      console.error('[LiliumTerminalApp] VM boot error:', err)
     })
 
     const term = new Terminal({
@@ -111,42 +116,64 @@ export function TulipTerminalApp({ focused }: AppContentProps) {
 
     let reportedReady = false
 
+    // Initial disclaimer and context banner in neutral Spanish
+    const printTerminalDisclaimers = () => {
+      term.writeln('\x1b[1;36m┌────────────────────────────────────────────────────────────────────────┐\x1b[0m')
+      term.writeln('\x1b[1;36m│\x1b[0m \x1b[1;37mLaboratorio 1: El Invernadero — Auditoría y Respuesta a Incidentes\x1b[0m     \x1b[1;36m│\x1b[0m')
+      term.writeln('\x1b[1;36m├────────────────────────────────────────────────────────────────────────┤\x1b[0m')
+      term.writeln('\x1b[1;36m│\x1b[0m \x1b[33mNota:\x1b[0m Esta es una \x1b[1mterminal Linux emulada (x86 v86 / Buildroot)\x1b[0m en navegador. \x1b[1;36m│\x1b[0m')
+      term.writeln('\x1b[1;36m│\x1b[0m Los comandos se ejecutan dentro del entorno de laboratorio asignado.   \x1b[1;36m│\x1b[0m')
+      term.writeln('\x1b[1;36m└────────────────────────────────────────────────────────────────────────┘\x1b[0m')
+    }
+
     // Rehydrate circular buffer from VM
-    const rawBuffer = tulipVmService.getRawBuffer()
+    const rawBuffer = liliumVmService.getRawBuffer()
     if (rawBuffer.length > 0) {
+      printTerminalDisclaimers()
       term.write(rawBuffer)
-      // Send newline so shell redraws prompt on current column width
-      tulipVmService.serial0_send('\n')
+      liliumVmService.serial0_send('\n')
       reportedReady = true
     } else {
-      term.writeln('\x1b[36m[invernadero-central]\x1b[0m Conectando puerto serie ttyS0...')
-      term.writeln('\x1b[90mIniciando consola para operario@invernadero-central:~$\x1b[0m')
-      if (tulipVmService.getStatus() === 'ready') {
+      printTerminalDisclaimers()
+      term.writeln('\x1b[90mConectando puerto serie ttyS0...\x1b[0m')
+
+      if (isVmSeeded()) {
+        term.writeln('\x1b[32m[OK]\x1b[0m Configuración inicial cargada con éxito.')
         term.writeln('\x1b[32m[invernadero-central]\x1b[0m Conectado (ttyS0) - operario@invernadero-central:~$\r\n')
         reportedReady = true
+      } else {
+        term.writeln('\x1b[33m[...]\x1b[0m Cargando configuración inicial del laboratorio en segundo plano...')
       }
     }
 
     // Forward terminal keyboard input to serial port via UTF-8 bytes
     const dataDisposable = term.onData((data) => {
-      tulipVmService.serial0_send(data)
+      liliumVmService.serial0_send(data)
     })
 
     // High-throughput chunk streaming to eliminate per-byte rendering stutter
-    const unsubscribeChunks = tulipVmService.subscribeSerialChunks((chunk) => {
+    const unsubscribeChunks = liliumVmService.subscribeSerialChunks((chunk) => {
       term.write(chunk)
     })
 
+    // Listen for scenario seeding completion to clear loading message if not already reported
+    const unsubscribeSeeding = onVmSeedingCompleted(() => {
+      if (!reportedReady) {
+        reportedReady = true
+        term.writeln('\r\n\x1b[32m[OK]\x1b[0m Configuración inicial del laboratorio completada.')
+      }
+    })
+
     // Subscribe to VM status changes to communicate state via terminal messages
-    const unsubscribeStatus = tulipVmService.onStatusChange((status) => {
+    const unsubscribeStatus = liliumVmService.onStatusChange((status) => {
       if (status === 'ready') {
-        if (!reportedReady) {
+        if (isVmSeeded() && !reportedReady) {
           reportedReady = true
           term.writeln('\r\n\x1b[32m[invernadero-central]\x1b[0m Conectado (ttyS0) - operario@invernadero-central:~$\r\n')
         }
       } else if (status === 'stopped') {
         reportedReady = false
-        term.writeln('\r\n\x1b[31m[TULIP x86 OS]\x1b[0m Conexión detenida / desconectado.\r\n')
+        term.writeln('\r\n\x1b[31m[LILIUM x86 OS]\x1b[0m Conexión detenida / desconectado.\r\n')
       } else if (status === 'booting') {
         reportedReady = false
       }
@@ -163,6 +190,7 @@ export function TulipTerminalApp({ focused }: AppContentProps) {
       resizeObserver.disconnect()
       dataDisposable.dispose()
       unsubscribeChunks()
+      unsubscribeSeeding()
       unsubscribeStatus()
       term.dispose()
       termInstanceRef.current = null
@@ -195,15 +223,15 @@ export function TulipTerminalApp({ focused }: AppContentProps) {
     const term = termInstanceRef.current
     if (term) {
       term.clear()
-      term.writeln('\x1b[33m[TULIP x86 OS]\x1b[0m Reiniciando máquina virtual en frío...')
+      term.writeln('\x1b[33m[LILIUM x86 OS]\x1b[0m Reiniciando máquina virtual en frío...')
       term.writeln('\x1b[90mIniciando kernel Linux WebAssembly (Buildroot 6.8)...\x1b[0m')
     }
     resetVmSeeder() // allow re-seeding the scenario after reset
     try {
-      await tulipVmService.reset()
+      await liliumVmService.reset()
     } catch (err) {
-      console.error('[TulipTerminalApp] Error resetting VM:', err)
-      term?.writeln('\r\n\x1b[31m[TULIP x86 OS]\x1b[0m Error al reiniciar la máquina virtual.\r\n')
+      console.error('[LiliumTerminalApp] Error resetting VM:', err)
+      term?.writeln('\r\n\x1b[31m[LILIUM x86 OS]\x1b[0m Error al reiniciar la máquina virtual.\r\n')
     } finally {
       setIsResetting(false)
       // Restore focus to terminal immediately after reset completes
@@ -215,27 +243,27 @@ export function TulipTerminalApp({ focused }: AppContentProps) {
 
   return (
     <div
-      className="tulip-terminal-container"
+      className="lilium-terminal-container"
       onMouseDown={focusTerminal}
       onClick={focusTerminal}
     >
       <button
         type="button"
-        className="tulip-terminal-floating-reset"
+        className="lilium-terminal-floating-reset"
         onMouseDown={(e) => e.stopPropagation()}
         onClick={handleReset}
         disabled={isResetting}
         title="Reiniciar máquina virtual en frío"
         aria-label="Reiniciar terminal"
       >
-        <span className={isResetting ? 'tulip-terminal-spin' : ''}>↻</span>
+        <span className={isResetting ? 'lilium-terminal-spin' : ''}>↻</span>
         <span>{isResetting ? 'Reiniciando...' : 'Reiniciar'}</span>
       </button>
 
       {/* Screen container for XTerm */}
-      <div ref={terminalRef} className="tulip-terminal-screen" />
+      <div ref={terminalRef} className="lilium-terminal-screen" />
     </div>
   )
 }
 
-export default TulipTerminalApp
+export default LiliumTerminalApp

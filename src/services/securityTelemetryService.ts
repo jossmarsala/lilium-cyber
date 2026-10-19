@@ -1,5 +1,5 @@
 /**
- * Security Telemetry Service — TULIP Cyber Range
+ * Security Telemetry Service — LILIUM Cyber Range
  * Centralized, synchronized telemetry engine connecting Argos SIEM, Vigil EDR,
  * the guest Linux sandbox VM (v86), and the Lab Playbook / Expediente.
  *
@@ -9,7 +9,7 @@
  */
 
 import { notify } from '@react-ui-os/core'
-import { tulipVmService, type VmStatus } from './tulipVmService'
+import { liliumVmService, type VmStatus } from './liliumVmService'
 import { labVerificationService } from './labVerificationService'
 
 export interface TelemetryProvenance {
@@ -121,8 +121,8 @@ export interface SecurityOverviewStats {
   sourcesBreakdown: Record<string, number>
 }
 
-const STORAGE_KEY_SIEM_NOTES = 'tulip_siem_notes_v2'
-const STORAGE_KEY_EDR_NOTES = 'tulip_edr_notes_v2'
+const STORAGE_KEY_SIEM_NOTES = 'lilium_siem_notes_v2'
+const STORAGE_KEY_EDR_NOTES = 'lilium_edr_notes_v2'
 
 const INITIAL_SIEM_EVENTS: SiemEventItem[] = [
   {
@@ -680,8 +680,8 @@ class SecurityTelemetryService {
     this.loadNotes()
 
     // Sync with VM status
-    this.vmStatus = tulipVmService.getStatus()
-    tulipVmService.onStatusChange((status) => {
+    this.vmStatus = liliumVmService.getStatus()
+    liliumVmService.onStatusChange((status) => {
       this.vmStatus = status
       if (status === 'ready') {
         this.syncWithSandboxState()
@@ -981,7 +981,7 @@ class SecurityTelemetryService {
   /* ── Sandbox Live Operations ── */
   public async bootSandbox(): Promise<void> {
     try {
-      await tulipVmService.boot()
+      await liliumVmService.boot()
     } catch (err) {
       console.error('[SecurityTelemetryService] Boot error:', err)
       notify({
@@ -1004,7 +1004,7 @@ class SecurityTelemetryService {
       if (isLive) {
         const containmentCmd =
           'kill -15 $(pgrep -f baliza_eco 2>/dev/null || pgrep -f "nc -l -p 4444" 2>/dev/null || echo "") 2>/dev/null; rm -f /tmp/.baliza_eco.sh'
-        tulipVmService.serial0_send(`\n ${containmentCmd}\n`)
+        liliumVmService.serial0_send(`\n ${containmentCmd}\n`)
       }
 
       // Update EDR detection state
@@ -1067,7 +1067,7 @@ class SecurityTelemetryService {
 
       if (detectionId === 'EDR-02') {
         if (isLive) {
-          tulipVmService.serial0_send('\n chmod 600 /home/custodio/.ssh/id_ed25519 2>/dev/null\n')
+          liliumVmService.serial0_send('\n chmod 600 /home/custodio/.ssh/id_ed25519 2>/dev/null\n')
         }
 
         this.edrDetections = this.edrDetections.map((d) => {
@@ -1113,7 +1113,7 @@ class SecurityTelemetryService {
 
       if (detectionId === 'EDR-03') {
         if (isLive) {
-          tulipVmService.serial0_send('\n chmod 640 /etc/estacion_confidencial.conf 2>/dev/null\n')
+          liliumVmService.serial0_send('\n chmod 640 /etc/estacion_confidencial.conf 2>/dev/null\n')
         }
 
         this.edrDetections = this.edrDetections.map((d) => {
@@ -1174,7 +1174,7 @@ class SecurityTelemetryService {
         if (isLive) {
           const qCmd =
             'mkdir -p /tmp/.quarantine && mv -f /tmp/.baliza_eco.sh /tmp/.quarantine/ 2>/dev/null'
-          tulipVmService.serial0_send(`\n ${qCmd}\n`)
+          liliumVmService.serial0_send(`\n ${qCmd}\n`)
         }
 
         if (!this.quarantinedFiles.includes('/tmp/.baliza_eco.sh')) {
@@ -1244,15 +1244,15 @@ class SecurityTelemetryService {
       'pgrep -f "baliza_eco" >/dev/null 2>&1 && B_ACT="1"',
       'KEY_PERM="$(stat -c %a /home/custodio/.ssh/id_ed25519 2>/dev/null || stat -f %Lp /home/custodio/.ssh/id_ed25519 2>/dev/null || echo 0)"',
       'CONF_PERM="$(stat -c %a /etc/estacion_confidencial.conf 2>/dev/null || stat -f %Lp /etc/estacion_confidencial.conf 2>/dev/null || echo 0)"',
-      'echo "TULIP_SEC_PROBE:baliza=$B_ACT:key=$KEY_PERM:conf=$CONF_PERM"',
+      'echo "LILIUM_SEC_PROBE:baliza=$B_ACT:key=$KEY_PERM:conf=$CONF_PERM"',
     ].join('; ')
 
-    tulipVmService.serial0_send(` ${checkCmd}\n`)
+    liliumVmService.serial0_send(` ${checkCmd}\n`)
 
     await new Promise((res) => setTimeout(res, 500))
 
-    const recent = tulipVmService.getRecentOutput(1024)
-    const match = recent.match(/TULIP_SEC_PROBE:baliza=(0|1):key=(\d+):conf=(\d+)/)
+    const recent = liliumVmService.getRecentOutput(1024)
+    const match = recent.match(/LILIUM_SEC_PROBE:baliza=(0|1):key=(\d+):conf=(\d+)/)
 
     if (match) {
       const balizaActive = match[1] === '1'

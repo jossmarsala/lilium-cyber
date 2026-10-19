@@ -7,7 +7,7 @@
  * - Row 2: All other 4 Labs (responsive 4-column card grid with thumbnail previews,
  *   step overlay pills, play button overlays, category tags and difficulty badges).
  *
- * 100% styled using TULIP's existing design system tokens and typography.
+ * 100% styled using LILIUM's existing design system tokens and typography.
  */
 
 import { useState } from 'react'
@@ -501,13 +501,7 @@ export default function LabsPage() {
                     cursor: 'pointer',
                   }}
                   onClick={() => {
-                    if (activeModalLab.id === 'lab-01') {
-                      navigate('/desktop')
-                    } else {
-                      alert(
-                        `Iniciando entorno para "${activeModalLab.title}". Próximamente se conectará el motor interactivo.`
-                      )
-                    }
+                    navigate(`/desktop?lab=${activeModalLab.id}`)
                   }}
                 >
                   Iniciar Laboratorio

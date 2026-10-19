@@ -6,7 +6,7 @@
  */
 
 import { notify } from '@react-ui-os/core'
-import { tulipVmService } from './tulipVmService'
+import { liliumVmService } from './liliumVmService'
 
 export interface MilestoneHint {
   concept: string
@@ -57,10 +57,10 @@ export interface ReferenceDocItem {
   dateAdded?: number
 }
 
-const STORAGE_KEY_MILESTONES = 'tulip_lab_01_milestones_v3'
-const STORAGE_KEY_FINDINGS = 'tulip_lab_01_findings_v3'
-const STORAGE_KEY_REFERENCES = 'tulip_lab_01_references_v3'
-const STORAGE_KEY_AUDIT_LOG = 'tulip_lab_01_audit_log_v3'
+const STORAGE_KEY_MILESTONES = 'lilium_lab_01_milestones_v3'
+const STORAGE_KEY_FINDINGS = 'lilium_lab_01_findings_v3'
+const STORAGE_KEY_REFERENCES = 'lilium_lab_01_references_v3'
+const STORAGE_KEY_AUDIT_LOG = 'lilium_lab_01_audit_log_v3'
 
 export const INITIAL_MILESTONES: MilestoneItem[] = [
   {
@@ -615,10 +615,10 @@ class LabVerificationService {
 
   /* ── EDR Direct Containment Action ── */
   public async containRogueProcess(): Promise<boolean> {
-    if (tulipVmService.getStatus() === 'ready') {
+    if (liliumVmService.getStatus() === 'ready') {
       const containmentScript =
         'kill -15 $(pgrep -f baliza_eco 2>/dev/null || pgrep -f "nc -l -p 4444" 2>/dev/null || echo "") 2>/dev/null; rm -f /tmp/.baliza_eco.sh'
-      tulipVmService.serial0_send(`\n ${containmentScript}\n`)
+      liliumVmService.serial0_send(`\n ${containmentScript}\n`)
     }
 
     this.setMilestoneCompleted('m4', true)
@@ -636,11 +636,11 @@ class LabVerificationService {
 
   /* ── Guest VM Environment Bootstrap & Live Evaluation ── */
   public async ensureGuestSetup(): Promise<void> {
-    if (tulipVmService.getStatus() !== 'ready') return
+    if (liliumVmService.getStatus() !== 'ready') return
 
     const setupScript = [
-      'if [ ! -f /tmp/.tulip_lab1_ready ]; then',
-      '  touch /tmp/.tulip_lab1_ready',
+      'if [ ! -f /tmp/.lilium_lab1_ready ]; then',
+      '  touch /tmp/.lilium_lab1_ready',
       '  mkdir -p /home/custodio/.ssh /etc/ssh /var/log /home/antiguo_operador /usr/local/bin',
       '  cat << \'EOF\' > /var/log/trafico_red.log',
       '[REGISTRO DE CAPTURA DE RED - NODO 07]',
@@ -666,7 +666,7 @@ class LabVerificationService {
       '5. Hardening: sha256sum /usr/local/bin/firmware_oficial.bin y chmod 600 ~/.ssh/id_ed25519.',
       'EOF',
       '  cat << \'EOF\' > /usr/local/bin/firmware_oficial.bin',
-      'TULIP_OFFICIAL_FIRMWARE_SENSOR_v1.0.4',
+      'LILIUM_OFFICIAL_FIRMWARE_SENSOR_v1.0.4',
       'EOF',
       '  echo "e4a2872658823f6de8be5bc65181775ba1e4b9f3900d11019ca66eb1a82f3c73  /usr/local/bin/firmware_oficial.bin" > /etc/reliquia.sha256',
       '  cat << \'EOF\' > /home/custodio/.ssh/id_ed25519',
@@ -676,7 +676,7 @@ class LabVerificationService {
       '-----END OPENSSH PRIVATE KEY-----',
       'EOF',
       '  chmod 644 /home/custodio/.ssh/id_ed25519',
-      '  echo -e "ESTACION_ID=reliquia-07\\nTOKEN=tulip_sec_token_9841fbc09e12" > /etc/estacion_confidencial.conf',
+      '  echo -e "ESTACION_ID=reliquia-07\\nTOKEN=lilium_sec_token_9841fbc09e12" > /etc/estacion_confidencial.conf',
       '  chmod 777 /etc/estacion_confidencial.conf',
       '  if [ ! -f /etc/ssh/sshd_config ]; then',
       '    echo -e "Port 22\\nPermitRootLogin yes\\nPasswordAuthentication yes" > /etc/ssh/sshd_config',
@@ -697,7 +697,7 @@ class LabVerificationService {
       '  echo "• Directiva CIS IG1: Restringir permisos de ~/.ssh/id_ed25519 a 600."',
       '  echo "=========================================================="',
       '  echo "Telemetría forense recibida con éxito. Conexión cerrada por el host."',
-      '  touch /tmp/.tulip_ssh_tested',
+      '  touch /tmp/.lilium_ssh_tested',
       '  exit 0',
       'fi',
       'if [ -x /usr/bin/dbclient ]; then',
@@ -706,7 +706,7 @@ class LabVerificationService {
       '  exec /bin/ssh "$@"',
       'else',
       '  echo "[+] Conexión SSH simulada hacia $DEST completada."',
-      '  touch /tmp/.tulip_ssh_tested',
+      '  touch /tmp/.lilium_ssh_tested',
       'fi',
       'EOF',
       '  chmod +x /usr/local/bin/ssh',
@@ -714,7 +714,7 @@ class LabVerificationService {
       'fi',
     ].join('\n')
 
-    tulipVmService.serial0_send(`\n${setupScript}\n`)
+    liliumVmService.serial0_send(`\n${setupScript}\n`)
   }
 
   public async evaluateLab(): Promise<void> {
@@ -728,7 +728,7 @@ class LabVerificationService {
         this.setMilestoneCompleted('m2', true, true)
       }
 
-      if (tulipVmService.getStatus() === 'ready') {
+      if (liliumVmService.getStatus() === 'ready') {
         await this.ensureGuestSetup()
 
         const auditCmd = [
@@ -739,7 +739,7 @@ class LabVerificationService {
           'M5="false"',
           'M6="false"',
           // M3: traffic log analyzed or ssh gateway tested
-          '([ -f /tmp/.tulip_ssh_tested ] || [ -f /var/log/trafico_red.log ]) && M3="true"',
+          '([ -f /tmp/.lilium_ssh_tested ] || [ -f /var/log/trafico_red.log ]) && M3="true"',
           // M4: rogue process terminated & socket 4444 closed
           'netstat -tuln 2>/dev/null | grep -q ":4444 " && M4="false"',
           'pgrep -f "baliza_eco" >/dev/null 2>&1 && M4="false"',
@@ -747,14 +747,14 @@ class LabVerificationService {
           'grep -Eq "(custodio|analista|operador)" /etc/passwd && [ "$(stat -c %a /home/custodio/.ssh/id_ed25519 2>/dev/null || stat -f %Lp /home/custodio/.ssh/id_ed25519 2>/dev/null || echo 0)" = "600" ] && M5="true"',
           // M6: firmware SHA-256 match
           'sha256sum /usr/local/bin/firmware_oficial.bin 2>/dev/null | grep -q "e4a2872658823f6de8be5bc65181775ba1e4b9f3900d11019ca66eb1a82f3c73" && M6="true"',
-          'echo "{\\"m1\\":$M1,\\"m2\\":$M2,\\"m3\\":$M3,\\"m4\\":$M4,\\"m5\\":$M5,\\"m6\\":$M6}" > /tmp/tulip_audit.json',
+          'echo "{\\"m1\\":$M1,\\"m2\\":$M2,\\"m3\\":$M3,\\"m4\\":$M4,\\"m5\\":$M5,\\"m6\\":$M6}" > /tmp/lilium_audit.json',
         ].join('; ')
 
-        tulipVmService.serial0_send(` ${auditCmd}\n`)
+        liliumVmService.serial0_send(` ${auditCmd}\n`)
 
         await new Promise((res) => setTimeout(res, 450))
 
-        const recent = tulipVmService.getRecentOutput(1024)
+        const recent = liliumVmService.getRecentOutput(1024)
         const match = recent.match(
           /\{"m1":(true|false),"m2":(true|false),"m3":(true|false),"m4":(true|false),"m5":(true|false),"m6":(true|false)\}/
         )

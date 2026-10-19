@@ -805,7 +805,12 @@ Estos rangos no significan que todo servicio deba utilizar un puerto determinado
 
 ### Servicios en escucha y estado de los puertos
 
-Un **servicio en escucha** (_listening service_) es un programa o proceso que se mantiene activo en segundo plano, esperando recibir solicitudes entrantes en un puerto específico. Un servicio puede escuchar únicamente en 127.0.0.1, en una dirección privada específica o en todas las interfaces, según su configuración. Por eso, que un puerto esté abierto localmente no implica que sea accesible desde Internet.
+Un **servicio en escucha** (_listening service_) es un programa o proceso que se mantiene activo en segundo plano, esperando recibir solicitudes entrantes en un puerto específico. Al auditar qué puertos y servicios están abiertos en el sistema (por ejemplo, ejecutando `ss -tulpn` en la terminal), es fundamental observar la **dirección IP de enlace** (_bind address_) para entender el alcance y la exposición real del servicio:
+
+- **`127.0.0.1` (o `::1` en IPv6) — Interfaz de bucle local (_loopback_):** El servicio únicamente escucha solicitudes originadas dentro de la propia máquina local. Ningún dispositivo externo de la red ni de Internet puede alcanzar este puerto. Es ideal para bases de datos locales, colas internas o paneles administrativos que no deben exponerse al exterior.
+- **`0.0.0.0` (o `*` / `::` en IPv6) — Dirección comodín (_wildcard_):** Significa que el servicio está **escuchando en todas las interfaces de red del equipo simultáneamente** (hacia adentro y hacia afuera). Esto implica que el puerto está expuesto a cualquier dispositivo con conectividad hacia la máquina (en la red local, en la VPN o directamente en Internet si no hay un firewall intermedio o local que lo restrinja).
+
+Distinguir entre `127.0.0.1` y `0.0.0.0` al tirar comandos como `ss -tulpn` es vital para saber de inmediato qué servicio es solo interno y cuál está expuesto a toda la red como una potencial superficie de ataque.
 
 Desde la perspectiva de una prueba de conectividad (escaneo de red), un puerto puede presentar tres estados:
 
@@ -1476,6 +1481,9 @@ También puede usarse la sintaxis simbólica para conceder o revocar permisos pu
 - `chmod u+x script.sh` agrega (`+`) permiso de ejecución (`x`) exclusivamente al usuario propietario (`u`).
 - `chmod go-w archivo.txt` quita (`-`) el permiso de escritura (`w`) al grupo (`g`) y a otros (`o`).
 
+> [!NOTE:Archivos de Configuración e Historial en Auditorías Reales]
+> En auditorías de seguridad y peritajes forenses se revisa minuciosamente el archivo de historial `~/.bash_history` para comprobar qué comandos ejecutó un operador o intruso con anterioridad. De igual manera, las credenciales de bases de datos y tokens de APIs suelen filtrarse con frecuencia debido al error de dejar archivos de configuración (`.env` o `.conf`) con permisos de lectura global (`644` o `777`), en lugar de restringir su acceso exclusivamente al propietario legítimo con permisos estrictos (`chmod 600`).
+
 #### Cambio de Propietario con `chown`
 
 Cuando un servicio o usuario transfiere la custodia de un recurso a otra cuenta, se utiliza `chown`:
@@ -1609,6 +1617,10 @@ sudo systemctl restart nginx.service
 - **`sudo systemctl restart`:** Detiene y vuelve a iniciar el servicio en un solo paso, útil tras modificar archivos de configuración.
 - **`sudo systemctl enable / disable / allow`:** Define si el servicio debe arrancar automáticamente cada vez que el equipo se enciende (`enable`), si sólo se va a permitir durante esa sesión activa en la terminal (`allow`) o si solo se iniciará cuando se ordene manualmente (`disable`).
 
+> [!IMPORTANT:Disco vs. Memoria RAM y Persistencia]
+> **Borrar un ejecutable no detiene el proceso:** Eliminar un archivo ejecutable del disco (`rm script.sh` o `rm binario`) **no detiene el proceso** si este ya se encuentra corriendo en la memoria RAM. El sistema continuará ejecutándolo hasta que sea terminado explícitamente mediante una señal enviada con el comando `kill`.
+> **Detener un servicio no previene su inicio tras reiniciar:** De forma similar, apagar un servicio activo con `systemctl stop` detiene su ejecución inmediata, pero **no evita que vuelva a encenderse al reiniciar el equipo** a menos que se deshabilite su arranque persistente con `systemctl disable`.
+
 ### Diagnóstico y Comandos de Red desde la Terminal
 
 Cualquier equipo conectado a una red intercambia tráfico a través de direcciones lógicas (IP) y puntos de enlace específicos denominados **puertos**. Dominar las herramientas de red en la terminal permite verificar la conectividad, identificar qué servicios están escuchando y diagnosticar fallas de comunicación.
@@ -1654,6 +1666,7 @@ ss -tulpn
 - **Parámetro `-l` (Listening):** Muestra exclusivamente aquellos puertos que se encuentran abiertos y **en escucha**, es decir, esperando conexiones entrantes.
 - **Parámetro `-p` (Processes):** Muestra el nombre y PID del programa responsable de mantener abierto ese puerto (requiere `sudo` para ver procesos de otros usuarios).
 - **Parámetro `-n` (Numeric):** Muestra los números de puerto de forma directa (como `:80` o `:22`) en lugar de intentar traducirlos a nombres de servicios, lo que acelera la salida y evita ambigüedades.
+- **Lectura de la columna `Local Address:Port`:** Es fundamental revisar la dirección IP antes del puerto. Si muestra `127.0.0.1:puerto`, el servicio escucha exclusivamente en la interfaz local interna (_loopback_) y no es alcanzable desde la red; en cambio, si figura `0.0.0.0:puerto` (o `*:puerto`), la dirección comodín revela que escucha en **todas las interfaces de red**, quedando expuesto hacia afuera a cualquier equipo de la red.
 
 ### 4. Rastreo de rutas y resolución DNS
 
@@ -1866,15 +1879,25 @@ La primera ocasión en que nos conectamos a un equipo remoto por SSH, el cliente
 
 #### Buenas Prácticas en la Configuración del Servidor SSH
 
-La configuración defensiva del servicio SSH se centraliza en el archivo `/etc/ssh/sshd_config`. Un despliegue robusto adopta las siguientes directivas recomendadas:
+La configuración defensiva del servicio SSH se centraliza en el archivo `/etc/ssh/sshd_config`. Para asegurar un servidor contra accesos no autorizados y ataques automatizados de fuerza bruta, existen **tres reglas de oro indispensables**:
+
+1. **`PermitRootLogin no`:** Prohíbe que el superusuario `root` inicie sesión directamente a través de la red. Obliga a que cualquier operador ingrese primero con su propia cuenta personal nominativa y luego eleve privilegios mediante `sudo`, asegurando la trazabilidad y la responsabilidad individual en los registros.
+2. **`PasswordAuthentication no`:** Desactiva la autenticación mediante contraseñas tradicionales y exige el uso exclusivo de llaves SSH criptográficas (`PubkeyAuthentication yes`), neutralizando por completo los ataques de diccionario y fuerza bruta provenientes de Internet.
+3. **Limitar qué usuarios pueden conectarse (`AllowUsers`):** Define de forma explícita qué cuentas específicas están autorizadas a conectarse por SSH (por ejemplo: `AllowUsers operador admin`). Cualquier otra cuenta local del sistema, aunque posea credenciales válidas, tendrá vetado el inicio de sesión remoto.
+
+Principales directivas defensivas a auditar en `/etc/ssh/sshd_config`:
 
 | Directiva en `sshd_config` | Valor Seguro Recomendado        | Justificación Defensiva                                                                                                                  |
 | :------------------------- | :------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------- |
-| `PermitRootLogin`          | `no`                            | Impide que el superusuario `root` inicie sesión directamente a través de la red, obligando a acceder con una cuenta personal nominativa. |
-| `PasswordAuthentication`   | `no`                            | Desactiva por completo el acceso mediante contraseñas comunes, exigiendo autenticación exclusiva mediante claves criptográficas.         |
+| `PermitRootLogin`          | `no`                            | **Regla de oro 1:** Impide que el superusuario `root` inicie sesión directamente por red; exige acceso nominal con `sudo`.              |
+| `PasswordAuthentication`   | `no`                            | **Regla de oro 2:** Desactiva contraseñas comunes y obliga a usar exclusivamente llaves SSH criptográficas.                            |
+| `AllowUsers`               | `usuario1 usuario2`             | **Regla de oro 3:** Restringe el acceso SSH exclusivamente a las cuentas listadas; bloquea a cualquier otro usuario del sistema.        |
 | `PubkeyAuthentication`     | `yes`                           | Habilita formalmente el ingreso validado por el par de claves pública y privada.                                                         |
 | `MaxAuthTries`             | `3`                             | Limita la cantidad de intentos fallidos antes de interrumpir la conexión, dificultando ataques de sondeo.                                |
 | `Port`                     | Puerto no estándar (ej. `2222`) | Cambiar el puerto predeterminado (22) reduce notablemente el ruido generado por escáneres automatizados de Internet.                     |
+
+> [!TIP]
+> Recuerde que cualquier cambio efectuado en `/etc/ssh/sshd_config` requiere reiniciar o recargar el servicio para surtir efecto en el sistema: `sudo systemctl restart ssh.service`. Es una excelente práctica mantener una sesión SSH abierta de respaldo mientras se comprueba la nueva configuración desde otra terminal para evitar quedar bloqueado fuera del servidor ante un posible error de sintaxis.
 
 ### Implicaciones de Seguridad de Redes y Sistemas
 

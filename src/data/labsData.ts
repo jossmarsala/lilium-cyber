@@ -1,6 +1,6 @@
 /**
  * Educational Interactive Labs Data Definition
- * Provides metadata and manifest for TULIP interactive cyber-range labs.
+ * Provides metadata and manifest for LILIUM interactive cyber-range labs.
  */
 
 export type LabDifficulty = 'Principiante' | 'Intermedio' | 'Avanzado'

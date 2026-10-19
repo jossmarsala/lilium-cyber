@@ -7,7 +7,8 @@
  * initialFs / initialProcesses on the real Linux filesystem.
  */
 
-import { tulipVmService } from './tulipVmService'
+import { liliumVmService } from './liliumVmService'
+import { getLabSetupScript } from '@/data/compiledLabs'
 import {
   createInitialFileSystem,
   CONTENT_CALIBRACION_V1,
@@ -23,11 +24,11 @@ let seeded = false
 function writeVmFile(path: string, content: string): string[] {
   const lines: string[] = []
   // Replace the delimiter if it appears in content to avoid premature EOF
-  const safeContent = content.replace(/TULIP_EOF/g, 'TULIP_EO_F')
+  const safeContent = content.replace(/LILIUM_EOF/g, 'LILIUM_EO_F')
   lines.push(`mkdir -p "$(dirname '${path}')"`)
-  lines.push(`cat > '${path}' << 'TULIP_EOF'`)
+  lines.push(`cat > '${path}' << 'LILIUM_EOF'`)
   lines.push(safeContent)
-  lines.push('TULIP_EOF')
+  lines.push('LILIUM_EOF')
   return lines
 }
 
@@ -36,7 +37,7 @@ function buildSetupScript(): string[] {
   const cmds: string[] = []
   const fs = createInitialFileSystem()
 
-  cmds.push('echo "[TULIP] Inicializando escenario El Invernadero..."')
+  cmds.push('echo "[LILIUM] Inicializando escenario El Invernadero..."')
 
   // ── Users (busybox adduser) ──────────────────────────────────────────────
   cmds.push('adduser -D -H -s /bin/sh operario 2>/dev/null || true')
@@ -186,7 +187,7 @@ function buildSetupScript(): string[] {
   cmds.push('chmod 755 /tmp/polilla_emisora')
   // Launch under www-data uid in background so it shows up in `ps aux`
   cmds.push("su -s /bin/sh www-data -c '/tmp/polilla_emisora' >/dev/null 2>&1 &")
-  cmds.push('echo "[TULIP] polilla_emisora corriendo como www-data (socket :4444 abierto)"')
+  cmds.push('echo "[LILIUM] polilla_emisora corriendo como www-data (socket :4444 abierto)"')
 
   // ── Ownership ────────────────────────────────────────────────────────────
   cmds.push('chown -R 1000:1000 /home/cuidador 2>/dev/null || true')
@@ -217,18 +218,30 @@ function buildSetupScript(): string[] {
  * Seeds the v86 VM with the Lab 1 scenario from the SSoT.
  * Safe to call multiple times — only runs once per VM lifetime.
  */
-export async function seedVmScenario(): Promise<void> {
+export async function seedVmScenario(targetLabId?: string): Promise<void> {
   if (seeded) return
   seeded = true
 
+  const labId =
+    targetLabId ||
+    (typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('lab') || 'lab-01'
+      : 'lab-01')
+
   try {
     // Wait for the real Linux shell to be ready
-    await tulipVmService.waitForReady(90000)
+    await liliumVmService.waitForReady(90000)
 
     // Give the shell time to settle after boot
     await new Promise<void>((resolve) => setTimeout(resolve, 2500))
 
-    const cmds = buildSetupScript()
+    // Mute serial streaming to the terminal UI during setup so the initial
+    // single source of truth commands run completely hidden in the background
+    liliumVmService.setSerialMuted(true)
+
+    // Read setup script from SSoT markdown commands via compiledLabs
+    const compiledCmds = getLabSetupScript(labId)
+    const cmds = compiledCmds.length > 0 ? compiledCmds : buildSetupScript()
 
     // Send in small batches with delays to prevent serial buffer overflow
     const BATCH_SIZE = 4
@@ -237,19 +250,56 @@ export async function seedVmScenario(): Promise<void> {
     for (let i = 0; i < cmds.length; i += BATCH_SIZE) {
       const batch = cmds.slice(i, i + BATCH_SIZE)
       for (const line of batch) {
-        tulipVmService.serial0_send(line + '\n')
+        liliumVmService.serial0_send(line + '\n')
       }
       await new Promise<void>((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
     }
 
-    console.info('[vmScenarioSeeder] Lab 1 scenario seeded into v86 VM successfully.')
+    // Wait a brief moment for the last commands (clear, welcome banner, prompt) to settle in the VM
+    await new Promise<void>((resolve) => setTimeout(resolve, 600))
+
+    // Unmute serial output so user terminal interactions and subsequent output stream normally
+    liliumVmService.setSerialMuted(false)
+
+    // Trigger prompt refresh in case the shell needs a newline redraw
+    liliumVmService.serial0_send('\n')
+
+    console.info(`[vmScenarioSeeder] ${labId} scenario seeded into v86 VM successfully.`)
+    notifySeedingCompleted()
   } catch (err) {
+    liliumVmService.setSerialMuted(false)
     console.error('[vmScenarioSeeder] Failed to seed scenario:', err)
     seeded = false // allow retry on next attempt
   }
 }
 
-/** Resets the seeded flag — call after tulipVmService.reset() so the scenario re-seeds. */
+const seedingListeners = new Set<() => void>()
+
+function notifySeedingCompleted(): void {
+  for (const listener of seedingListeners) {
+    try {
+      listener()
+    } catch (e) {
+      console.error('[vmScenarioSeeder] Error in seeding listener:', e)
+    }
+  }
+}
+
+export function onVmSeedingCompleted(cb: () => void): () => void {
+  seedingListeners.add(cb)
+  if (seeded && !liliumVmService.getIsSerialMuted()) {
+    cb()
+  }
+  return () => {
+    seedingListeners.delete(cb)
+  }
+}
+
+export function isVmSeeded(): boolean {
+  return seeded && !liliumVmService.getIsSerialMuted()
+}
+
+/** Resets the seeded flag — call after liliumVmService.reset() so the scenario re-seeds. */
 export function resetVmSeeder(): void {
   seeded = false
 }

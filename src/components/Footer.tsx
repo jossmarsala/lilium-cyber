@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import TulipIcon from './TulipIcon'
+import LiliumIcon from './LiliumIcon'
 import FaultyTerminal from './FaultyTerminal'
 import SpecularButton from './SpecularButton'
 import styles from './Footer.module.css'
@@ -140,16 +140,16 @@ export default function Footer({ id = 'contact', className, showCta = true }: Fo
               to="/"
               onClick={handleHomeClick}
               className={styles.brandContainer}
-              aria-label="Tulip Home"
+              aria-label="Lilium Home"
             >
-              <TulipIcon size={20} className={styles.brandIcon} alt="Tulip logo" />
-              <span className={styles.brandName}>tulip</span>
+              <LiliumIcon size={20} className={styles.brandIcon} alt="Lilium logo" />
+              <span className={styles.brandName}>lilium</span>
             </Link>
             <p className={styles.brandTagline}>
               Threat Understanding Layered Infrastructure Protection.
             </p>
             <p className={styles.brandCopyright}>
-              © {new Date().getFullYear()} Tulip. Todos los derechos reservados.
+              © {new Date().getFullYear()} Lilium. Todos los derechos reservados.
             </p>
           </div>
 
@@ -202,7 +202,7 @@ export default function Footer({ id = 'contact', className, showCta = true }: Fo
                     onClick={(e) => handleScrollToSection(e, 'about')}
                     className={styles.link}
                   >
-                    Sobre Tulip
+                    Sobre Lilium
                   </a>
                 </li>
                 <li>

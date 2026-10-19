@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════
-   TULIP Terminal — Styling for headless v86 + Xterm in React UI-OS
+   LILIUM Terminal — Styling for headless v86 + Xterm in React UI-OS
    ═══════════════════════════════════════════════════════════════════ */
 
 /* Remove default 16px window body padding for seamless edge-to-edge terminal display */
@@ -9,7 +9,7 @@
   background: #0e1117 !important;
 }
 
-.tulip-terminal-container {
+.lilium-terminal-container {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -22,7 +22,7 @@
   border-radius: 0 !important;
 }
 
-.tulip-terminal-screen {
+.lilium-terminal-screen {
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
@@ -34,7 +34,7 @@
 }
 
 /* Discreet, borderless floating restart button in top-right corner */
-.tulip-terminal-floating-reset {
+.lilium-terminal-floating-reset {
   position: absolute;
   top: 8px;
   right: 12px;
@@ -56,28 +56,28 @@
   transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-.tulip-terminal-container:hover .tulip-terminal-floating-reset {
+.lilium-terminal-container:hover .lilium-terminal-floating-reset {
   opacity: 0.75;
 }
 
-.tulip-terminal-floating-reset:hover {
+.lilium-terminal-floating-reset:hover {
   opacity: 1 !important;
   background: rgba(255, 255, 255, 0.12);
   color: #f0f6fc;
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-.tulip-terminal-floating-reset:disabled {
+.lilium-terminal-floating-reset:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.tulip-terminal-spin {
+.lilium-terminal-spin {
   display: inline-block;
-  animation: tulip-terminal-spin 1s linear infinite;
+  animation: lilium-terminal-spin 1s linear infinite;
 }
 
-@keyframes tulip-terminal-spin {
+@keyframes lilium-terminal-spin {
   from {
     transform: rotate(0deg);
   }
@@ -87,30 +87,30 @@
 }
 
 /* XTerm internal styling overrides */
-.tulip-terminal-screen .xterm {
+.lilium-terminal-screen .xterm {
   height: 100%;
   padding: 0;
 }
 
-.tulip-terminal-screen .xterm-viewport {
+.lilium-terminal-screen .xterm-viewport {
   overflow-y: auto !important;
   background-color: transparent !important;
 }
 
-.tulip-terminal-screen .xterm-viewport::-webkit-scrollbar {
+.lilium-terminal-screen .xterm-viewport::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 
-.tulip-terminal-screen .xterm-viewport::-webkit-scrollbar-track {
+.lilium-terminal-screen .xterm-viewport::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.tulip-terminal-screen .xterm-viewport::-webkit-scrollbar-thumb {
+.lilium-terminal-screen .xterm-viewport::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 999px;
 }
 
-.tulip-terminal-screen .xterm-viewport::-webkit-scrollbar-thumb:hover {
+.lilium-terminal-screen .xterm-viewport::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.35);
 }

@@ -1,6 +1,6 @@
 /**
  * Top navigation bar.
- * Brand: "tulip" in Arial Black, "playbook" in Arial Regular.
+ * Brand: "lilium" in Arial Black, "playbook" in Arial Regular.
  * Navigation: RubberSegment component from React Bits.
  * Styled as a fully white, round-shaped floating navbar with icons for Playbook and Labs.
  */
@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
 import { BookOpen01Icon, FlaskConicalIcon } from '@hugeicons/core-free-icons'
-import TulipIcon from './TulipIcon'
+import LiliumIcon from './LiliumIcon'
 import RubberSegment, { type RubberSegmentItem } from './RubberSegment'
 import { DOCS_SCROLL_PROGRESS_EVENT, type DocsScrollProgressDetail } from './DocsContent'
 import styles from './NavBar.module.css'
@@ -206,12 +206,12 @@ export default function NavBar() {
           to="/"
           onClick={handleHomeClick}
           className={styles.brandContainer}
-          aria-label="Tulip Playbook"
+          aria-label="Lilium Playbook"
         >
           <div className={styles.brand}>
-            <TulipIcon size={20} className={styles.brandIcon} alt="Tulip logo" />
+            <LiliumIcon size={20} className={styles.brandIcon} alt="Lilium logo" />
             <span className={styles.brandText}>
-              <span className={styles.brandName}>tulip</span>
+              <span className={styles.brandName}>lilium</span>
             </span>
           </div>
         </Link>
@@ -229,7 +229,7 @@ export default function NavBar() {
             onClick={(e) => handleSectionClick(e, 'about')}
             className={`${styles.middleLink} ${isHome && activeSection === 'about' ? styles.active : ''}`}
           >
-            Sobre tulip
+            Sobre lilium
           </Link>
           <Link
             to="/#contact"

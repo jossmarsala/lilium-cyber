@@ -1,19 +1,19 @@
 import React from 'react'
 
-export interface TulipIconProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+export interface LiliumIconProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   size?: number
 }
 
-export default function TulipIcon({
+export default function LiliumIcon({
   size = 18,
   className,
   style,
-  alt = 'Tulip logo',
+  alt = 'Lilium logo',
   ...props
-}: TulipIconProps) {
+}: LiliumIconProps) {
   return (
     <img
-      src="/tulip-logo.svg"
+      src="/lilium-logo.svg"
       alt={alt}
       width={size}
       height={size}
@@ -31,3 +31,5 @@ export default function TulipIcon({
     />
   )
 }
+
+export { LiliumIcon }

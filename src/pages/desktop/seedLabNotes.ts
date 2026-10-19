@@ -232,100 +232,63 @@ export const AUDIT_TEMPLATE = `# 📋 BITÁCORA DE AUDITORÍA TÉCNICA — NIST 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `
 
-const STORAGE_KEY = 'notes'
-const SEEDED_FLAG = 'tulip_notes_seeded_m1_v6'
+import { getCompiledLab } from '@/data/compiledLabs'
 
-export function seedLabNotes(storage: StorageAdapter): void {
+const STORAGE_KEY = 'notes'
+
+export function seedLabNotes(storage: StorageAdapter, targetLabId?: string): void {
   try {
-    const isSeeded = storage.get<boolean>(SEEDED_FLAG)
+    const labId =
+      targetLabId ||
+      (typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('lab') || 'lab-01'
+        : 'lab-01')
+
+    const seededFlag = `lilium_notes_seeded_${labId}_v2`
+    const isSeeded = storage.get<boolean>(seededFlag)
     if (isSeeded) return
 
     const now = Date.now()
+    const compiled = getCompiledLab(labId) ?? getCompiledLab('lab-01')
 
-    const initialNotes: LabNote[] = [
-      {
-        id: 'note-audit-template',
-        body: AUDIT_TEMPLATE,
-        createdAt: now,
-        updatedAt: now,
-      },
-      {
-        id: 'note-ticket-1049',
-        body: `TICKET TULIP-ITSM: INC-1049 — Anomalía en Estación 07
-======================================================
-ESTADO: Abierto / Prioridad: Alta
-ORIGEN: Telemetría de SOC / Alerta automatizada del sistema
+    let labNotes: LabNote[] = []
 
-DESCRIPCIÓN DEL INCIDENTE:
-Se ha detectado un socket persistente no estándar en el puerto TCP 4444 de la Estación 07.
-Se presume la presencia de un script de persistencia ejecutándose en /tmp (.baliza_eco.sh).
+    if (compiled && compiled.notes.length > 0) {
+      labNotes = compiled.notes.map((n, idx) => ({
+        id: n.id,
+        body: n.body,
+        createdAt: now - (compiled.notes.length - idx) * 3_600_000,
+        updatedAt: now - (compiled.notes.length - idx) * 3_600_000,
+      }))
 
-OBJETIVOS DEL ANALISTA DEFENSIVO (NIVEL CIS IG1):
-1. [Inventario] Validar qué activos corren en la máquina (whoami, ip addr, ps aux).
-2. [Contención] Terminar el proceso anómalo con kill -15 para preservar la integridad de los logs.
-3. [Control de Acceso] Evitar cuentas compartidas creando un usuario nominal con adduser.
-4. [Hardening] Aplicar mínimo privilegio en permisos de claves (~/.ssh/id_ed25519 en 600) y blindar /etc/ssh/sshd_config.`,
-        createdAt: now - 3600000 * 2,
-        updatedAt: now - 3600000 * 2,
-      },
-      {
-        id: 'note-matrix-template',
-        body: `PLANTILLA: Matriz de Activos, Amenazas y Riesgos (Módulo 1)
-==========================================================
-Utiliza esta plantilla para documentar tu triaje inicial:
-
-1. ACTIVO CRÍTICO:
-   - Activo: Servidor Estación 07 / Clave privada SSH id_ed25519.
-   - Pilar CIA comprometido: Confidencialidad e Integridad.
-
-2. AMENAZA:
-   - Actor: Proceso no autorizado o actor externo en red local.
-   - Vector de entrada: Script alojado en /tmp y socket TCP :4444.
-
-3. VULNERABILIDAD:
-   - Permisos globales laxos (644 en clave privada, 777 en /etc/estacion_confidencial.conf).
-   - Acceso root directo habilitado en sshd_config.
-
-4. RESPUESTA AL RIESGO (Módulo 1.1):
-   - Estrategia: MITIGAR el riesgo aplicando controles CIS IG1.
-   - Control: Permisos restrictivos (chmod 600) y terminación limpia del proceso (kill -15).`,
-        createdAt: now - 3600000,
-        updatedAt: now - 3600000,
-      },
-      {
-        id: 'note-operator-diary',
-        body: `DIARIO: Notas del Antiguo Operador (Easter Egg)
-===============================================
-12 de Octubre — "El jardín de reliquias no puede quedarse sin telemetría durante el invierno. Las heladas destruyen los bulbos de tulipán silvestre si la temperatura desciende de los 2°C.
-Por eso dejé corriendo esa baliza en /tmp/.baliza_eco.sh... sé que no es la mejor práctica, pero era una emergencia.
-Temo que alguien descubra que dejé la clave privada con permisos 644 y el archivo confidencial abierto a cualquiera.
-Si alguien encuentra esto: por favor, asegura la estación antes de que caiga la primera nieve."`,
-        createdAt: now - 1800000,
-        updatedAt: now - 1800000,
-      },
-      {
-        id: 'note-commands-guide',
-        body: `GUÍA RÁPIDA: Comandos Defensivos Esenciales de Linux
-====================================================
-• whoami              → Revela tu cuenta activa (observación inicial).
-• ip addr             → Muestra interfaces y direcciones IP locales.
-• ss -tulpn           → Enumera sockets TCP/UDP en escucha con sus PIDs.
-• ps aux              → Lista estática de procesos con usuario y comando.
-• top                 → Monitor interactivo de CPU y memoria (q para salir).
-• kill -15 <PID>      → Solicitud de terminación ordenada (SIGTERM).
-• chmod 600 <archivo> → Lectura y escritura exclusiva para el dueño.
-• sha256sum <archivo> → Cálculo de huella hash para verificar integridad.`,
-        createdAt: now,
-        updatedAt: now,
-      },
-    ]
+      // If the compiled lab has SSoT commands and not already a note, seed it as a note
+      if (compiled.ssotCommands && !labNotes.some((n) => n.body.includes('SSoT'))) {
+        labNotes.push({
+          id: `${labId}-note-ssot-commands`,
+          body: compiled.ssotCommands,
+          createdAt: now,
+          updatedAt: now,
+        })
+      }
+    } else {
+      // Fallback default notes for Lab 01
+      labNotes = [
+        {
+          id: 'note-audit-template',
+          body: AUDIT_TEMPLATE,
+          createdAt: now,
+          updatedAt: now,
+        },
+      ]
+    }
 
     const existing = storage.get<LabNote[]>(STORAGE_KEY)
     if (!existing || existing.length === 0) {
-      storage.set(STORAGE_KEY, initialNotes)
+      storage.set(STORAGE_KEY, labNotes)
     }
-    storage.set(SEEDED_FLAG, true)
+    storage.set(seededFlag, true)
   } catch (err) {
     console.warn('[seedLabNotes] Error seeding notes:', err)
   }
 }
+

@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node scripts/compile-labs.ts && vite",
+    "build": "node scripts/compile-labs.ts && tsc -b && vite build",
+    "labs:compile": "node scripts/compile-labs.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

@@ -23,8 +23,6 @@ interface ScrollLine {
   text: string;
 }
 
-const PROMPT_GLYPH = "❯"; // zsh-style chevron prompt
-
 /** Format the prompt string from live store state. */
 function buildPrompt(user: string, host: string, cwd: string): string {
   // Abbreviate home directory to ~
@@ -42,6 +40,10 @@ function buildPrompt(user: string, host: string, cwd: string): string {
 /** Seed scrollback shown on first mount. */
 function bootLines(user: string, host: string): ScrollLine[] {
   const texts = [
+    `Laboratorio 1: El Invernadero — Auditoría y Respuesta a Incidentes`,
+    `Aviso: Esta es una consola de terminal emulada en entorno de laboratorio.`,
+    `Configuración inicial cargada con éxito.`,
+    ``,
     `Estación Botánica Automatizada N.º 4 — ${host}`,
     `Linux 5.15.0-invernadero (x86_64) — Consola de Control`,
     ``,

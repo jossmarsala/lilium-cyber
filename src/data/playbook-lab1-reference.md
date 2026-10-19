@@ -1,6 +1,6 @@
 # Misión 01 — La Estación Olvidada
 
-**TULIP · Laboratorio 01 · CIS Controls IG1**
+**LILIUM · Laboratorio 01 · CIS Controls IG1**
 
 ## Hola, operador.
 

@@ -1,8 +1,8 @@
 import type { App } from "@react-ui-os/core";
-import { TulipPlaybookApp } from "@/components/apps/TulipPlaybookApp";
+import { LiliumPlaybookApp } from "@/components/apps/LiliumPlaybookApp";
 import { PlaybookLineIcon, PlaybookFluentIcon } from "@/components/apps/PlaybookIcon";
 
-export const tulipPlaybookApp: App = {
+export const liliumPlaybookApp: App = {
   id: "playbook",
   name: "Playbook",
   tagline: "Manual de Operaciones — Estación Invernadero-Central",
@@ -11,7 +11,7 @@ export const tulipPlaybookApp: App = {
   icons: { fluent: PlaybookFluentIcon },
   category: "Security",
   defaultBounds: { w: 580, h: 540 },
-  content: TulipPlaybookApp,
+  content: LiliumPlaybookApp,
 };
 
-export const playbookApp = tulipPlaybookApp;
+export const playbookApp = liliumPlaybookApp;
