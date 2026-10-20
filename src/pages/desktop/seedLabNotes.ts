@@ -47,11 +47,6 @@ export const AUDIT_TEMPLATE = `# 📋 BITÁCORA DE AUDITORÍA TÉCNICA — NIST 
    Propietario del activo: ___________________
    Impacto CIA: [ ] Confidencialidad  [ ] Integridad  [ ] Disponibilidad
 
- Activo 3: ___________________________________
-   Ruta/IP: __________________________________
-   Propietario del activo: ___________________
-   Impacto CIA: [ ] Confidencialidad  [ ] Integridad  [ ] Disponibilidad
-
  1.2 RESULTADO DEL COMANDO "ps aux"
  ─────────────────────────────────────
  [Pega aquí la salida relevante de: ps aux | grep -v grep]

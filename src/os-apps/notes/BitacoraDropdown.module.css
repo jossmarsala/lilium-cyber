@@ -1,0 +1,149 @@
+/* BitacoraDropdown.module.css — Custom Glassmorphic Select Dropdown */
+
+.dropdownRoot {
+  position: relative;
+  width: 100%;
+}
+
+.trigger {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 12.5px;
+  border-radius: 6px;
+  padding: 7px 10px;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  text-align: left;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.trigger:hover {
+  filter: brightness(1.04);
+}
+
+.triggerOpen {
+  border-color: #1893ff !important;
+  box-shadow: 0 0 0 2px rgba(24, 147, 255, 0.22) !important;
+}
+
+.triggerContent {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.triggerText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.chevron {
+  flex-shrink: 0;
+  transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: #1893ff !important;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  min-width: 100%;
+  border-radius: 8px;
+  padding: 4px;
+  max-height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: dropdownFadeIn 0.14s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top center;
+  box-sizing: border-box;
+  z-index: 9999;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.menu::-webkit-scrollbar {
+  width: 5px;
+}
+
+.menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.menu::-webkit-scrollbar-thumb {
+  background: rgba(140, 140, 140, 0.3);
+  border-radius: 4px;
+}
+
+.menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 140, 140, 0.5);
+}
+
+.optionItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 9px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  transition:
+    background 0.1s ease,
+    color 0.1s ease;
+  user-select: none;
+  border: 1px solid transparent;
+}
+
+.optionContent {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+}
+
+.optionText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.checkIcon {
+  flex-shrink: 0;
+}

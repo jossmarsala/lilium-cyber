@@ -10,6 +10,20 @@ import {
   type PriorityLevel,
   type CertaintyLevel,
 } from "./bitacora-store";
+import { BitacoraDropdown, type BitacoraDropdownOption } from "./BitacoraDropdown";
+
+const FASE_OPTIONS: BitacoraDropdownOption<string>[] = [
+  { value: "Fase 1: Auditoría", label: "Fase 1: Auditoría" },
+  { value: "Fase 2: Triaje y contención", label: "Fase 2: Triaje y contención" },
+  { value: "Fase 3: Hardening", label: "Fase 3: Hardening" },
+  { value: "General", label: "General / Transversal" },
+];
+
+const CERTEZA_OPTIONS: BitacoraDropdownOption<CertaintyLevel>[] = [
+  { value: "Confirmado", label: "Confirmado", dotColor: "#10b981" },
+  { value: "Hipótesis", label: "Hipótesis", dotColor: "#f59e0b" },
+  { value: "Insuficiente", label: "Insuficiente", dotColor: "#94a3b8" },
+];
 
 type ViewMode =
   | { kind: "finding"; id: string }
@@ -503,6 +517,8 @@ export function BitacoraApp() {
               textPrimary={textPrimary}
               textMuted={textMuted}
               borderCol={borderCol}
+              inputBg={inputBg}
+              inputBorder={inputBorder}
             />
           )}
         </div>
@@ -583,29 +599,32 @@ function FindingDetailView({
       <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1.1fr 1.3fr", gap: 10 }}>
         <div>
           <label style={labelStyle}>Fase Asociada</label>
-          <select
+          <BitacoraDropdown
             value={finding.faseAsociada}
-            onChange={(e) => handleFieldChange("faseAsociada", e.target.value)}
-            style={{ ...baseInputStyle, cursor: "pointer" }}
-          >
-            <option value="Fase 1: Auditoría">Fase 1: Auditoría</option>
-            <option value="Fase 2: Triaje y contención">Fase 2: Triaje y contención</option>
-            <option value="Fase 3: Hardening">Fase 3: Hardening</option>
-            <option value="General">General / Transversal</option>
-          </select>
+            options={FASE_OPTIONS}
+            onChange={(val) => handleFieldChange("faseAsociada", val)}
+            isDark={isDark}
+            inputBg={inputBg}
+            inputBorder={inputBorder}
+            textPrimary={textPrimary}
+            textMuted={textMuted}
+            ariaLabel="Fase Asociada"
+          />
         </div>
 
         <div>
           <label style={labelStyle}>Grado de Certeza</label>
-          <select
+          <BitacoraDropdown
             value={finding.gradoCerteza}
-            onChange={(e) => handleFieldChange("gradoCerteza", e.target.value as CertaintyLevel)}
-            style={{ ...baseInputStyle, cursor: "pointer" }}
-          >
-            <option value="Confirmado">Confirmado</option>
-            <option value="Hipótesis">Hipótesis</option>
-            <option value="Insuficiente">Insuficiente</option>
-          </select>
+            options={CERTEZA_OPTIONS}
+            onChange={(val) => handleFieldChange("gradoCerteza", val as CertaintyLevel)}
+            isDark={isDark}
+            inputBg={inputBg}
+            inputBorder={inputBorder}
+            textPrimary={textPrimary}
+            textMuted={textMuted}
+            ariaLabel="Grado de Certeza"
+          />
         </div>
 
         <div>
@@ -844,6 +863,8 @@ interface SummaryViewProps {
   textPrimary: string;
   textMuted: string;
   borderCol: string;
+  inputBg: string;
+  inputBorder: string;
 }
 
 function SummaryView({
@@ -854,8 +875,28 @@ function SummaryView({
   textPrimary,
   textMuted,
   borderCol,
+  inputBg,
+  inputBorder,
 }: SummaryViewProps) {
   const ACCENT = "#1893ff";
+  const [faseFilter, setFaseFilter] = useState<string>("TODAS");
+  const [certezaFilter, setCertezaFilter] = useState<string>("TODAS");
+
+  const summaryFaseOptions: BitacoraDropdownOption<string>[] = [
+    { value: "TODAS", label: "Todas las fases" },
+    ...FASE_OPTIONS,
+  ];
+
+  const summaryCertezaOptions: BitacoraDropdownOption<string>[] = [
+    { value: "TODAS", label: "Cualquier certeza" },
+    ...CERTEZA_OPTIONS,
+  ];
+
+  const filteredFindings = findings.filter((f) => {
+    if (faseFilter !== "TODAS" && f.faseAsociada !== faseFilter) return false;
+    if (certezaFilter !== "TODAS" && f.gradoCerteza !== certezaFilter) return false;
+    return true;
+  });
 
   return (
     <div style={{ maxWidth: 840, margin: "0 auto", display: "flex", flexDirection: "column", gap: 12 }}>
@@ -875,28 +916,91 @@ function SummaryView({
             Cuaderno de Campo — Resumen Consolidado
           </h2>
           <span style={{ fontSize: 11.5, color: textMuted }}>
-            {findings.length} hallazgo{findings.length === 1 ? "" : "s"} registrado{findings.length === 1 ? "" : "s"}.
+            {filteredFindings.length === findings.length
+              ? `${findings.length} hallazgo${findings.length === 1 ? "" : "s"} registrado${findings.length === 1 ? "" : "s"}.`
+              : `Mostrando ${filteredFindings.length} de ${findings.length} hallazgos.`}
           </span>
         </div>
 
-        {onResetTemplate && (
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {onResetTemplate && (
+            <button
+              type="button"
+              onClick={onResetTemplate}
+              style={{
+                padding: "4px 8px",
+                borderRadius: 4,
+                border: `1px solid ${borderCol}`,
+                background: "transparent",
+                color: textMuted,
+                fontSize: 11,
+                cursor: "pointer",
+                transition: "all 120ms ease",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = textPrimary)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = textMuted)}
+            >
+              Restablecer Plantilla
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Filter Toolbar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ width: 195 }}>
+          <BitacoraDropdown
+            value={faseFilter}
+            options={summaryFaseOptions}
+            onChange={setFaseFilter}
+            isDark={isDark}
+            inputBg={inputBg}
+            inputBorder={inputBorder}
+            textPrimary={textPrimary}
+            textMuted={textMuted}
+            ariaLabel="Filtrar por Fase"
+          />
+        </div>
+
+        <div style={{ width: 175 }}>
+          <BitacoraDropdown
+            value={certezaFilter}
+            options={summaryCertezaOptions}
+            onChange={setCertezaFilter}
+            isDark={isDark}
+            inputBg={inputBg}
+            inputBorder={inputBorder}
+            textPrimary={textPrimary}
+            textMuted={textMuted}
+            ariaLabel="Filtrar por Certeza"
+          />
+        </div>
+
+        {(faseFilter !== "TODAS" || certezaFilter !== "TODAS") && (
           <button
             type="button"
-            onClick={onResetTemplate}
-            style={{
-              padding: "4px 8px",
-              borderRadius: 4,
-              border: `1px solid ${borderCol}`,
-              background: "transparent",
-              color: textMuted,
-              fontSize: 11,
-              cursor: "pointer",
-              transition: "all 120ms ease",
+            onClick={() => {
+              setFaseFilter("TODAS");
+              setCertezaFilter("TODAS");
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = textPrimary)}
-            onMouseLeave={(e) => (e.currentTarget.style.color = textMuted)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: ACCENT,
+              fontSize: 11.5,
+              fontWeight: 500,
+              cursor: "pointer",
+              padding: "4px 6px",
+            }}
           >
-            Restablecer Plantilla
+            Limpiar filtros
           </button>
         )}
       </div>
@@ -936,54 +1040,70 @@ function SummaryView({
             </tr>
           </thead>
           <tbody>
-            {findings.map((f) => (
-              <tr
-                key={f.id}
-                onClick={() => onSelectFinding(f.id)}
-                style={{
-                  borderBottom: `1px solid ${borderCol}`,
-                  cursor: "pointer",
-                  transition: "background 100ms ease",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "transparent";
-                }}
-              >
-                <td style={{ padding: "7px 10px", fontWeight: 700, fontFamily: "ui-monospace, monospace", color: ACCENT }}>
-                  {f.id}
-                </td>
-                <td style={{ padding: "7px 10px", fontWeight: 600, color: textPrimary, maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {f.activo}
-                </td>
-                <td style={{ padding: "7px 10px", color: textPrimary, maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {f.hallazgo}
-                </td>
-                <td style={{ padding: "7px 10px", color: textMuted }}>
-                  {f.triadaCIA.join("/") || "—"}
-                </td>
-                <td style={{ padding: "7px 10px" }}>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 600,
-                      padding: "1.5px 5px",
-                      borderRadius: 3,
-                      background: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
-                      border: `1px solid ${borderCol}`,
-                      color: textMuted,
-                    }}
-                  >
-                    {f.prioridad}
-                  </span>
-                </td>
-                <td style={{ padding: "7px 10px", color: textMuted, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {f.accion}
+            {filteredFindings.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  style={{
+                    padding: "24px 10px",
+                    textAlign: "center",
+                    color: textMuted,
+                    fontSize: 12,
+                  }}
+                >
+                  No se encontraron hallazgos con los filtros seleccionados.
                 </td>
               </tr>
-            ))}
+            ) : (
+              filteredFindings.map((f) => (
+                <tr
+                  key={f.id}
+                  onClick={() => onSelectFinding(f.id)}
+                  style={{
+                    borderBottom: `1px solid ${borderCol}`,
+                    cursor: "pointer",
+                    transition: "background 100ms ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                  }}
+                >
+                  <td style={{ padding: "7px 10px", fontWeight: 700, fontFamily: "ui-monospace, monospace", color: ACCENT }}>
+                    {f.id}
+                  </td>
+                  <td style={{ padding: "7px 10px", fontWeight: 600, color: textPrimary, maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {f.activo}
+                  </td>
+                  <td style={{ padding: "7px 10px", color: textPrimary, maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {f.hallazgo}
+                  </td>
+                  <td style={{ padding: "7px 10px", color: textMuted }}>
+                    {f.triadaCIA.join("/") || "—"}
+                  </td>
+                  <td style={{ padding: "7px 10px" }}>
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        padding: "1.5px 5px",
+                        borderRadius: 3,
+                        background: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)",
+                        border: `1px solid ${borderCol}`,
+                        color: textMuted,
+                      }}
+                    >
+                      {f.prioridad}
+                    </span>
+                  </td>
+                  <td style={{ padding: "7px 10px", color: textMuted, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {f.accion}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

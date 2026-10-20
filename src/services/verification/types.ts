@@ -22,9 +22,11 @@ export interface VerificationContext {
 export type RuleEvaluationResult = boolean | Promise<boolean>
 
 export interface VerificationRule {
-  id: string // e.g. 'v1-base'
+  id: string // e.g. 'v1.1-whoami'
   phaseId: string // e.g. 'fase-1'
-  title: string // e.g. '[v1-base] Descripción básica del sistema'
+  stepId?: string // e.g. '1.1'
+  command?: string // e.g. 'whoami'
+  title: string // e.g. '[Paso 1.1] whoami'
   description: string
 
   /**

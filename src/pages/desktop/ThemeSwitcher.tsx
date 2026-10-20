@@ -40,7 +40,7 @@ export function ThemeSwitcher({ value, onChange }: Props) {
       aria-label="Desktop theme"
       style={{
         position: "fixed",
-        top: 40,
+        top: "calc(var(--lab-header-height, 0px) + 33px)",
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 9000,

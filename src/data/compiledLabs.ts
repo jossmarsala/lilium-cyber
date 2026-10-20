@@ -51,721 +51,969 @@ export const COMPILED_LABS: CompiledLab[] = [
       "titulo": "La estación olvidada: Primer contacto con la ciberseguridad",
       "laboratorio": "Lab 01 — LILIUM",
       "idioma": "Español neutro",
-      "referencia": "CIS Critical Security Controls v8.1 (IG1)",
       "formato": "Playbook interactivo con pistas y soluciones desplegables"
     },
-    "mission": "La Estación Botánica Automatizada N.º 4 lleva un tiempo funcionando en piloto automático. El cuidador principal desapareció sin dejar instrucciones y una alerta en el servidor central exige revisar el estado de la infraestructura. Tu función es actuar como operario responsable de una primera auditoría de seguridad: identificar qué existe, reconocer los riesgos, preservar evidencias y aplicar correcciones proporcionadas sin interrumpir la operación.",
+    "mission": "La Estación Botánica Automatizada N.º 4 lleva semanas operando en piloto automático. El cuidador principal desapareció sin dejar instrucciones de entrega y una alerta en el servidor central exige una revisión inmediata de la infraestructura.\n\nHas sido asignado como operario responsable de la primera auditoría de seguridad. Tu objetivo es tomar el control de la situación: relevar qué activos existen, identificar brechas de seguridad, preservar evidencias sin contaminar la escena y aplicar medidas de contención y endurecimiento sin interrumpir los sistemas vitales del invernadero.",
     "rules": [
-      "Documenta: Registra cada hallazgo, comando relevante y evidencia observada en la app de Bitácora; en auditoría, lo que no queda registrado no existe.",
-      "Respeta el modo solo lectura en la Fase 1: No alteres archivos, servicios ni configuraciones durante la inspección inicial.",
-      "Sigue el orden secuencial: Completa y valida los criterios de cada fase antes de avanzar a la siguiente.",
-      "Preserva la operatividad: Aplica correcciones justificadas y verifica que no interrumpan los servicios esenciales de la estación.",
-      "Cada fase dispone de dos botones desplegables interactivos: \"Herramientas\" Ofrece pistas y comandos sugeridos para investigar. \"Solución\" presenta una ruta de resolución paso a paso."
+      "**Todo va a la Bitácora:** Registra cada hallazgo, comando ejecutado y evidencia observada en la app de **Bitácora**. En una auditoría forense y operativa, lo que no queda documentado no existe.",
+      "**Fase 1 en modo solo lectura:** Durante el relevamiento inicial está prohibido modificar archivos, reiniciar servicios o alterar configuraciones. Primero observa; luego actúa.",
+      "**Orden secuencial estricto:** Completa y valida cada fase antes de avanzar a la siguiente.",
+      "**Continuidad operativa:** El invernadero aloja especímenes vivos. Toda corrección debe ser quirúrgica y verificada para no interrumpir los servicios críticos de riego y monitoreo.",
+      "**Asistencia en consola:** En cada fase cuentas con dos paneles desplegables de apoyo: **\"Herramientas\"** son comandos individuales sugeridos para ejecutar tu investigación. **\"Solución\"** es una guía paso a paso con la explicación técnica de cada comando."
     ],
     "phases": [
       {
         "id": "fase-1",
         "number": "01",
-        "title": "FASE 1: Auditoría: conocer el estado inicial",
-        "subtitle": "Construir una línea base sin alterar el entorno. Regla de la fase: solo lectura.",
+        "title": "FASE 1: Auditoría — Reconocimiento y línea base",
+        "subtitle": "Relevar el estado inicial del servidor sin alterar el entorno. Regla de fase: estricto modo solo lectura.",
         "directives": [
           {
-            "title": "Paso 1.1 — Identifica el sistema que tienes delante",
-            "text": "Antes de investigar una anomalía, debes saber en qué máquina estás trabajando y con qué usuario. Consulta tu usuario actual, el nombre del equipo, la fecha del sistema y los datos de la versión de Linux (puedes apoyarte en el archivo `/etc/os-release`). ¿Qué datos incluirías en una línea base inicial y por qué?"
+            "title": "Paso 1.1 — Identifica el sistema bajo tu control",
+            "text": "Antes de rastrear cualquier anomalía, necesitas confirmar dónde estás parado y con qué nivel de acceso operas. Releva tu usuario actual, el nombre del servidor, la fecha/hora del sistema, el tiempo de actividad y la versión exacta de Linux (revisa `/etc/os-release`). _Reporte en Bitácora: ¿Qué datos exactos componen tu línea base del sistema y por qué es crítico registrarlos antes de tocar nada?_"
           },
           {
-            "title": "Paso 1.2 — Contrasta el inventario declarado con el software instalado",
-            "text": "En la carpeta `/etc/invernadero` encontrarás la documentación oficial de la estación, incluyendo el inventario de activos y una lista de software autorizado. Explora ese directorio, lee sus archivos y compáralos con la lista de paquetes realmente instalados en el sistema. ¿Qué activos puedes verificar desde esta máquina y cuáles son solo referencias documentales?"
+            "title": "Paso 1.2 — Contrasta el inventario oficial con el software real",
+            "text": "En el directorio `/etc/invernadero` se aloja la documentación declarada de la estación (inventario de activos y lista de software autorizado). Inspecciona esos archivos y compáralos contra los paquetes realmente instalados en el servidor. _Reporte en Bitácora: ¿Qué activos del inventario puedes auditar directamente desde esta terminal y cuáles son equipos externos que solo figuran en los papeles?_"
           },
           {
-            "title": "Paso 1.3 — Revisa usuarios, grupos y privilegios",
-            "text": "En una organización que ha cambiado de personal sin procedimientos formales, una cuenta antigua puede seguir representando un riesgo. Revisa las cuentas y grupos registrados en `/etc/passwd`, `/etc/group` y `/etc/sudoers`, y verifica el estado de la contraseña de la cuenta `ex_cuidador`. ¿Qué cuentas tienen privilegios de administración (`sudo`) y cuáles requieren revisión?"
+            "title": "Paso 1.3 — Audita cuentas, grupos y privilegios",
+            "text": "En instalaciones donde el personal rota sin protocolos de baja, las cuentas olvidadas son vectores de entrada. Inspecciona `/etc/passwd`, `/etc/group` y `/etc/sudoers`. Verifica en particular el estado de bloqueo de la cuenta `ex_cuidador`. _Reporte en Bitácora: ¿Qué usuarios poseen privilegios administrativos (`sudo`) y por qué la cuenta `ex_cuidador` sigue representando un riesgo técnico?_"
           },
           {
-            "title": "Paso 1.4 — Examina archivos, clasificación y permisos",
-            "text": "La confidencialidad depende de que cada dato solo sea accesible para quienes lo necesitan. Explora las carpetas de operación (`/opt/invernadero`, `/srv/invernadero` y `/var/backups/invernadero`), revisa la carpeta oculta `/home/cuidador/.ssh` y examina el archivo sospechoso ubicado en `/tmp/catalogo_orquideas.pdf`. ¿Los permisos actuales coinciden con la sensibilidad de cada archivo?"
+            "title": "Paso 1.4 — Evalúa permisos y clasificación de archivos críticos",
+            "text": "La confidencialidad se rompe cuando los permisos de lectura están abiertos de más. Audita los directorios operativos (`/opt/invernadero`, `/srv/invernadero` y `/var/backups/invernadero`), inspecciona la carpeta oculta `/home/cuidador/.ssh` y analiza la naturaleza real del archivo sospechoso alojado en `/tmp/catalogo_orquideas.pdf`. _Reporte en Bitácora: ¿Qué archivos exponen información sensible por permisos mal configurados y cuál es el verdadero formato del supuesto PDF en `/tmp`?_"
           },
           {
-            "title": "Paso 1.5 — Construye la línea base de servicios y red",
-            "text": "Un servicio escuchando en red puede ser necesario para la operación o representar una puerta abierta innecesaria. Identifica la dirección IP de la máquina, los puertos abiertos y los servicios activos en el sistema (prestando atención a `nginx` y `ssh`). ¿Qué servicio está limitado al acceso local y cuál escucha hacia el exterior?"
+            "title": "Paso 1.5 — Traza la línea base de red y servicios",
+            "text": "Todo puerto en escucha es un punto de contacto potencial. Identifica la dirección IP de la máquina, los puertos abiertos y los servicios activos (prestando especial atención a `nginx` y `ssh`). _Reporte en Bitácora: ¿Cuál de los servicios está confinado al acceso interno local y cuál está expuesto a conexiones desde el exterior?_"
           },
           {
-            "title": "Paso 1.6 — Lee los registros sin confundir indicios con hechos",
-            "text": "En la carpeta `/var/log/invernadero` se guardan los registros de la estación junto con una nota aclaratoria (`README-lab.txt`), además de los avisos generales del sistema. Examina estos archivos para reconstruir qué ocurrió. ¿Qué secuencia de eventos parece relevante y por qué debes distinguir los registros simulados de la actividad real del sistema?"
+            "title": "Paso 1.6 — Analiza los registros sin confundir indicios con hechos",
+            "text": "El directorio `/var/log/invernadero` concentra los eventos de la estación junto con una nota técnica (`README-lab.txt`), complementados por el registro general del sistema. Revisa estos archivos para reconstruir la línea de tiempo del incidente. _Reporte en Bitácora: ¿Qué secuencia de eventos anómalos detectas y por qué debes contrastar los logs del directorio con el estado real del sistema?_"
           }
         ],
         "hints": [
           {
             "tool": "Paso 1.1: Identificación del sistema y de la sesión",
-            "description": "Consultar usuario actual, nombre de equipo, fecha, versión de kernel y sistema operativo",
-            "command": "whoami && id && hostname && date && uname -a && cat /etc/os-release"
+            "description": "Consultar el nombre del usuario actual",
+            "command": "whoami"
+          },
+          {
+            "tool": "Paso 1.1: Identificación del sistema y de la sesión",
+            "description": "Ver el identificador de usuario (UID) y grupos asignados",
+            "command": "id"
+          },
+          {
+            "tool": "Paso 1.1: Identificación del sistema y de la sesión",
+            "description": "Consultar el nombre de red del equipo",
+            "command": "hostname"
+          },
+          {
+            "tool": "Paso 1.1: Identificación del sistema y de la sesión",
+            "description": "Verificar la fecha y hora actuales del servidor",
+            "command": "date"
+          },
+          {
+            "tool": "Paso 1.1: Identificación del sistema y de la sesión",
+            "description": "Consultar la versión del kernel y arquitectura",
+            "command": "uname -a"
+          },
+          {
+            "tool": "Paso 1.1: Identificación del sistema y de la sesión",
+            "description": "Leer los datos de la distribución de Linux",
+            "command": "cat /etc/os-release"
           },
           {
             "tool": "Paso 1.2: Inventario de activos y software",
-            "description": "Listar y leer la documentación en `/etc/invernadero` y ver los paquetes instalados",
-            "command": "ls -la /etc/invernadero && cat /etc/invernadero/inventario.csv && cat /etc/invernadero/software-autorizado.txt && dpkg -l"
+            "description": "Listar el contenido del directorio de configuración",
+            "command": "ls -la /etc/invernadero"
+          },
+          {
+            "tool": "Paso 1.2: Inventario de activos y software",
+            "description": "Leer el inventario oficial de activos",
+            "command": "cat /etc/invernadero/inventario.csv"
+          },
+          {
+            "tool": "Paso 1.2: Inventario de activos y software",
+            "description": "Leer el listado de software autorizado",
+            "command": "cat /etc/invernadero/software-autorizado.txt"
+          },
+          {
+            "tool": "Paso 1.2: Inventario de activos y software",
+            "description": "Listar todos los paquetes instalados en el sistema",
+            "command": "dpkg -l"
           },
           {
             "tool": "Paso 1.3: Cuentas, grupos y privilegios",
-            "description": "Leer los archivos de usuarios y grupos del sistema y consultar el estado de `ex_cuidador`",
-            "command": "cat /etc/passwd && cat /etc/group && id cuidador && sudo passwd -S ex_cuidador"
+            "description": "Leer el registro de cuentas de usuario del sistema",
+            "command": "cat /etc/passwd"
+          },
+          {
+            "tool": "Paso 1.3: Cuentas, grupos y privilegios",
+            "description": "Leer el registro de grupos del sistema",
+            "command": "cat /etc/group"
+          },
+          {
+            "tool": "Paso 1.3: Cuentas, grupos y privilegios",
+            "description": "Inspeccionar la política de privilegios administrativos",
+            "command": "sudo cat /etc/sudoers"
+          },
+          {
+            "tool": "Paso 1.3: Cuentas, grupos y privilegios",
+            "description": "Consultar grupos y privilegios de la cuenta `cuidador`",
+            "command": "id cuidador"
+          },
+          {
+            "tool": "Paso 1.3: Cuentas, grupos y privilegios",
+            "description": "Verificar el estado de la contraseña de `ex_cuidador`",
+            "command": "sudo passwd -S ex_cuidador"
           },
           {
             "tool": "Paso 1.4: Archivos, permisos y clasificación",
-            "description": "Listar permisos en las carpetas del invernadero y `.ssh`, y comprobar el tipo real y huella del archivo en `/tmp`",
-            "command": "ls -la /srv/invernadero/catalogo /srv/invernadero/informes /home/cuidador/.ssh && file /tmp/catalogo_orquideas.pdf && sha256sum /tmp/catalogo_orquideas.pdf"
+            "description": "Listar permisos en los directorios del catálogo, informes y `.ssh`",
+            "command": "ls -la /srv/invernadero/catalogo /srv/invernadero/informes /home/cuidador/.ssh"
+          },
+          {
+            "tool": "Paso 1.4: Archivos, permisos y clasificación",
+            "description": "Determinar el tipo de datos real del archivo en `/tmp`",
+            "command": "file /tmp/catalogo_orquideas.pdf"
+          },
+          {
+            "tool": "Paso 1.4: Archivos, permisos y clasificación",
+            "description": "Calcular la huella criptográfica SHA-256 del archivo en `/tmp`",
+            "command": "sha256sum /tmp/catalogo_orquideas.pdf"
           },
           {
             "tool": "Paso 1.5: Servicios activos e interfaces de red",
-            "description": "Consultar dirección IP, puertos en escucha y estado de los servicios del sistema",
-            "command": "ip -br addr && sudo ss -tulpn && systemctl --type=service && systemctl status nginx"
+            "description": "Consultar de forma resumida las interfaces de red y sus IPs",
+            "command": "ip -br addr"
+          },
+          {
+            "tool": "Paso 1.5: Servicios activos e interfaces de red",
+            "description": "Listar puertos abiertos en escucha y los procesos asociados",
+            "command": "sudo ss -tulpn"
+          },
+          {
+            "tool": "Paso 1.5: Servicios activos e interfaces de red",
+            "description": "Listar las unidades de tipo servicio activas en el sistema",
+            "command": "systemctl --type=service"
+          },
+          {
+            "tool": "Paso 1.5: Servicios activos e interfaces de red",
+            "description": "Verificar el estado operativo del servidor web Nginx",
+            "command": "systemctl status nginx"
           },
           {
             "tool": "Paso 1.6: Registros y trazabilidad de eventos",
-            "description": "Listar y leer los registros de `/var/log/invernadero` y consultar el registro del sistema",
-            "command": "ls -la /var/log/invernadero && sudo cat /var/log/invernadero/README-lab.txt && sudo cat /var/log/invernadero/*.log && sudo journalctl"
+            "description": "Listar los archivos de registro de la estación",
+            "command": "ls -la /var/log/invernadero"
+          },
+          {
+            "tool": "Paso 1.6: Registros y trazabilidad de eventos",
+            "description": "Leer la nota aclaratoria del entorno de laboratorio",
+            "command": "sudo cat /var/log/invernadero/README-lab.txt"
+          },
+          {
+            "tool": "Paso 1.6: Registros y trazabilidad de eventos",
+            "description": "Leer el contenido de todos los registros de la estación",
+            "command": "sudo cat /var/log/invernadero/*.log"
+          },
+          {
+            "tool": "Paso 1.6: Registros y trazabilidad de eventos",
+            "description": "Consultar el registro general del sistema (systemd journal)",
+            "command": "sudo journalctl"
           }
         ],
         "pedagogicalGuide": [
           {
-            "sectionTitle": "Paso 1.1: Identifica el sistema que tienes delante",
-            "rationale": "Qué debe quedar en la bitácora: una descripción breve de la máquina examinada y el contexto de la observación. Esta información sirve como punto de partida para comparar el antes y el después.",
+            "sectionTitle": "Paso 1.1: Identifica el sistema bajo tu control",
+            "rationale": "**Qué registrar en la Bitácora:** Una ficha técnica breve del servidor examinado y el momento exacto de tu observación. Esto establece tu punto de referencia (línea base) para demostrar el antes y el después de tu intervención.",
             "steps": [
               {
-                "action": "Identificar cuenta activa y grupos",
-                "command": "whoami && id",
-                "detail": "whoami e id permiten identificar la cuenta activa y sus grupos. Esto ayuda a entender por qué algunos archivos pueden leerse y por qué ciertas acciones administrativas requieren autorización."
+                "action": "Identificar el nombre de tu usuario en la sesión activa",
+                "command": "whoami",
+                "detail": "Muestra con qué cuenta estás operando actualmente en la terminal."
               },
               {
-                "action": "Consultar nombre del equipo, fecha y sistema operativo",
-                "command": "hostname && date && uname -a && cat /etc/os-release",
-                "detail": "El nombre del host, la fecha de observación, el kernel y la distribución permiten contextualizar los resultados y comparar futuras revisiones."
+                "action": "Consultar los identificadores y grupos de tu cuenta",
+                "command": "id",
+                "detail": "Detalla tu UID, GID y los grupos a los que perteneces (como `sudo`). Esto explica qué archivos puedes leer directamente y por qué necesitas anteponer `sudo` para tareas administrativas."
               },
               {
-                "action": "Consultar tiempo de funcionamiento",
+                "action": "Obtener el nombre del equipo en la red",
+                "command": "hostname",
+                "detail": "Identifica de forma inequívoca en qué servidor estás ejecutando los comandos."
+              },
+              {
+                "action": "Registrar la marca temporal del sistema",
+                "command": "date",
+                "detail": "Permite correlacionar el horario del servidor con las marcas de tiempo que verás más adelante en los archivos de registro (logs)."
+              },
+              {
+                "action": "Consultar la versión del kernel y arquitectura del procesador",
+                "command": "uname -a",
+                "detail": "Entrega el panorama técnico del núcleo del sistema operativo en ejecución."
+              },
+              {
+                "action": "Revisar los detalles de la distribución Linux instalada",
+                "command": "cat /etc/os-release",
+                "detail": "Muestra el nombre oficial y la versión de la distribución (por ejemplo, Debian o Ubuntu)."
+              },
+              {
+                "action": "Consultar el tiempo de actividad continua del servidor",
                 "command": "uptime",
-                "detail": "Usa uptime como referencia del tiempo que lleva encendido el sistema. No lo interpretes, por sí solo, como una prueba de compromiso o de estabilidad."
+                "detail": "Indica cuánto tiempo lleva encendido el sistema desde su último arranque. Tómalo como dato de contexto, no como prueba de estabilidad por sí solo."
               },
               {
-                "action": "Registrar contexto inicial en la bitácora",
-                "detail": "Registra la fecha y hora de la inspección, el nombre del sistema, la distribución, la versión del kernel y la cuenta con la que trabajaste."
+                "action": "Documentar el contexto inicial en la Bitácora",
+                "detail": "Asienta en tu Bitácora la fecha/hora de inicio, hostname, distribución, versión de kernel y usuario operativo."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 1.2: Contrasta el inventario declarado con el software instalado",
-            "rationale": "Interpretación importante: el inventario de activos y el inventario de software cumplen funciones relacionadas, pero no idénticas. El primero describe qué recursos deben protegerse; el segundo ayuda a identificar qué programas están instalados y si responden a una necesidad legítima.",
+            "sectionTitle": "Paso 1.2: Contrasta el inventario oficial con el software real",
+            "rationale": "**Criterio de auditoría:** El inventario de activos define qué equipos físicos o lógicos existen en la organización; la lista de software autorizado define qué programas tienen permiso de correr en este servidor. Nunca asumas que el papel coincide con la realidad sin verificarlo.",
             "steps": [
               {
-                "action": "Explorar la carpeta de configuración y leer el inventario",
-                "command": "ls -la /etc/invernadero && cat /etc/invernadero/inventario.csv",
-                "detail": "Contiene seis activos declarados: servidor central, estación administrativa, portátil técnico, sensor IoT, panel web y router/firewall."
+                "action": "Listar los archivos de configuración del invernadero",
+                "command": "ls -la /etc/invernadero",
+                "detail": "Permite confirmar qué documentos de referencia existen en el directorio y revisar sus permisos y fechas de modificación."
               },
               {
-                "action": "Distinguir entre activo documentado y activo técnicamente verificable",
-                "detail": "Esta máquina virtual representa el servidor Linux central; desde aquí no puedes comprobar directamente el estado físico de los equipos externos ni del router/firewall."
+                "action": "Leer el inventario declarado de activos",
+                "command": "cat /etc/invernadero/inventario.csv",
+                "detail": "Verás seis activos registrados: servidor central, estación administrativa, portátil técnico, sensor IoT, panel web y router/firewall."
               },
               {
-                "action": "Leer software autorizado y contrastar con paquetes instalados",
-                "command": "cat /etc/invernadero/software-autorizado.txt && dpkg -l",
-                "detail": "Compara la lista autorizada con la salida de dpkg -l. Identifica los programas vinculados al servidor web (nginx) y al acceso remoto (openssh-server). Si notas diferencias, documéntalas para validación."
+                "action": "Distinguir entre el alcance local y los activos externos",
+                "detail": "Tu terminal corresponde únicamente al servidor Linux central. Desde aquí no tienes visibilidad física directa sobre las portátiles ni el router/firewall; debes dejar constancia de ese límite de alcance en tu Bitácora."
               },
               {
-                "action": "Mantener la regla de solo lectura en la línea base",
-                "detail": "No actualices ni desinstales paquetes ni cambies configuraciones en esta fase. Registra qué activos pueden observarse directamente y cuáles solo aparecen documentados."
+                "action": "Leer la lista de software autorizado para el servidor",
+                "command": "cat /etc/invernadero/software-autorizado.txt",
+                "detail": "Conoce qué herramientas y servicios están formalmente aprobados para operar en esta máquina."
+              },
+              {
+                "action": "Listar todos los paquetes instalados en el sistema",
+                "command": "dpkg -l",
+                "detail": "Compara esta salida con la lista autorizada, prestando atención al servidor web (`nginx`) y al servidor de acceso remoto (`openssh-server`). ***Tip de consola:*** Si la lista se abre en un visor paginado, usa las flechas para desplazarte y presiona la tecla `q` para salir y recuperar el control de la terminal."
+              },
+              {
+                "action": "Respetar la regla de solo lectura",
+                "detail": "No instales, actualices ni elimines paquetes en esta fase. Limítate a documentar qué pudiste verificar y qué discrepancias observaste."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 1.3: Revisa usuarios, grupos y privilegios",
-            "rationale": "Qué debe quedar en la bitácora: las cuentas observadas, sus grupos relevantes, el estado comprobado y una propuesta razonada sobre los accesos que deberían revisarse. No supongas que toda cuenta con privilegios administrativos es incorrecta: debe evaluarse según su función.",
+            "sectionTitle": "Paso 1.3: Audita cuentas, grupos y privilegios",
+            "rationale": "**Qué registrar en la Bitácora:** Las cuentas de usuario detectadas, a qué grupos pertenecen, el estado de `ex_cuidador` y qué accesos deberán ajustarse en la fase de endurecimiento. Tener privilegios `sudo` no es un error en sí mismo, siempre que responda a un rol activo y válido.",
             "steps": [
               {
-                "action": "Revisar las cuentas registradas en el sistema",
+                "action": "Inspeccionar el listado de usuarios locales",
                 "command": "cat /etc/passwd",
-                "detail": "Observa al final de la lista los usuarios creados para la estación (operario, cuidador, admin-it, ana, proveedor, ex_cuidador) y verifica que aún conservan una terminal interactiva (/bin/bash)."
+                "detail": "Presta atención a las últimas líneas del archivo: verás las cuentas creadas para la operación (`operario`, `cuidador`, `admin-it`, `ana`, `proveedor`, `ex_cuidador`). Nota que todas terminan en `/bin/bash`, lo que significa que tienen asignada una consola interactiva."
               },
               {
-                "action": "Evaluar pertenencia a grupos y permisos de administración",
-                "command": "cat /etc/group && id cuidador && id ex_cuidador",
-                "detail": "Revisa quiénes integran cada grupo funcional (riego-ops, administracion, it-admins, proveedores) y quiénes pertenecen al grupo sudo."
+                "action": "Revisar los grupos de trabajo y de administración",
+                "command": "cat /etc/group",
+                "detail": "Identifica quiénes integran los grupos operativos (`riego-ops`, `administracion`, `it-admins`, `proveedores`) y qué cuentas forman parte del grupo privilegiado `sudo`."
               },
               {
-                "action": "Inspeccionar el estado de contraseña de la cuenta antigua",
+                "action": "Inspeccionar las reglas de elevación de privilegios",
+                "command": "sudo cat /etc/sudoers",
+                "detail": "Observa que `admin-it` tiene permisos administrativos por `it-admins`, mientras que el grupo `sudo` dispone de una lista limitada de comandos para el operario. `cuidador` no pertenece a ese grupo. La VM usa un wrapper didáctico de `sudo`; el archivo representa la política que se está auditando, no un control de privilegios real."
+              },
+              {
+                "action": "Consultar el detalle de grupos del cuidador actual",
+                "command": "id cuidador",
+                "detail": "Muestra de forma rápida y limpia los grupos asociados al rol operativo principal."
+              },
+              {
+                "action": "Consultar el detalle de grupos del antiguo empleado",
+                "command": "id ex_cuidador",
+                "detail": "Permite verificar si la cuenta obsoleta aún retiene pertenencia a grupos internos de la estación."
+              },
+              {
+                "action": "Comprobar el estado de la contraseña de la cuenta antigua",
                 "command": "sudo passwd -S ex_cuidador",
-                "detail": "La letra \"L\" (Locked) indica que la contraseña está bloqueada, pero la cuenta sigue teniendo una shell interactiva asignada en /etc/passwd."
+                "detail": "En la segunda columna verás una letra `L` (Locked). Esto confirma que la contraseña está bloqueada, pero como aún conserva `/bin/bash` en `/etc/passwd`, la cuenta todavía no está completamente neutralizada."
               },
               {
-                "action": "Contrastar con las funciones del escenario y documentar hallazgos",
-                "detail": "Cada usuario responde a un rol, excepto ex_cuidador, que pertenece a personal que ya no trabaja en la estación y requiere medidas adicionales en la fase de endurecimiento. No modifiques la cuenta todavía."
+                "action": "Documentar los hallazgos sin alterar el sistema",
+                "detail": "Registra en la Bitácora que `ex_cuidador` requiere restricción de consola en la Fase 3. No ejecutes cambios todavía."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 1.4: Examina archivos, clasificación y permisos",
-            "rationale": "Hallazgos esperables: el archivo confidencial permite lectura a cualquier usuario del sistema (`-rw-r--r--` / 0644) y la clave privada SSH también tiene permisos demasiado abiertos (`-rw-r--r--` / 0644). Ambos deben corregirse en la fase 3, después de registrar la línea base.",
+            "sectionTitle": "Paso 1.4: Evalúa permisos y clasificación de archivos críticos",
+            "rationale": "**Hallazgos clave:** Tanto el informe confidencial como la clave privada SSH tienen permisos `0644` (`-rw-r--r--`), lo que permite que cualquier usuario local los lea. Además, el archivo en `/tmp` finge ser un PDF por su nombre, pero su contenido real es un binario ELF de práctica, inocuo y sin permiso de ejecución.",
             "steps": [
               {
-                "action": "Explorar las carpetas de datos y operación",
+                "action": "Explorar las carpetas operativas, de datos y de respaldos",
                 "command": "ls -la /opt/invernadero /srv/invernadero/catalogo /srv/invernadero/informes /var/backups/invernadero",
-                "detail": "/opt contiene programas y lecturas de sensores, /srv almacena el catálogo público y los informes, y /var/backups guarda las copias de respaldo."
+                "detail": "Releva la estructura: `/opt` guarda scripts y sensores, `/srv` aloja el catálogo público y los informes internos, y `/var/backups` almacena copias de resguardo."
               },
               {
-                "action": "Examinar los permisos del informe confidencial y de la clave privada SSH",
+                "action": "Inspeccionar en detalle los permisos del informe confidencial y la clave SSH",
                 "command": "ls -la /srv/invernadero/informes/registro_confidencial.csv /home/cuidador/.ssh/id_ed25519",
-                "detail": "Observa los bloques de permisos (-rw-r--r--). Ambos archivos pueden ser leídos por cualquier usuario local, lo cual expone información confidencial y una clave privada."
+                "detail": "Observa el bloque `-rw-r--r--` al inicio de cada línea. La última `r` indica que cualquier usuario del servidor puede leer tanto los datos confidenciales como la llave privada SSH."
               },
               {
-                "action": "Comprobar el tipo real del archivo ubicado en  `file /tmp/catalogo_orquideas.pdf`",
+                "action": "Analizar el tipo de contenido real del archivo sospechoso en  `file /tmp/catalogo_orquideas.pdf`",
                 "command": "/tmp",
-                "detail": "La extensión .pdf no garantiza el formato real; el comando file analiza su contenido e indica que en realidad es texto plano (ASCII text)."
+                "detail": "En Linux, la extensión no determina el formato. `file` inspecciona la cabecera binaria y debe identificar un ejecutable ELF de 64 bits, no un PDF. El archivo tiene modo `0644`, sin permiso de ejecución; es un artefacto de entrenamiento y no debe ejecutarse."
               },
               {
-                "action": "Calcular huellas criptográficas SHA-256",
+                "action": "Generar la huella criptográfica SHA-256 de los archivos clave",
                 "command": "sha256sum /tmp/catalogo_orquideas.pdf /var/backups/invernadero/catalogo_2026-10-17.bak",
-                "detail": "Genera el código hash de ambos archivos para dejar constancia en tu bitácora de que no fueron alterados durante tu revisión. No cambies permisos ni borres nada en esta fase."
+                "detail": "Copia estos códigos hash en tu Bitácora. Funcionan como un precinto digital para demostrar que la evidencia no fue alterada durante tu auditoría."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 1.5: Construye la línea base de servicios y red",
-            "rationale": "Criterio técnico: la dirección en la que escucha un puerto importa. `127.0.0.1` limita el acceso únicamente al propio equipo local; `0.0.0.0` indica que el servicio escucha en todas las interfaces de red, quedando expuesto a conexiones externas.",
+            "sectionTitle": "Paso 1.5: Traza la línea base de red y servicios",
+            "rationale": "**Criterio técnico de red:** Fíjate siempre en la dirección IP donde escucha cada puerto. Si escucha en `127.0.0.1` (loopback), solo acepta conexiones originadas dentro de la misma máquina. Si escucha en `0.0.0.0`, está abierto a recibir conexiones desde cualquier red externa.",
             "steps": [
               {
-                "action": "Inspeccionar las interfaces de red y direcciones IP",
-                "command": "ip -br addr && ip route",
-                "detail": "Muestra de forma resumida las tarjetas de red del equipo (lo y eth0), su dirección IP local (10.0.2.15) y su ruta de salida."
+                "action": "Consultar las interfaces de red y sus direcciones IP asignadas",
+                "command": "ip -br addr",
+                "detail": "Muestra un resumen limpio con la interfaz local (`lo`) y la interfaz de red principal (`eth0` con la IP `10.0.2.15`)."
               },
               {
-                "action": "Identificar puertos abiertos y procesos asociados",
+                "action": "Revisar la tabla de enrutamiento de red",
+                "command": "ip route",
+                "detail": "Indica por qué puerta de enlace (gateway) sale el tráfico del servidor hacia el exterior."
+              },
+              {
+                "action": "Identificar puertos abiertos en escucha y qué proceso los controla",
                 "command": "sudo ss -tulpn",
-                "detail": "Muestra qué puertos están en estado LISTEN (escuchando): verás el puerto 22 (sshd en 0.0.0.0) y el puerto 8080 (nginx en 127.0.0.1)."
+                "detail": "Detecta dos puntos clave en estado `LISTEN`: el puerto `22` controlado por `sshd` escuchando hacia el exterior (`0.0.0.0:22`), y el puerto `8080` controlado por `nginx` limitado al entorno local (`127.0.0.1:8080`)."
               },
               {
-                "action": "Listar los servicios activos del sistema",
+                "action": "Listar los servicios activos en segundo plano",
                 "command": "systemctl --type=service",
-                "detail": "Permite ver de un vistazo qué servicios de fondo se están ejecutando (cron, nginx y ssh)."
+                "detail": "Verifica qué servicios están corriendo actualmente (como `cron`, `nginx` y `ssh`). ***Tip de consola:*** Si se abre el paginador e impide escribir nuevos comandos, presiona la tecla `q` para salir."
               },
               {
-                "action": "Comprobar el detalle del servidor web Nginx",
+                "action": "Consultar el estado detallado del servidor web Nginx",
                 "command": "systemctl status nginx",
-                "detail": "En este escenario, Nginx sirve el panel interno de la estación en 127.0.0.1:8080. Es un servicio legítimo y necesario para la operación, por lo que debe mantenerse activo."
+                "detail": "Confirma que Nginx está activo (`active (running)`). Este servicio mantiene vivo el panel interno de la estación, por lo que es crítico no detenerlo. (Si queda en vista paginada, presiona `q`)."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 1.6: Lee los registros sin confundir indicios con hechos",
-            "rationale": "Qué debe quedar en la bitácora: una cronología inicial, los indicios seleccionados para investigar en la siguiente fase y una aclaración de por qué los registros del laboratorio deben contrastarse con el sistema real.",
+            "sectionTitle": "Paso 1.6: Analiza los registros sin confundir indicios con hechos",
+            "rationale": "**Qué registrar en la Bitácora:** Una cronología clara de los eventos observados, separando qué es un aviso registrado en texto y qué elementos deberás comprobar en vivo en la Fase 2.",
             "steps": [
               {
-                "action": "Listar los archivos de registro y leer la nota del laboratorio",
-                "command": "ls -la /var/log/invernadero && sudo cat /var/log/invernadero/README-lab.txt",
-                "detail": "El archivo README-lab.txt aclara que los registros en esta carpeta son eventos sintéticos creados para el entrenamiento y que debes contrastarlos con los comandos reales del sistema."
+                "action": "Listar los archivos dentro del directorio de logs del invernadero",
+                "command": "ls -la /var/log/invernadero",
+                "detail": "Identifica los seis archivos `.log` disponibles y la nota de lectura obligatoria `README-lab.txt`."
               },
               {
-                "action": "Leer los registros de accesos y actividad",
-                "command": "sudo cat /var/log/invernadero/accesos.log && sudo cat /var/log/invernadero/actividad.log",
-                "detail": "accesos.log muestra intentos fallidos de ex_cuidador y un ingreso fuera de horario. actividad.log menciona el script riego_nocturno.sh, el supuesto PDF en /tmp y un proceso desconocido llamado polilla_emisora."
+                "action": "Leer la nota técnica del entorno de entrenamiento",
+                "command": "sudo cat /var/log/invernadero/README-lab.txt",
+                "detail": "Aclara un punto fundamental: los registros de esta carpeta son eventos sintéticos diseñados para el escenario y tu deber como auditor es contrastarlos contra los procesos y archivos reales del sistema."
               },
               {
-                "action": "Leer los registros de respaldos e incidentes",
-                "command": "sudo cat /var/log/invernadero/backup.log && sudo cat /var/log/invernadero/incidentes.log",
-                "detail": "Indican que la última copia de seguridad terminó con advertencias y que su integridad está pendiente de revisión."
+                "action": "Inspeccionar el registro de accesos de usuarios",
+                "command": "sudo cat /var/log/invernadero/accesos.log",
+                "detail": "Detecta intentos fallidos de inicio de sesión asociados a `ex_cuidador` y un acceso registrado fuera del horario habitual."
               },
               {
-                "action": "Consultar el registro general del sistema",
+                "action": "Inspeccionar el registro de actividad operativa",
+                "command": "sudo cat /var/log/invernadero/actividad.log",
+                "detail": "Correlaciona la ejecución del script de riego a las 21:03, la detección de `polilla_emisora` entre las 21:06:58 y las 21:07:42, y la alerta sobre `/tmp/catalogo_orquideas.pdf` a las 21:08:01."
+              },
+              {
+                "action": "Inspeccionar el registro de copias de seguridad",
+                "command": "sudo cat /var/log/invernadero/backup.log",
+                "detail": "Advierte que el último respaldo finalizó con alertas y que su contenido podría estar incompleto."
+              },
+              {
+                "action": "Inspeccionar el resumen de incidentes reportados",
+                "command": "sudo cat /var/log/invernadero/incidentes.log",
+                "detail": "Consolida las alertas previas y deja pendiente la verificación de integridad del backup."
+              },
+              {
+                "action": "Consultar el registro general del sistema operativo",
                 "command": "sudo journalctl",
-                "detail": "Muestra los avisos generales registrados en el sistema junto con las alertas del laboratorio (LILIUM-LAB). Anota la secuencia temporal en tu bitácora."
+                "detail": "Permite ver la actividad global del sistema junto con las etiquetas del escenario (`LILIUM-LAB`). ***Tip de consola:*** Usa las flechas o `AvPág` para recorrer el historial y presiona `q` para volver a la línea de comandos."
               }
             ]
           }
         ],
-        "verification": [
-          {
-            "id": "v1-base",
-            "label": "Descripción básica del sistema y fecha/hora de observación."
-          },
-          {
-            "id": "v1-inv",
-            "label": "Comparación del inventario declarado con lo que puede verificarse en esta VM."
-          },
-          {
-            "id": "v1-users",
-            "label": "Revisión inicial de cuentas, grupos y estado de ex_cuidador."
-          },
-          {
-            "id": "v1-perms",
-            "label": "Evidencia de permisos para la clave de prueba y el informe confidencial."
-          },
-          {
-            "id": "v1-net",
-            "label": "Línea base de servicios/puertos, con atención a la dirección de escucha de Nginx."
-          },
-          {
-            "id": "v1-logs",
-            "label": "Cronología inicial que identifica los logs sintéticos como tales y distingue hechos de hipótesis."
-          },
-          {
-            "id": "v1-nobrk",
-            "label": "Confirmación de que no se hicieron cambios durante la auditoría."
-          }
-        ]
+        "verification": []
       },
       {
         "id": "fase-2",
         "number": "02",
-        "title": "FASE 2: Evidencia: triaje y contención controlada",
-        "subtitle": "Preservar primero, decidir después. Contrastar indicios y tomar decisiones proporcionadas sin destruir evidencia.",
+        "title": "FASE 2: Evidencia — Triaje y contención controlada",
+        "subtitle": "Preservar la evidencia antes de intervenir. Analizar los artefactos sospechosos y contener amenazas sin afectar la operación del invernadero.",
         "directives": [
           {
-            "title": "Paso 2.1 — Correlaciona los eventos y formula una hipótesis",
-            "text": "En los registros de `/var/log/invernadero/actividad.log` aparecieron dos procesos mencionados: `riego_nocturno.sh` y `polilla_emisora`. Consulta la lista de procesos que se están ejecutando actualmente en memoria y compáralos con lo que leíste en los registros. ¿Ambos procesos siguen activos? Redacta una hipótesis inicial antes de intervenir."
+            "title": "Paso 2.1 — Cruza los registros con la memoria viva y formula tu hipótesis",
+            "text": "En `actividad.log` viste referencias a dos procesos: `riego_nocturno.sh` y `polilla_emisora`. Consulta la tabla de procesos que están corriendo ahora mismo en la memoria del servidor y compáralos con el log. _Reporte en Bitácora: ¿Siguen ambos procesos en ejecución? Redacta tu hipótesis inicial sobre cuál es legítimo y cuál es anómalo._"
           },
           {
-            "title": "Paso 2.2 — Inspecciona el proceso sospechoso en ejecución",
-            "text": "Antes de detener `polilla_emisora`, debes documentar qué es y qué está haciendo realmente. Anota su número identificador de proceso (PID), fíjate desde qué ruta se está ejecutando y lee el contenido de ambos scripts (`/tmp/polilla_emisora` y `/opt/invernadero/scripts/riego_nocturno.sh`). ¿Cuál de los dos cumple una tarea operativa real y qué hace exactamente el proceso sospechoso?"
+            "title": "Paso 2.2 — Analiza el código de los procesos antes de actuar",
+            "text": "Matar un proceso a ciegas destruye evidencia en memoria y puede apagar un sistema vital. Identifica el número de proceso (PID) de `polilla_emisora`, revisa desde qué carpeta se ejecuta y lee el código fuente tanto de `/tmp/polilla_emisora` como de `/opt/invernadero/scripts/riego_nocturno.sh`. _Reporte en Bitácora: ¿Cuál es el PID del proceso anómalo y qué instrucciones exactas tiene escritas adentro cada script?_"
           },
           {
-            "title": "Paso 2.3 — Valida el archivo con extensión engañosa",
-            "text": "Los registros también mencionaron `/tmp/catalogo_orquideas.pdf`. En la Fase 1 viste que no era un PDF real. Ahora inspecciona sus detalles, lee su contenido de texto de forma segura en la terminal y registra su huella SHA-256. ¿Qué dice el archivo en su interior y por qué no debemos borrarlo?"
+            "title": "Paso 2.3 — Analiza el binario con extensión engañosa",
+            "text": "En la Fase 1 confirmaste que `/tmp/catalogo_orquideas.pdf` no es un PDF: `file` lo identifica como un binario ELF de 64 bits. Verifica sus metadatos, extrae sus cadenas legibles con `strings` y registra su huella SHA-256. Después compara esa huella con la del catálogo botánico legítimo ubicado en `/srv/invernadero/catalogo/catalogo_orquideas.pdf`. No ejecutes el binario ni lo abras con un visor de documentos. _Reporte en Bitácora: ¿Qué cadenas legibles contiene y por qué debemos preservarlo sin ejecutarlo ni borrarlo?_"
           },
           {
-            "title": "Paso 2.4 — Evalúa si el respaldo puede utilizarse",
-            "text": "El registro de backup advirtió sobre problemas en la última copia. Revisa los archivos dentro de `/var/backups/invernadero` (`manifest.txt` y `catalogo_2026-10-17.bak`) y compara su contenido con el catálogo real que está en producción (`/srv/invernadero/catalogo/catalogo_publico.csv`). ¿Es seguro restaurar ese backup o dañarías la información actual?"
+            "title": "Paso 2.4 — Audita la integridad de la copia de seguridad",
+            "text": "El log de respaldos alertó sobre fallos en la última copia. Revisa los archivos de `/var/backups/invernadero` (`manifest.txt` y `catalogo_2026-10-17.bak`) y compáralos con el catálogo real en producción (`/srv/invernadero/catalogo/catalogo_publico.csv`). _Reporte en Bitácora: ¿Qué ocurriría con los datos del invernadero si restauraras ese backup ahora mismo?_"
           },
           {
-            "title": "Paso 2.5 — Contén solo después de registrar la evidencia",
-            "text": "Ya tienes documentada toda la evidencia en tu bitácora. Ahora detén únicamente el proceso `polilla_emisora` utilizando su PID, y comprueba inmediatamente después que la tarea legítima (`riego_nocturno.sh`) y el servidor web (`nginx`) sigan funcionando sin interrupciones."
+            "title": "Paso 2.5 — Ejecuta una contención quirúrgica",
+            "text": "Con toda la evidencia asegurada y documentada en tu Bitácora, detén únicamente el proceso no autorizado (`polilla_emisora`) utilizando su PID. Verifica de inmediato que el sistema de riego (`riego_nocturno.sh`) y el panel web (`nginx`) continúen operando sin impacto. _Reporte en Bitácora: Registra el comando de contención ejecutado y la prueba de que los servicios vitales siguen activos._"
           }
         ],
         "hints": [
           {
             "tool": "Paso 2.1: Correlación de registros e hipótesis",
-            "description": "Repasar el registro de actividad y listar todos los procesos en ejecución",
-            "command": "sudo cat /var/log/invernadero/actividad.log && ps aux"
+            "description": "Repasar las alertas del registro de actividad",
+            "command": "sudo cat /var/log/invernadero/actividad.log"
+          },
+          {
+            "tool": "Paso 2.1: Correlación de registros e hipótesis",
+            "description": "Listar todos los procesos activos en memoria",
+            "command": "ps aux"
           },
           {
             "tool": "Paso 2.2: Inspección del proceso sospechoso",
-            "description": "Filtrar los procesos de interés y leer el código de ambos scripts",
-            "command": "ps aux | grep polilla_emisora && cat /tmp/polilla_emisora && cat /opt/invernadero/scripts/riego_nocturno.sh"
+            "description": "Filtrar la lista de procesos para ubicar `polilla_emisora` y su PID",
+            "command": "ps aux | grep polilla_emisora"
           },
           {
-            "tool": "Paso 2.3: Validación del artefacto con extensión engañosa",
-            "description": "Ver permisos, comprobar tipo de archivo, leer su contenido y calcular su hash",
-            "command": "ls -la /tmp/catalogo_orquideas.pdf && file /tmp/catalogo_orquideas.pdf && cat /tmp/catalogo_orquideas.pdf && sha256sum /tmp/catalogo_orquideas.pdf"
+            "tool": "Paso 2.2: Inspección del proceso sospechoso",
+            "description": "Leer el código interno del proceso alojado en `/tmp`",
+            "command": "cat /tmp/polilla_emisora"
+          },
+          {
+            "tool": "Paso 2.2: Inspección del proceso sospechoso",
+            "description": "Leer el código del script operativo de riego",
+            "command": "cat /opt/invernadero/scripts/riego_nocturno.sh"
+          },
+          {
+            "tool": "Paso 2.3: Validación del binario con extensión engañosa",
+            "description": "Consultar propietario, fecha y permisos del archivo en `/tmp`",
+            "command": "ls -la /tmp/catalogo_orquideas.pdf"
+          },
+          {
+            "tool": "Paso 2.3: Validación del binario con extensión engañosa",
+            "description": "Confirmar el formato real del archivo",
+            "command": "file /tmp/catalogo_orquideas.pdf"
+          },
+          {
+            "tool": "Paso 2.3: Validación del binario con extensión engañosa",
+            "description": "Extraer cadenas legibles del binario sin ejecutarlo",
+            "command": "strings /tmp/catalogo_orquideas.pdf"
+          },
+          {
+            "tool": "Paso 2.3: Validación del binario con extensión engañosa",
+            "description": "Obtener el hash SHA-256 del archivo como evidencia",
+            "command": "sha256sum /tmp/catalogo_orquideas.pdf"
+          },
+          {
+            "tool": "Paso 2.3: Comparación de integridad entre artefactos",
+            "description": "Comparar los hashes SHA-256 del binario ELF disfrazado y del catálogo PDF legítimo; registrar ambos resultados en la Bitácora. Deben ser distintos porque sus bytes y contenidos son diferentes; esa diferencia por sí sola no demuestra actividad maliciosa",
+            "command": "sha256sum /tmp/catalogo_orquideas.pdf /srv/invernadero/catalogo/catalogo_orquideas.pdf"
           },
           {
             "tool": "Paso 2.4: Inspección y validación del respaldo",
-            "description": "Listar la carpeta de backups y comparar el contenido del archivo `.bak` con el catálogo activo",
-            "command": "ls -la /var/backups/invernadero && cat /var/backups/invernadero/manifest.txt && cat /var/backups/invernadero/catalogo_2026-10-17.bak && cat /srv/invernadero/catalogo/catalogo_publico.csv"
+            "description": "Listar los archivos dentro del directorio de backups",
+            "command": "ls -la /var/backups/invernadero"
+          },
+          {
+            "tool": "Paso 2.4: Inspección y validación del respaldo",
+            "description": "Leer el archivo manifiesto del respaldo",
+            "command": "cat /var/backups/invernadero/manifest.txt"
+          },
+          {
+            "tool": "Paso 2.4: Inspección y validación del respaldo",
+            "description": "Inspeccionar el contenido del archivo `.bak`",
+            "command": "cat /var/backups/invernadero/catalogo_2026-10-17.bak"
+          },
+          {
+            "tool": "Paso 2.4: Inspección y validación del respaldo",
+            "description": "Leer el catálogo real en producción para comparar",
+            "command": "cat /srv/invernadero/catalogo/catalogo_publico.csv"
           },
           {
             "tool": "Paso 2.5: Contención controlada del proceso",
-            "description": "Detener el proceso sospechoso por su PID y verificar que los servicios legítimos sigan activos",
-            "command": "sudo kill -15 PID && ps aux"
+            "description": "Enviar señal de terminación limpia al PID del proceso sospechoso",
+            "command": "sudo kill -15 PID"
+          },
+          {
+            "tool": "Paso 2.5: Contención controlada del proceso",
+            "description": "Verificar en la lista de procesos que la amenaza fue detenida",
+            "command": "ps aux"
           }
         ],
         "pedagogicalGuide": [
           {
-            "sectionTitle": "Paso 2.1: Correlaciona los eventos y formula una hipótesis",
-            "rationale": "Una buena investigación no fuerza una conclusión cuando los datos no la respaldan; primero cruza los avisos de los registros con lo que realmente está ocurriendo en el sistema.",
+            "sectionTitle": "Paso 2.1: Cruza los registros con la memoria viva y formula tu hipótesis",
+            "rationale": "**Regla de investigación:** Un log te cuenta lo que ocurrió en el pasado; el comando `ps` te muestra lo que está vivo ahora mismo en la memoria RAM. Cruzar ambas fuentes te permite saber si un incidente sigue activo.",
             "steps": [
               {
-                "action": "Repasar las alertas de los registros",
-                "command": "sudo cat /var/log/invernadero/actividad.log && sudo cat /var/log/invernadero/incidentes.log",
-                "detail": "Recuerda los elementos señalados a partir de las 21:03: el script de riego, el archivo en /tmp y el proceso desconocido polilla_emisora."
+                "action": "Repasar las entradas del registro de actividad",
+                "command": "sudo cat /var/log/invernadero/actividad.log",
+                "detail": "Recuerda los eventos de las 21:03: inicio del script de riego, creación del archivo en `/tmp` y aparición de `polilla_emisora`."
               },
               {
-                "action": "Contrastar con los procesos reales en ejecución",
+                "action": "Repasar las alertas del registro de incidentes",
+                "command": "sudo cat /var/log/invernadero/incidentes.log",
+                "detail": "Ten presente las advertencias sobre el proceso no reconocido y el estado del backup."
+              },
+              {
+                "action": "Listar todos los procesos que están corriendo actualmente en el servidor",
                 "command": "ps aux",
-                "detail": "Al listar todos los procesos activos en memoria, verás que tanto `/opt/invernadero/scripts/riego_nocturno.sh` como `/tmp/polilla_emisora` se están ejecutando en este momento."
+                "detail": "Busca en la columna derecha (`COMMAND`): comprobarás que tanto `/opt/invernadero/scripts/riego_nocturno.sh` como `/tmp/polilla_emisora` siguen ejecutándose en este instante."
               },
               {
-                "action": "Formular hipótesis provisional fundamentada",
-                "detail": "Ambos procesos existen en memoria, pero el hecho de que polilla_emisora se ejecute desde la carpeta temporal (/tmp) y no esté documentado exige inspeccionar su contenido antes de tomar una decisión."
+                "action": "Redactar tu hipótesis en la Bitácora",
+                "detail": "Dejar un ejecutable corriendo desde la carpeta temporal (`/tmp`) fuera de los directorios operativos es una anomalía clara. Anota tu hipótesis antes de pasar a inspeccionar su código."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 2.2: Inspecciona el proceso sospechoso en ejecución",
-            "rationale": "Por qué se inspecciona primero: si detienes un proceso antes de revisarlo, pierdes su rastro en ejecución (como su PID o qué usuario lo inició). Además, debes asegurarte de no detener por error una tarea crítica del sistema.",
+            "sectionTitle": "Paso 2.2: Analiza el código de los procesos antes de actuar",
+            "rationale": "**Por qué inspeccionar antes de detener:** Si matas un proceso de inmediato, pierdes sus datos en ejecución (PID, usuario que lo lanzó, ruta activa). Además, siempre debes leer qué hace un script para no interrumpir por error una tarea crítica del sistema.",
             "steps": [
               {
-                "action": "Identificar el PID y la ruta del proceso sospechoso",
+                "action": "Aislar la línea del proceso sospechoso para obtener su PID",
                 "command": "ps aux | grep polilla_emisora",
-                "detail": "En la salida de ps aux, anota el número de la primera columna (PID) correspondiente a `/tmp/polilla_emisora`."
+                "detail": "Observa la salida correspondiente a `/tmp/polilla_emisora`: la primera columna indica el usuario que lo ejecuta y el número de la ***segunda columna*** es su identificador único de proceso (_**PID**_). Anótalo."
               },
               {
-                "action": "Leer el contenido del script sospechoso",
+                "action": "Leer el código fuente del proceso sospechoso",
                 "command": "cat /tmp/polilla_emisora",
-                "detail": "Como es un script de texto, puedes leer su código con cat. Verás que solo ejecuta un bucle de espera (`sleep 60`): es un proceso simulado e inofensivo creado para esta práctica."
+                "detail": "Al ser un script en texto plano, puedes ver sus instrucciones sin riesgo. Descubrirás que solo contiene un bucle de espera (`sleep 60`): es un artefacto inofensivo simulado para evaluar tu procedimiento de respuesta."
               },
               {
-                "action": "Comparar con el script legítimo de riego",
+                "action": "Leer el código fuente del script de riego",
                 "command": "cat /opt/invernadero/scripts/riego_nocturno.sh",
-                "detail": "Este script escribe periódicamente la verificación del ciclo en `/var/log/invernadero/riego.log`. Es parte de la operación normal de la estación y no debe detenerse."
+                "detail": "Comprueba que este script registra periódicamente el ciclo de riego en `/var/log/invernadero/riego.log`. Es una pieza vital de la operación de la estación y no debe tocarse."
               },
               {
-                "action": "Registrar la evidencia antes de actuar",
-                "detail": "Anota en el Cuaderno de Campo el PID, la ruta `/tmp/polilla_emisora` y lo que contiene el script antes de pasar a la contención."
+                "action": "Asegurar la evidencia en la Bitácora",
+                "detail": "Registra el PID exacto, la ruta `/tmp/polilla_emisora` y el análisis comparativo de ambos scripts antes de ejecutar cualquier acción de contención."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 2.3: Valida el archivo con extensión engañosa",
-            "rationale": "No es correcto afirmar que se encontró malware real: al inspeccionar el archivo comprobamos que es un señuelo de texto plano creado por el laboratorio.",
+            "sectionTitle": "Paso 2.3: Analiza el binario con extensión engañosa",
+            "rationale": "**Rigor forense:** No reportes que encontraste malware solo porque la extensión sea engañosa. `file` identifica la cabecera ELF; `strings` permite examinar texto legible sin ejecutar el artefacto. El binario del laboratorio es inerte y no tiene permiso de ejecución.",
             "steps": [
               {
-                "action": "Inspeccionar detalles y tipo del archivo",
-                "command": "ls -la /tmp/catalogo_orquideas.pdf && file /tmp/catalogo_orquideas.pdf",
-                "detail": "Registra su propietario, permisos y la confirmación de que su contenido real es texto plano (ASCII text) a pesar de terminar en .pdf."
+                "action": "Consultar permisos, propietario y tamaño del archivo",
+                "command": "ls -la /tmp/catalogo_orquideas.pdf",
+                "detail": "Toma nota de quién es el dueño del archivo y en qué fecha/hora fue depositado en `/tmp`."
               },
               {
-                "action": "Leer el contenido del archivo de forma segura",
-                "command": "cat /tmp/catalogo_orquideas.pdf",
-                "detail": "Al ser texto plano, podemos leerlo en la terminal con cat (o head). El texto confirma explícitamente que es un archivo de simulación del laboratorio LILIUM."
+                "action": "Confirmar el formato binario real del archivo",
+                "command": "file /tmp/catalogo_orquideas.pdf",
+                "detail": "Verifica que el resultado sea `ELF 64-bit LSB executable`. La extensión `.pdf` es engañosa; el modo `0644` evita la ejecución directa. No ejecutes el artefacto para analizarlo."
               },
               {
-                "action": "Registrar la huella SHA-256 y preservar el archivo",
+                "action": "Leer el contenido interno en la terminal",
+                "command": "strings /tmp/catalogo_orquideas.pdf",
+                "detail": "La salida de `strings` expone el mensaje de entrenamiento embebido: referencia la especie ORQ-014, la zona VIV-B02 y una lectura de humedad fuera del objetivo. Es un binario inerte para el ejercicio; no hay que ejecutarlo para analizarlo."
+              },
+              {
+                "action": "Registrar la huella SHA-256 y preservar el artefacto",
                 "command": "sha256sum /tmp/catalogo_orquideas.pdf",
-                "detail": "Guarda el hash en tu bitácora como evidencia. No borres el archivo de `/tmp`: conservarlo permite respaldar tus conclusiones en la auditoría."
+                "detail": "Guarda el hash en tu Bitácora. ***Importante:*** No elimines el archivo de `/tmp`; en una auditoría real, los artefactos en disco se preservan como prueba del incidente."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 2.4: Evalúa si el respaldo puede utilizarse",
-            "rationale": "Límite del escenario: nunca se debe restaurar una copia de seguridad a ciegas sin antes comprobar que su contenido esté completo, ya que un backup defectuoso puede destruir datos válidos en producción.",
+            "sectionTitle": "Paso 2.4: Audita la integridad de la copia de seguridad",
+            "rationale": "**Criterio operativo:** Restaurar un backup a ciegas durante un incidente es uno de los errores más destructivos en administración de sistemas. Si el respaldo está corrupto o incompleto, sobrescribirás y destruirás los datos sanos que están en producción.",
             "steps": [
               {
-                "action": "Explorar la carpeta de copias de seguridad",
-                "command": "ls -la /var/backups/invernadero && cat /var/backups/invernadero/manifest.txt",
-                "detail": "El archivo manifest.txt indica que el respaldo corresponde a `catalogo_publico.csv`, pero debemos revisar el archivo `.bak` real."
+                "action": "Listar el contenido del directorio de respaldos",
+                "command": "ls -la /var/backups/invernadero",
+                "detail": "Identifica los archivos disponibles y revisa qué tamaño en bytes tiene el archivo `.bak`."
               },
               {
-                "action": "Leer el contenido del archivo de respaldo",
+                "action": "Leer el manifiesto del respaldo",
+                "command": "cat /var/backups/invernadero/manifest.txt",
+                "detail": "Indica que la copia corresponde al archivo `catalogo_publico.csv`, pero debemos comprobar si los datos están realmente allí."
+              },
+              {
+                "action": "Inspeccionar el contenido real de la copia de seguridad",
                 "command": "cat /var/backups/invernadero/catalogo_2026-10-17.bak",
-                "detail": "Al leerlo, verás que solo contiene la frase `BACKUP SIMULADO: CONTENIDO INCOMPLETO`, por lo que no posee los datos reales de las plantas."
+                "detail": "La copia incluye metadatos y tres filas botánicas (LIL-001, ORQ-014 y CAL-006), luego se declara truncada. El encabezado indica 7 registros esperados y 3 exportados; la verificación figura como `NOT_PERFORMED`."
               },
               {
-                "action": "Comparar con el catálogo activo en producción",
+                "action": "Comparar contra el catálogo activo en producción",
                 "command": "cat /srv/invernadero/catalogo/catalogo_publico.csv",
-                "detail": "El catálogo en `/srv/invernadero/catalogo/catalogo_publico.csv` sí tiene los registros completos y válidos. Si restauráramos el backup encima de este archivo, provocaríamos pérdida de información."
+                "detail": "Compara la fuente con el backup: producción contiene 7 registros, pero la copia solo conserva 3. Las cuatro filas restantes no deben suponerse recuperables."
               },
               {
-                "action": "Registrar decisión de no restauración",
-                "detail": "Documenta en la bitácora que el respaldo es inválido/incompleto y que no debe utilizarse para restaurar hasta generar una copia íntegra."
+                "action": "Documentar la decisión de no restauración en la Bitácora",
+                "detail": "Deja asentado que el backup es parcial y no verificado; restaurarlo podría perder cuatro registros del catálogo y el informe confidencial completo."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 2.5: Contén solo después de registrar la evidencia",
-            "rationale": "Conclusión apropiada: se detiene únicamente el proceso no autorizado tras haber documentado su evidencia, verificando que los servicios esenciales continúen operando.",
+            "sectionTitle": "Paso 2.5: Ejecuta una contención quirúrgica",
+            "rationale": "**Criterio de contención:** Neutralizar únicamente el proceso no autorizado tras haber asegurado su evidencia, verificando al instante que los sistemas productivos sigan intactos.",
             "steps": [
               {
-                "action": "Confirmar el PID de  `ps aux | grep polilla_emisora`",
+                "action": "Confirmar el número de PID activo de  `ps aux | grep polilla_emisora`",
                 "command": "polilla_emisora",
-                "detail": "Verifica el número de PID del proceso `/tmp/polilla_emisora` (no uses la palabra \"PID\" literal, sino el número que te muestre la terminal)."
+                "detail": "Asegúrate de tener el número exacto de la segunda columna (por ejemplo, `1234`). No escribas la palabra literal `PID` en el siguiente comando."
               },
               {
-                "action": "Detener el proceso de forma ordenada",
+                "action": "Detener el proceso sospechoso de forma controlada",
                 "command": "sudo kill -15 PID",
-                "detail": "Reemplaza PID por el número correspondiente. La señal `-15` (SIGTERM) solicita al proceso que finalice de manera limpia y controlada."
+                "detail": "Reemplaza `PID` por el número que obtuviste en el paso anterior. La señal `-15` (SIGTERM) ordena al proceso cerrarse de forma limpia sin dañar el sistema."
               },
               {
-                "action": "Verificar que el proceso sospechoso ya no esté activo",
+                "action": "Comprobar que el proceso anómalo desapareció de la memoria",
                 "command": "ps aux",
-                "detail": "Revisa la lista de procesos y confirma que `/tmp/polilla_emisora` desapareció."
+                "detail": "Revisa el listado general de procesos y confirma que `/tmp/polilla_emisora` ya no figura en ejecución."
               },
               {
-                "action": "Confirmar la continuidad de la operación legítima",
-                "command": "ps aux | grep riego_nocturno.sh && systemctl status nginx",
-                "detail": "Comprueba que el script `riego_nocturno.sh` sigue corriendo en memoria y que el servidor web `nginx` permanece activo (running). No borres los archivos de `/tmp`."
+                "action": "Verificar que el script de riego continúa operando",
+                "command": "ps aux | grep riego_nocturno.sh",
+                "detail": "Confirma que la tarea automatizada del invernadero sigue corriendo en memoria sin interrupciones."
+              },
+              {
+                "action": "Verificar que el panel web local sigue en línea",
+                "command": "systemctl status nginx",
+                "detail": "Confirma que `nginx` permanece en estado `active (running)`. (Presiona `q` si necesitas salir del visor de estado)."
               }
             ]
           }
         ],
-        "verification": [
-          {
-            "id": "v2-hyp",
-            "label": "Hipótesis provisional apoyada por fuentes identificadas y cronología."
-          },
-          {
-            "id": "v2-proc",
-            "label": "Evidencia del proceso registrada antes de detenerlo."
-          },
-          {
-            "id": "v2-pdf",
-            "label": "Naturaleza del archivo .pdf comprobada sin ejecutarlo."
-          },
-          {
-            "id": "v2-bak",
-            "label": "Respaldo validado y clasificado correctamente como incompleto."
-          },
-          {
-            "id": "v2-kill",
-            "label": "Acción de contención justificada y resultado comprobado."
-          },
-          {
-            "id": "v2-srv",
-            "label": "Verificación de que los procesos y servicios legítimos no se detuvieron como efecto colateral."
-          },
-          {
-            "id": "v2-rigor",
-            "label": "La bitácora no presenta las simulaciones como un ataque real."
-          }
-        ]
+        "verification": []
       },
       {
         "id": "fase-3",
         "number": "03",
-        "title": "FASE 3: Hardening: aplicar y verificar controles",
-        "subtitle": "Reducir debilidades identificadas con medidas proporcionales al riesgo, verificando que no se dañe la continuidad operativa.",
+        "title": "FASE 3: Hardening — Aplicación y verificación de controles",
+        "subtitle": "Reducir la superficie de ataque corrigiendo las debilidades detectadas, sin comprometer la operación de la estación.",
         "directives": [
           {
-            "title": "Paso 3.1 — Restringe la cuenta obsoleta",
-            "text": "La cuenta `ex_cuidador` pertenece a alguien que ya no trabaja en la estación. Aunque su contraseña figuraba bloqueada, en `/etc/passwd` viste que aún tiene asignada una terminal interactiva (`/bin/bash`). Utiliza `usermod` para cambiar su shell a `/usr/sbin/nologin` y asegurar el bloqueo de la cuenta sin borrar el usuario ni su carpeta personal."
+            "title": "Paso 3.1 — Neutraliza la cuenta del antiguo empleado",
+            "text": "La cuenta `ex_cuidador` pertenece a personal dado de baja. Aunque su contraseña figura bloqueada, en `/etc/passwd` viste que conserva asignada una consola interactiva (`/bin/bash`). Utiliza `usermod` para cambiar su shell a `/usr/sbin/nologin` y reafirmar el bloqueo de la cuenta, sin eliminar el usuario ni borrar su directorio personal. _Reporte en Bitácora: Registra el cambio en `/etc/passwd` y explica por qué en auditoría se prefiere deshabilitar la cuenta en lugar de destruirla._"
           },
           {
-            "title": "Paso 3.2 — Protege la clave de prueba y el informe confidencial",
-            "text": "En la Fase 1 detectaste que tanto la clave privada `/home/cuidador/.ssh/id_ed25519` como el archivo `/srv/invernadero/informes/registro_confidencial.csv` tenían permisos `0644` (`-rw-r--r--`), permitiendo que cualquiera los lea. Utiliza `chmod` para restringir sus permisos a `600` (solo lectura y escritura para su propietario) y comprueba el cambio con `ls -l`."
+            "title": "Paso 3.2 — Blinda los permisos de los archivos sensibles",
+            "text": "En la Fase 1 detectaste que la clave privada `/home/cuidador/.ssh/id_ed25519` y el informe `/srv/invernadero/informes/registro_confidencial.csv` tenían permisos `0644` (`-rw-r--r--`), quedando expuestos a lectura por cualquier usuario local. Utiliza `chmod` para restringir ambos archivos al modo `600` (lectura y escritura exclusiva para su propietario). _Reporte en Bitácora: Documenta la salida de `ls -l` que demuestra el nuevo estado de permisos (`-rw-------`)._"
           },
           {
-            "title": "Paso 3.3 — Reduce la superficie de ataque sin afectar el panel",
-            "text": "Al revisar los puertos con `ss -tulpn`, viste que el servicio `ssh` escucha en todas las interfaces (`0.0.0.0:22`), mientras que `nginx` atiende el panel local (`127.0.0.1:8080`). Dado que trabajas desde la consola local de la estación y el acceso remoto por SSH no es necesario, deshabilita y detén el servicio `ssh` con `systemctl`, asegurándote de que `nginx` siga funcionando."
+            "title": "Paso 3.3 — Cierra los servicios de red innecesarios",
+            "text": "En tu relevamiento de red viste que `ssh` escucha conexiones externas en todas las interfaces (`0.0.0.0:22`), mientras que `nginx` opera solo para el panel local (`127.0.0.1:8080`). Dado que la administración se realiza desde la consola local de la estación y el acceso por SSH no es requerido (además de haber recibido intentos de acceso fallidos), deshabilita y detén el servicio `ssh` con `systemctl`. _Reporte en Bitácora: Comprueba con `ss -tulpn` que el puerto 22 dejó de escuchar y que el puerto 8080 de Nginx sigue activo._"
           },
           {
-            "title": "Paso 3.4 — Revisa el estado de actualización y define la acción segura",
-            "text": "Los programas desactualizados pueden tener fallos de seguridad, pero actualizar paquetes a ciegas en medio de una auditoría puede interrumpir servicios críticos. Consulta con `apt` qué paquetes tienen actualizaciones pendientes y registra por qué la decisión correcta es programar una ventana de mantenimiento en lugar de actualizar ahora."
+            "title": "Paso 3.4 — Evalúa las actualizaciones pendientes con criterio operativo",
+            "text": "Mantener paquetes desactualizados entraña riesgos, pero lanzar una actualización general del sistema en medio de una auditoría —y sin un backup válido— puede dejar inoperativa la estación. Consulta con `apt` qué paquetes tienen actualizaciones disponibles y define el plan de acción. _Reporte en Bitácora: ¿Qué paquete figura pendiente de actualización y por qué la decisión profesional es programar una ventana de mantenimiento en vez de ejecutar `apt upgrade` ahora?_"
           },
           {
-            "title": "Paso 3.5 — Verifica los controles y cierra el Cuaderno de Campo",
-            "text": "Ninguna mejora de seguridad está completa sin comprobar su resultado. Vuelve a revisar `/etc/passwd`, los permisos de los dos archivos protegidos, los puertos en escucha y los procesos activos para confirmar que todos tus controles quedaron aplicados y que tanto `nginx` como `riego_nocturno.sh` siguen funcionando normalmente."
+            "title": "Paso 3.5 — Ejecuta la verificación final y cierra la Bitácora",
+            "text": "Ningún control de seguridad se da por válido hasta verificar su efectividad. Realiza un chequeo integral de cierre revisando `/etc/passwd`, los permisos de los dos archivos blindados, los puertos en escucha y los procesos en memoria. _Reporte en Bitácora: Asienta el resumen ejecutivo de cierre confirmando que todos los controles están activos, que `nginx` y `riego_nocturno.sh` operan con normalidad y cuáles son las tareas pendientes para el equipo de TI._"
           }
         ],
         "hints": [
           {
             "tool": "Paso 3.1: Restricción de cuenta obsoleta",
-            "description": "Asignar shell `/usr/sbin/nologin`, asegurar el bloqueo de `ex_cuidador` y comprobar `/etc/passwd`",
-            "command": "sudo usermod -s /usr/sbin/nologin ex_cuidador && sudo usermod -L ex_cuidador && grep ex_cuidador /etc/passwd"
+            "description": "Reemplazar la consola de `ex_cuidador` por `/usr/sbin/nologin`",
+            "command": "sudo usermod -s /usr/sbin/nologin ex_cuidador"
+          },
+          {
+            "tool": "Paso 3.1: Restricción de cuenta obsoleta",
+            "description": "Asegurar el bloqueo formal de la cuenta `ex_cuidador`",
+            "command": "sudo usermod -L ex_cuidador"
+          },
+          {
+            "tool": "Paso 3.1: Restricción de cuenta obsoleta",
+            "description": "Comprobar el cambio en el archivo de usuarios",
+            "command": "grep ex_cuidador /etc/passwd"
           },
           {
             "tool": "Paso 3.2: Protección de archivos sensibles",
-            "description": "Cambiar los permisos de ambos archivos a `600` y verificar con `ls -l`",
-            "command": "sudo chmod 600 /home/cuidador/.ssh/id_ed25519 && sudo chmod 600 /srv/invernadero/informes/registro_confidencial.csv && ls -l /home/cuidador/.ssh/id_ed25519 /srv/invernadero/informes/registro_confidencial.csv"
+            "description": "Restringir a `600` los permisos de la clave privada SSH",
+            "command": "sudo chmod 600 /home/cuidador/.ssh/id_ed25519"
+          },
+          {
+            "tool": "Paso 3.2: Protección de archivos sensibles",
+            "description": "Restringir a `600` los permisos del informe confidencial",
+            "command": "sudo chmod 600 /srv/invernadero/informes/registro_confidencial.csv"
+          },
+          {
+            "tool": "Paso 3.2: Protección de archivos sensibles",
+            "description": "Verificar los nuevos permisos aplicados en ambos archivos",
+            "command": "ls -l /home/cuidador/.ssh/id_ed25519 /srv/invernadero/informes/registro_confidencial.csv"
           },
           {
             "tool": "Paso 3.3: Reducción de superficie de red",
-            "description": "Deshabilitar y detener el servicio `ssh` y comprobar el estado de los puertos y de `nginx`",
-            "command": "sudo systemctl disable --now ssh && systemctl status ssh && systemctl status nginx && sudo ss -tulpn"
+            "description": "Deshabilitar del arranque y detener inmediatamente el servicio SSH",
+            "command": "sudo systemctl disable --now ssh"
+          },
+          {
+            "tool": "Paso 3.3: Reducción de superficie de red",
+            "description": "Comprobar que el servicio SSH quedó inactivo",
+            "command": "systemctl status ssh"
+          },
+          {
+            "tool": "Paso 3.3: Reducción de superficie de red",
+            "description": "Confirmar que el servidor web Nginx continúa activo",
+            "command": "systemctl status nginx"
+          },
+          {
+            "tool": "Paso 3.3: Reducción de superficie de red",
+            "description": "Verificar que el puerto 22 ya no figura en escucha",
+            "command": "sudo ss -tulpn"
           },
           {
             "tool": "Paso 3.4: Estado de actualización y parches",
-            "description": "Consultar la versión del kernel y listar los paquetes con actualizaciones disponibles",
-            "command": "uname -r && apt list --upgradable"
+            "description": "Consultar la versión exacta del kernel activo",
+            "command": "uname -r"
+          },
+          {
+            "tool": "Paso 3.4: Estado de actualización y parches",
+            "description": "Listar los paquetes que tienen actualizaciones pendientes",
+            "command": "apt list --upgradable"
           },
           {
             "tool": "Paso 3.5: Verificación global de controles y cierre",
-            "description": "Comprobar el estado final de la cuenta, permisos, servicios, puertos y procesos",
-            "command": "grep ex_cuidador /etc/passwd && ls -l /home/cuidador/.ssh/id_ed25519 /srv/invernadero/informes/registro_confidencial.csv && sudo ss -tulpn && ps aux"
+            "description": "Confirmar la restricción final de `ex_cuidador`",
+            "command": "grep ex_cuidador /etc/passwd"
+          },
+          {
+            "tool": "Paso 3.5: Verificación global de controles y cierre",
+            "description": "Confirmar los permisos `600` en los archivos críticos",
+            "command": "ls -l /home/cuidador/.ssh/id_ed25519 /srv/invernadero/informes/registro_confidencial.csv"
+          },
+          {
+            "tool": "Paso 3.5: Verificación global de controles y cierre",
+            "description": "Confirmar que solo los puertos necesarios siguen abiertos",
+            "command": "sudo ss -tulpn"
+          },
+          {
+            "tool": "Paso 3.5: Verificación global de controles y cierre",
+            "description": "Confirmar la ausencia de procesos anómalos y la continuidad del riego",
+            "command": "ps aux"
           }
         ],
         "pedagogicalGuide": [
           {
-            "sectionTitle": "Paso 3.1: Restringe la cuenta obsoleta",
-            "rationale": "Por qué importa: las cuentas de ex-empleados aumentan el riesgo de accesos no autorizados. Impedir su inicio de sesión interactivo y bloquearlas reduce ese riesgo, mientras que conservar la cuenta (sin borrarla) mantiene el registro histórico para la auditoría.",
+            "sectionTitle": "Paso 3.1: Neutraliza la cuenta del antiguo empleado",
+            "rationale": "**Por qué importa:** Las cuentas de ex-empleados sin desactivar son un clásico vector de intrusión. Asignar `/usr/sbin/nologin` impide cualquier inicio de sesión interactivo en consola, mientras que conservar la cuenta (sin borrarla con `userdel`) preserva la trazabilidad de sus archivos e historial para futuras auditorías.",
             "steps": [
               {
-                "action": "Revisar el estado actual de la cuenta",
-                "command": "grep ex_cuidador /etc/passwd && sudo passwd -S ex_cuidador",
-                "detail": "Observa que aunque la contraseña aparece bloqueada (L), al final de la línea en /etc/passwd todavía figura `/bin/bash`."
+                "action": "Verificar el estado inicial de la cuenta en  `grep ex_cuidador /etc/passwd`",
+                "command": "/etc/passwd",
+                "detail": "Observa que al final de la línea todavía tiene asignada la consola `/bin/bash`."
               },
               {
-                "action": "Asignar una shell que impida iniciar sesión",
-                "command": "sudo usermod -s /usr/sbin/nologin ex_cuidador",
-                "detail": "Reemplaza `/bin/bash` por `/usr/sbin/nologin`, evitando que la cuenta pueda abrir una terminal interactiva incluso si se intentara otro método de acceso."
+                "action": "Verificar el estado inicial de bloqueo de contraseña",
+                "command": "sudo passwd -S ex_cuidador",
+                "detail": "Confirma el estado previo antes de aplicar el control."
               },
               {
-                "action": "Confirmar el bloqueo de la cuenta",
+                "action": "Retirar la consola interactiva asignando  `sudo usermod -s /usr/sbin/nologin ex_cuidador`",
+                "command": "nologin",
+                "detail": "Modifica el intérprete de comandos del usuario a `/usr/sbin/nologin`, rechazando de plano cualquier intento de abrir una terminal con esa cuenta."
+              },
+              {
+                "action": "Reafirmar el bloqueo de la cuenta",
                 "command": "sudo usermod -L ex_cuidador",
-                "detail": "Asegura formalmente el estado de bloqueo de la contraseña de la cuenta."
+                "detail": "Asegura el bloqueo administrativo del acceso por contraseña."
               },
               {
-                "action": "Verificar que el cambio se aplicó correctamente",
-                "command": "grep ex_cuidador /etc/passwd && sudo passwd -S ex_cuidador",
-                "detail": "Comprueba que la línea de `ex_cuidador` en `/etc/passwd` ahora termina en `/usr/sbin/nologin`. No elimines el usuario ni su carpeta `/home/ex_cuidador`."
+                "action": "Comprobar que el cambio en  quedó aplicado `grep ex_cuidador /etc/passwd`",
+                "command": "/etc/passwd",
+                "detail": "Verifica que la línea de `ex_cuidador` ahora termine en `/usr/sbin/nologin`."
+              },
+              {
+                "action": "Comprobar el estado final de la contraseña",
+                "command": "sudo passwd -S ex_cuidador",
+                "detail": "Registra ambas salidas en tu Bitácora como evidencia del control aplicado."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 3.2: Protege la clave de prueba y el informe confidencial",
-            "rationale": "Por qué importa: el principio de mínimo privilegio establece que solo quienes necesitan un archivo deben poder leerlo. El permiso `600` (`-rw-------`) garantiza que únicamente el propietario tenga lectura y escritura, quitando el acceso al grupo y al resto de usuarios.",
+            "sectionTitle": "Paso 3.2: Blinda los permisos de los archivos sensibles",
+            "rationale": "**Principio de mínimo privilegio:** Ningún usuario debe tener acceso a datos que no necesita para su función. El permiso octal `600` (`-rw-------`) garantiza que solo el dueño del archivo pueda leerlo y modificarlo, eliminando por completo el acceso para el grupo y para el resto de los usuarios del sistema.",
             "steps": [
               {
-                "action": "Revisar los permisos actuales antes de modificarlos",
+                "action": "Revisar los permisos abiertos antes de aplicar el cambio",
                 "command": "ls -l /home/cuidador/.ssh/id_ed25519 /srv/invernadero/informes/registro_confidencial.csv",
-                "detail": "Ambos archivos muestran `-rw-r--r--` (0644), lo que significa que el grupo y otros usuarios pueden leer su contenido."
+                "detail": "Observa los permisos actuales `-rw-r--r--` (0644)."
               },
               {
                 "action": "Restringir los permisos de la clave privada SSH",
                 "command": "sudo chmod 600 /home/cuidador/.ssh/id_ed25519",
-                "detail": "Las claves privadas SSH siempre deben tener permisos `600` para que ningún otro usuario del sistema pueda copiarlas y suplantar esa identidad."
+                "detail": "Protege la credencial criptográfica para que ningún otro usuario local pueda leerla ni copiarla."
               },
               {
                 "action": "Restringir los permisos del informe confidencial",
                 "command": "sudo chmod 600 /srv/invernadero/informes/registro_confidencial.csv",
-                "detail": "Protege el archivo dejándolo accesible solo a su propietario hasta que la administración defina formalmente qué usuarios requieren acceso."
+                "detail": "Cierra el acceso público local al documento hasta que la administración defina formalmente los permisos de grupo."
               },
               {
-                "action": "Comprobar los nuevos permisos aplicados",
+                "action": "Verificar que los nuevos permisos se aplicaron con éxito",
                 "command": "ls -l /home/cuidador/.ssh/id_ed25519 /srv/invernadero/informes/registro_confidencial.csv",
-                "detail": "Verifica que ambos archivos muestren ahora `-rw-------`. Anota esta evidencia en tu Cuaderno de Campo."
+                "detail": "Comprueba que ambos archivos muestren exactamente `-rw-------` al inicio de la línea y regístralo en la Bitácora."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 3.3: Reduce la superficie de ataque sin afectar el panel",
-            "rationale": "El objetivo no es apagar todos los servicios, sino desactivar aquellos que exponen puertos innecesarios en la red, conservando los que sostienen la operación del invernadero.",
+            "sectionTitle": "Paso 3.3: Cierra los servicios de red innecesarios",
+            "rationale": "**Reducción de superficie de ataque:** Cada servicio escuchando en red es una puerta que mantener vigilada. Si un servicio (como SSH) no se requiere para operar la estación y está expuesto a toda la red (`0.0.0.0`), la medida más segura es desactivarlo, cuidando de no tocar los servicios productivos (`nginx`).",
             "steps": [
               {
-                "action": "Revisar los servicios y puertos abiertos actualmente",
-                "command": "systemctl --type=service && sudo ss -tulpn",
-                "detail": "Observa que `ssh` escucha en `0.0.0.0:22` (abierto a la red) y `nginx` en `127.0.0.1:8080` (panel local)."
+                "action": "Listar los servicios activos antes del cambio",
+                "command": "systemctl --type=service",
+                "detail": "Repasa qué servicios están corriendo en el sistema. (Recuerda usar `q` si se abre el paginador)."
               },
               {
-                "action": "Evaluar el estado de Nginx y SSH",
-                "command": "systemctl status nginx && systemctl status ssh",
-                "detail": "Nginx cumple una función operativa declarada en el inventario; en cambio, el servidor SSH no es necesario para la operación local de la estación y ya registró intentos de acceso fallidos."
+                "action": "Revisar los puertos actualmente en escucha",
+                "command": "sudo ss -tulpn",
+                "detail": "Observa el puerto `22` (`sshd` en `0.0.0.0`) y el puerto `8080` (`nginx` en `127.0.0.1`)."
               },
               {
-                "action": "Deshabilitar y detener el servicio SSH",
+                "action": "Verificar el estado del servidor web Nginx",
+                "command": "systemctl status nginx",
+                "detail": "Confirma su estado operativo antes de intervenir en la red."
+              },
+              {
+                "action": "Verificar el estado actual del servidor SSH",
+                "command": "systemctl status ssh",
+                "detail": "Observa que se encuentra activo (`active (running)`) y habilitado en el arranque."
+              },
+              {
+                "action": "Deshabilitar y detener el servicio SSH en un solo paso",
                 "command": "sudo systemctl disable --now ssh",
-                "detail": "El comando `disable --now` detiene el servicio inmediatamente y evita que vuelva a iniciarse cuando se reinicie el equipo."
+                "detail": "El parámetro `disable` evita que el servicio inicie cuando el servidor se reinicie, y `--now` lo detiene inmediatamente en la sesión actual."
               },
               {
-                "action": "Comprobar el resultado en los servicios y puertos",
-                "command": "systemctl status ssh && systemctl status nginx && sudo ss -tulpn",
-                "detail": "Verifica que `ssh` aparezca como `inactive (dead)` y que el puerto 22 ya no esté en la lista de `ss -tulpn`, mientras que `nginx` sigue activo en el puerto 8080."
+                "action": "Confirmar que el servicio SSH quedó detenido",
+                "command": "systemctl status ssh",
+                "detail": "Verifica que ahora figure como `inactive (dead)`."
+              },
+              {
+                "action": "Confirmar que Nginx no sufrió interrupciones",
+                "command": "systemctl status nginx",
+                "detail": "Asegúrate de que el servidor del panel interno continúe `active (running)`."
+              },
+              {
+                "action": "Comprobar en la tabla de red que el puerto 22 se cerró",
+                "command": "sudo ss -tulpn",
+                "detail": "Confirma que ya no existe ningún proceso escuchando en el puerto 22 y que solo permanece activo el puerto local `127.0.0.1:8080`. Registra esta evidencia en la Bitácora."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 3.4: Revisa el estado de actualización y define la acción segura",
-            "rationale": "Resultado esperado: identificar qué paquetes tienen actualizaciones disponibles y documentar un plan de mantenimiento, sin ejecutar actualizaciones a ciegas que puedan afectar el entorno auditado.",
+            "sectionTitle": "Paso 3.4: Evalúa las actualizaciones pendientes con criterio operativo",
+            "rationale": "**Gestión de cambios y parches:** Aplicar parches de seguridad es vital, pero ejecutar actualizaciones en caliente sobre un servidor sin respaldo válido puede romper dependencias y detener la operación. La decisión correcta en auditoría es relevar la deuda técnica y programar una ventana de mantenimiento controlada.",
             "steps": [
               {
-                "action": "Consultar la versión del kernel y los paquetes instalados",
-                "command": "uname -r && dpkg -l",
-                "detail": "Permite dejar registro de las versiones exactas que están corriendo actualmente en el servidor."
+                "action": "Consultar la versión actual del kernel",
+                "command": "uname -r",
+                "detail": "Registra la versión exacta del núcleo activo."
               },
               {
-                "action": "Consultar qué paquetes tienen actualizaciones pendientes",
+                "action": "Listar los paquetes instalados actualmente",
+                "command": "dpkg -l",
+                "detail": "Permite tener constancia de las versiones en producción (recuerda presionar `q` para salir del visor)."
+              },
+              {
+                "action": "Consultar qué paquetes tienen actualizaciones disponibles",
                 "command": "apt list --upgradable",
-                "detail": "Verás que `openssh-server` aparece con una actualización disponible en los repositorios."
+                "detail": "Notarás que el paquete `openssh-server` tiene una versión más reciente disponible en los repositorios."
               },
               {
-                "action": "Decidir no actualizar durante la auditoría",
-                "detail": "No ejecutes `apt upgrade`. En un entorno productivo o bajo investigación, aplicar actualizaciones sin una ventana de mantenimiento ni un respaldo válido previo (recuerda que el backup estaba incompleto) puede interrumpir el servicio."
-              },
-              {
-                "action": "Documentar la recomendación en la bitácora",
-                "detail": "Registra el paquete pendiente de actualización y recomienda programar su aplicación una vez que se cuente con un respaldo íntegro del sistema."
+                "action": "Documentar el plan de mantenimiento sin actualizar ahora",
+                "detail": "**No ejecutes `apt upgrade`.** Registra en tu Bitácora el paquete desactualizado y recomienda aplicar el parche dentro de una ventana de mantenimiento programada, únicamente después de haber generado un backup íntegro y verificado del sistema."
               }
             ]
           },
           {
-            "sectionTitle": "Paso 3.5: Verifica los controles y cierra el Cuaderno de Campo",
-            "rationale": "Criterio de cierre: toda medida aplicada debe verificarse con un comando que confirme el estado final, dejando asentados también los temas pendientes que requieren seguimiento.",
+            "sectionTitle": "Paso 3.5: Ejecuta la verificación final y cierra la Bitácora",
+            "rationale": "**Protocolo de cierre:** Antes de dar por finalizada tu intervención en la estación, debes ejecutar una ronda de comprobación final que demuestre que todos los controles persisten y los sistemas vitales operan sin fallos.",
             "steps": [
               {
-                "action": "Verificar la restricción de la cuenta  `grep ex_cuidador /etc/passwd && sudo passwd -S ex_cuidador`",
+                "action": "Comprobar la consola asignada a  `grep ex_cuidador /etc/passwd`",
                 "command": "ex_cuidador",
-                "detail": "Confirma que tiene asignado `/usr/sbin/nologin` y su contraseña continúa bloqueada (L)."
+                "detail": "Confirma que finaliza en `/usr/sbin/nologin`."
               },
               {
-                "action": "Verificar los permisos de los archivos sensibles",
+                "action": "Comprobar el bloqueo de contraseña de  `sudo passwd -S ex_cuidador`",
+                "command": "ex_cuidador",
+                "detail": "Confirma que mantiene el indicador `L` (Locked)."
+              },
+              {
+                "action": "Comprobar el blindaje de permisos en los archivos sensibles",
                 "command": "ls -l /home/cuidador/.ssh/id_ed25519 /srv/invernadero/informes/registro_confidencial.csv",
-                "detail": "Confirma que ambos muestran `-rw-------` (modo 600)."
+                "detail": "Confirma que ambos exhiben permisos `-rw-------` (`600`)."
               },
               {
-                "action": "Verificar los puertos abiertos y el funcionamiento de Nginx",
-                "command": "systemctl status nginx && sudo ss -tulpn",
-                "detail": "Confirma que solo el puerto `127.0.0.1:8080` de Nginx sigue en escucha y que el puerto 22 de SSH ya no está expuesto."
+                "action": "Comprobar la salud operativa del servidor web Nginx",
+                "command": "systemctl status nginx",
+                "detail": "Confirma que sigue activo (`active (running)`)."
               },
               {
-                "action": "Verificar los procesos en ejecución",
+                "action": "Comprobar el cierre de puertos expuestos",
+                "command": "sudo ss -tulpn",
+                "detail": "Confirma que solo `127.0.0.1:8080` está en escucha y que el puerto `22` permanece cerrado."
+              },
+              {
+                "action": "Comprobar la limpieza y continuidad de los procesos en memoria",
                 "command": "ps aux",
-                "detail": "Confirma que `polilla_emisora` ya no existe en memoria y que `riego_nocturno.sh` sigue funcionando normalmente."
+                "detail": "Confirma que `polilla_emisora` sigue ausente y que `/opt/invernadero/scripts/riego_nocturno.sh` continúa ejecutándose con normalidad."
               },
               {
-                "action": "Completar el Cuaderno de Campo y documentar riesgos pendientes",
-                "detail": "Resume el estado inicial, las evidencias encontradas, los controles aplicados y los puntos que quedan pendientes para el equipo de TI (generar un backup completo del catálogo, aplicar actualizaciones programadas y verificar físicamente el router/firewall)."
+                "action": "Redactar el cierre ejecutivo en la Bitácora",
+                "detail": "Completa tu Bitácora resumiendo los controles aplicados y dejando asentadas las tres tareas pendientes para el equipo de TI: 1) Corregir y generar un backup completo del catálogo, 2) Programar la ventana de mantenimiento para actualizar paquetes y 3) Auditar físicamente el router/firewall y los equipos externos que exceden a este servidor."
               }
             ]
           }
         ],
-        "verification": [
-          {
-            "id": "v3-acc",
-            "label": "La cuenta obsoleta quedó restringida sin ser eliminada."
-          },
-          {
-            "id": "v3-perms",
-            "label": "Los permisos de los archivos sensibles coinciden con la decisión documentada (modo 600)."
-          },
-          {
-            "id": "v3-ssh",
-            "label": "Los servicios innecesarios (SSH) se deshabilitaron solo tras confirmar que no eran requeridos."
-          },
-          {
-            "id": "v3-alive",
-            "label": "Nginx y el proceso legítimo de riego conservan el estado esperado."
-          },
-          {
-            "id": "v3-patch",
-            "label": "El estado de actualización quedó documentado sin ejecutar una actualización fuera de control."
-          },
-          {
-            "id": "v3-post",
-            "label": "Cada control tiene una evidencia posterior que demuestra su resultado."
-          },
-          {
-            "id": "v3-residual",
-            "label": "Se documentaron los riesgos residuales y las acciones que exceden el alcance de esta VM."
-          }
-        ]
+        "verification": []
       }
     ],
-    "ssotCommands": "# Script SSoT de Inicialización — Lab 01 \"La Estación Olvidada\"\n\n> **Fuente Única de Verdad (Single Source of Truth) para la configuración del sistema operativo emulado.**\n> Los comandos de terminal Linux a continuación son ejecutados directamente en la máquina virtual Linux (v86) al iniciar el laboratorio para provisionar archivos, usuarios, servicios, vulnerabilidades y artefactos.\n\n```bash\n#!/bin/sh\numask 022\nexport PATH=\"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\"\necho \"invernadero-central\" > /etc/hostname\nhostname invernadero-central 2>/dev/null || true\n\ncat > /etc/hosts << 'EOF'\n127.0.0.1 localhost\n127.0.1.1 invernadero-central.local invernadero-central\n10.0.2.15 invernadero-central\nEOF\n\ncat > /etc/resolv.conf << 'EOF'\nnameserver 10.0.2.3\nsearch invernadero.local\nEOF\n\ncat > /etc/os-release << 'EOF'\nPRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nEOF\n\nmkdir -p /bin /usr/bin /usr/local/bin /usr/sbin /var/lib/lilium/services\nln -sf /bin/sh /bin/bash 2>/dev/null || true\n\ncat > /usr/local/bin/hostname << 'EOF'\n#!/bin/sh\n[ $# -gt 0 ] && echo \"$1\" > /etc/hostname && /bin/hostname \"$1\" 2>/dev/null\ncat /etc/hostname 2>/dev/null || echo \"invernadero-central\"\nEOF\nchmod 755 /usr/local/bin/hostname\n\ncat > /usr/local/bin/whoami << 'EOF'\n#!/bin/sh\necho \"${USER:-operario}\"\nEOF\nchmod 755 /usr/local/bin/whoami\n\ncat > /usr/local/bin/id << 'EOF'\n#!/bin/sh\nt=\"${1:-${USER:-operario}}\"\nl=\"$(grep -E \"^${t}:\" /etc/passwd 2>/dev/null | head -n 1)\"\n[ -z \"$l\" ] && echo \"id: '$t': no such user\" >&2 && exit 1\nu=\"$(echo \"$l\" | cut -d: -f3)\"; g=\"$(echo \"$l\" | cut -d: -f4)\"\ngn=\"$(grep -E \"^[^:]+:[^:]*:${g}:\" /etc/group 2>/dev/null | head -n 1 | cut -d: -f1)\"\n[ -z \"$gn\" ] && gn=\"$t\"\ns=\"${g}(${gn})\"\nfor gl in $(grep -E \"(^|:|,)${t}(,|$)\" /etc/group 2>/dev/null); do\n  sn=\"$(echo \"$gl\" | cut -d: -f1)\"; sg=\"$(echo \"$gl\" | cut -d: -f3)\"\n  [ \"$sg\" != \"$g\" ] && s=\"${s},${sg}(${sn})\"\ndone\necho \"uid=${u}(${t}) gid=${g}(${gn}) groups=${s}\"\nEOF\nchmod 755 /usr/local/bin/id\n\ncat > /usr/bin/sudo << 'EOF'\n#!/bin/sh\nexec \"$@\"\nEOF\nchmod 755 /usr/bin/sudo\nln -sf /usr/bin/sudo /bin/sudo 2>/dev/null || true\n\ncat > /usr/bin/getent << 'EOF'\n#!/bin/sh\nd=\"$1\"; shift\ncase \"$d\" in\n  passwd) [ $# -eq 0 ] && cat /etc/passwd && exit 0; for u in \"$@\"; do grep -E \"^${u}:\" /etc/passwd 2>/dev/null; done ;;\n  group) [ $# -eq 0 ] && cat /etc/group && exit 0; for g in \"$@\"; do grep -E \"^${g}:\" /etc/group 2>/dev/null; done ;;\nesac\nEOF\nchmod 755 /usr/bin/getent\n\ncat > /usr/bin/usermod << 'EOF'\n#!/bin/sh\nsh=\"\"; lk=0; gp=\"\"; tg=\"\"\nwhile [ $# -gt 0 ]; do\n  case \"$1\" in -s) sh=\"$2\"; shift 2 ;; -L) lk=1; shift ;; -aG) gp=\"$2\"; shift 2 ;; *) tg=\"$1\"; shift ;; esac\ndone\n[ -n \"$sh\" ] && [ -n \"$tg\" ] && sed -i \"s|^\\\\(${tg}:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:\\\\).*|\\\\1${sh}|\" /etc/passwd\nif [ \"$lk\" = \"1\" ] && [ -n \"$tg\" ]; then\n  echo \"$tg\" >> /var/lib/lilium/locked_users\n  [ -f /etc/shadow ] && sed -i \"s|^\\\\(${tg}:\\\\)\\\\([^!].*\\\\)|\\\\1!\\\\2|\" /etc/shadow\nfi\nEOF\nchmod 755 /usr/bin/usermod\n\ncat > /usr/local/bin/passwd << 'EOF'\n#!/bin/sh\nif [ \"$1\" = \"-S\" ]; then\n  u=\"$2\"; k=0\n  [ -f /var/lib/lilium/locked_users ] && grep -q \"^${u}$\" /var/lib/lilium/locked_users && k=1\n  [ \"$u\" = \"ex_cuidador\" ] && k=1\n  [ \"$k\" = \"1\" ] && echo \"$u L 10/17/2026 0 99999 7 -1\" || echo \"$u P 10/17/2026 0 99999 7 -1\"\n  exit 0\nfi\nexec /usr/bin/passwd \"$@\"\nEOF\nchmod 755 /usr/local/bin/passwd\n\ncat > /usr/bin/dpkg << 'EOF'\n#!/bin/sh\n[ \"$1\" = \"-l\" ] && cat << 'DPKG_EOF'\nDesired=Unknown/Install/Remove/Purge/Hold\n| Status=Not/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait/Trig-pend\n|/ Err?=(none)/Reinst-required (Status,Err: uppercase=bad)\n||/ Name           Version               Architecture Description\n+++-==============-=====================-============-===================================================\nii  acl            2.3.1-1               amd64        access control list - utilities\nii  bash           5.2.15-2+b7           amd64        GNU Bourne Again SHell\nii  coreutils      9.1-1                 amd64        GNU core utilities\nii  nginx          1.22.1-9              amd64        web server\nii  openssh-server 1:9.2p1-2+deb12u3     amd64        secure shell\nDPKG_EOF\nexit 0\nEOF\nchmod 755 /usr/bin/dpkg\n\ncat > /usr/bin/apt << 'EOF'\n#!/bin/sh\n[ \"$1\" = \"list\" ] && [ \"$2\" = \"--upgradable\" ] && echo \"openssh-server/stable 1:9.2p1-2+deb12u4 amd64 [upgradable from: 1:9.2p1-2+deb12u3]\"\nexit 0\nEOF\nchmod 755 /usr/bin/apt\n\ncat > /usr/bin/systemctl << 'EOF'\n#!/bin/sh\nS=\"/var/lib/lilium/services\"; mkdir -p \"$S\"\n[ ! -f \"$S/ssh\" ] && echo \"running\" > \"$S/ssh\"\n[ ! -f \"$S/nginx\" ] && echo \"running\" > \"$S/nginx\"\ncase \"$1\" in\n  status)\n    v=\"$(echo \"$2\" | sed 's/\\.service$//')\"; st=\"$(cat \"$S/$v\" 2>/dev/null || echo \"dead\")\"\n    if [ \"$v\" = \"nginx\" ] || [ \"$v\" = \"ssh\" ]; then\n      [ \"$st\" = \"running\" ] && echo -e \"● $v.service\\n   Active: active (running)\" || echo -e \"● $v.service\\n   Active: inactive (dead)\"\n    else\n      echo -e \"● $v.service\\n   Active: $st\"\n    fi ;;\n  disable|stop)\n    shift; while [ $# -gt 0 ]; do [ \"$1\" != \"--now\" ] && echo \"stopped\" > \"$S/$(echo \"$1\" | sed 's/\\.service$//')\"; shift; done ;;\n  enable|start)\n    shift; while [ $# -gt 0 ]; do [ \"$1\" != \"--now\" ] && echo \"running\" > \"$S/$(echo \"$1\" | sed 's/\\.service$//')\"; shift; done ;;\n  --type=service)\n    echo \"  UNIT          LOAD   ACTIVE SUB\"\n    echo \"  cron.service  loaded active running\"\n    [ \"$(cat \"$S/nginx\" 2>/dev/null)\" = \"running\" ] && echo \"  nginx.service loaded active running\"\n    [ \"$(cat \"$S/ssh\" 2>/dev/null)\" = \"running\" ] && echo \"  ssh.service   loaded active running\" ;;\nesac\nEOF\nchmod 755 /usr/bin/systemctl\n\ncat > /usr/bin/ss << 'EOF'\n#!/bin/sh\nS=\"/var/lib/lilium/services\"\necho \"Netid  State   Recv-Q  Send-Q   Local Address:Port   Peer Address:Port  Process\"\n[ \"$(cat \"$S/ssh\" 2>/dev/null)\" != \"stopped\" ] && echo \"tcp    LISTEN  0       128            0.0.0.0:22          0.0.0.0:*      users:((\\\"sshd\\\",pid=312,fd=3))\"\n[ \"$(cat \"$S/nginx\" 2>/dev/null)\" != \"stopped\" ] && echo \"tcp    LISTEN  0       128          127.0.0.1:8080        0.0.0.0:*      users:((\\\"nginx\\\",pid=345,fd=6))\"\nEOF\nchmod 755 /usr/bin/ss\n\ncat > /usr/bin/journalctl << 'EOF'\n#!/bin/sh\ncat << 'J_EOF'\n-- Boot b2e4c85910fa4a91b248466e3981881b --\nOct 17 20:41:12 invernadero-central sshd[289]: Failed password for invalid user ex_cuidador\nOct 17 21:07:42 invernadero-central LILIUM-LAB[412]: SIMULADO: revisar accesos fuera de horario\nOct 17 21:08:01 invernadero-central LILIUM-LAB[412]: SIMULADO: artefacto detectado en /tmp\nOct 17 22:00:04 invernadero-central LILIUM-LAB[412]: SIMULADO: backup con verificacion pendiente\nJ_EOF\nEOF\nchmod 755 /usr/bin/journalctl\n\ncat > /usr/bin/file << 'EOF'\n#!/bin/sh\nfor t in \"$@\"; do\n  [ ! -e \"$t\" ] && echo \"$t: cannot open\" && continue\n  fl=\"$(head -n 1 \"$t\" 2>/dev/null)\"\n  case \"$fl\" in\n    *ELF*) echo \"$t: ELF 64-bit LSB pie executable\" ;;\n    *PDF*) echo \"$t: PDF document\" ;;\n    *) echo \"$t: ASCII text\" ;;\n  esac\ndone\nEOF\nchmod 755 /usr/bin/file\n\ncat > /usr/local/bin/ps << 'EOF'\n#!/bin/sh\nif [ \"$1\" = \"aux\" ] || [ \"$1\" = \"-ef\" ]; then\n  echo \"USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\"\n  for d in /proc/[0-9]*; do\n    p=\"${d#/proc/}\"\n    if [ -r \"$d/cmdline\" ]; then\n      c=\"$(tr '\\0' ' ' < \"$d/cmdline\" 2>/dev/null | sed 's/ $//')\"\n      [ -z \"$c\" ] && c=\"[$(cat \"$d/comm\" 2>/dev/null)]\"\n      u=\"root\"\n      case \"$c\" in *polilla_emisora*) u=\"www-data\" ;; *riego_nocturno*) u=\"cuidador\" ;; esac\n      printf \"%-8s %5s  0.0  0.1   2480   512 ?        S    08:00   0:00 %s\\n\" \"$u\" \"$p\" \"$c\"\n    fi\n  done\n  exit 0\nfi\nexec /bin/ps \"$@\"\nEOF\nchmod 755 /usr/local/bin/ps\n\ncat > /usr/local/bin/ip << 'EOF'\n#!/bin/sh\nif [ \"$1\" = \"-br\" ]; then\n  echo \"lo               UNKNOWN        127.0.0.1/8 ::1/128\"\n  echo \"eth0             UP             10.0.2.15/24 fe80::5054:ff:fe12:3456/64\"\nelif [ \"$1\" = \"route\" ]; then\n  echo \"default via 10.0.2.2 dev eth0\"\n  echo \"10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15\"\nelse\n  exec /sbin/ip \"$@\"\nfi\nEOF\nchmod 755 /usr/local/bin/ip\n\ncat > /etc/group << 'EOF'\nroot:x:0:\nsudo:x:27:operario,admin-it,cuidador\noperario:x:1000:operario\nriego-ops:x:1001:cuidador,www-data\nadministracion:x:1002:ana\nit-admins:x:1003:admin-it\nproveedores:x:1004:proveedor\nwww-data:x:33:\nEOF\n\ncat > /etc/passwd << 'EOF'\nroot:x:0:0:root:/root:/bin/sh\noperario:x:1000:1000:Operario:/home/operario:/bin/bash\ncuidador:x:1001:1001:Cuidador:/home/cuidador:/bin/bash\nadmin-it:x:1002:1003:IT:/home/admin-it:/bin/bash\nana:x:1003:1002:Admin:/home/ana:/bin/bash\nproveedor:x:1004:1004:Proveedor:/home/proveedor:/bin/bash\nex_cuidador:x:1005:1001:Ex_Cuidador:/home/ex_cuidador:/bin/bash\nwww-data:x:33:33:www-data:/opt/invernadero/web:/usr/sbin/nologin\nEOF\n\nmkdir -p /etc/sudoers.d\necho \"operario ALL=(ALL) NOPASSWD:ALL\" > /etc/sudoers.d/99-lilium\necho \"cuidador ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers.d/99-lilium\nchmod 0440 /etc/sudoers.d/99-lilium\n\nmkdir -p /opt/invernadero/scripts /srv/invernadero/catalogo /srv/invernadero/informes /var/log/invernadero /var/backups/invernadero /etc/invernadero /home/operario /home/cuidador/.ssh\n\nchown -R root:root /opt/invernadero\nchown -R root:riego-ops /srv/invernadero\nchmod 0750 /srv/invernadero /srv/invernadero/catalogo /srv/invernadero/informes\nchown -R operario:operario /home/operario 2>/dev/null || true\nchown -R cuidador:riego-ops /home/cuidador 2>/dev/null || true\nchmod 0750 /home/operario\nchmod 0700 /home/cuidador/.ssh\n\ncat > /etc/invernadero/inventario.csv << 'EOF'\nasset_id,tipo,ubicacion,responsable,criticidad,estado\nSRV-INV-01,Servidor central,Invernadero Central,admin-it,Alta,En uso\nEOF\ncat > /etc/invernadero/software-autorizado.txt << 'EOF'\nnginx\nopenssh-server\nEOF\n\ncat > /srv/invernadero/catalogo/catalogo_publico.csv << 'EOF'\nid,nombre,estado\n001,Azucena,Disponible\nEOF\n\ncat > /srv/invernadero/informes/registro_confidencial.csv << 'EOF'\nid,operador,evento\n001,ana,ajuste de riego\nEOF\nchmod 0644 /srv/invernadero/informes/registro_confidencial.csv\nchown root:riego-ops /srv/invernadero/informes/registro_confidencial.csv\n\ncat > /home/cuidador/.ssh/id_ed25519 << 'EOF'\n-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\nQyNTUxOQAAACBA1vK0r+vH7h2Y7vK4jL8nK3lPqW1sK3xL9vO0j5m8QwAAAJgAwvQDAM\n-----END OPENSSH PRIVATE KEY-----\nEOF\nchmod 0644 /home/cuidador/.ssh/id_ed25519\nchown cuidador:riego-ops /home/cuidador/.ssh/id_ed25519\n\ncat > /tmp/catalogo_orquideas.pdf << 'EOF'\nSIMULACION LILIUM: archivo de prueba con extension .pdf.\nEste archivo es texto plano.\nEOF\nchmod 0644 /tmp/catalogo_orquideas.pdf\n\necho \"BACKUP SIMULADO: CONTENIDO INCOMPLETO\" > /var/backups/invernadero/catalogo_2026-10-17.bak\necho \"catalogo_publico.csv\" > /var/backups/invernadero/manifest.txt\n\ncat > /var/log/invernadero/README-lab.txt << 'EOF'\nEventos sinteticos. Correlacionarlos con la salida de comandos.\nEOF\ncat > /var/log/invernadero/accesos.log << 'EOF'\n2026-10-17T20:41:12 SIMULADO ssh login fallido usuario=ex_cuidador\nEOF\ncat > /var/log/invernadero/actividad.log << 'EOF'\n2026-10-17T21:03:00 SIMULADO proceso observado nombre=riego_nocturno.sh\n2026-10-17T21:07:42 SIMULADO proceso desconocido nombre=polilla_emisora\nEOF\nchmod 0640 /var/log/invernadero/*.log /var/log/invernadero/README-lab.txt\n\npkill -f riego_nocturno.sh 2>/dev/null || true\npkill -f polilla_emisora 2>/dev/null || true\n\ncat > /opt/invernadero/scripts/riego_nocturno.sh << 'EOF'\n#!/bin/sh\nwhile true; do sleep 60; done\nEOF\nchmod 0755 /opt/invernadero/scripts/riego_nocturno.sh\n/bin/sh /opt/invernadero/scripts/riego_nocturno.sh >/dev/null 2>&1 &\n\ncat > /tmp/polilla_emisora << 'EOF'\n#!/bin/sh\nwhile true; do sleep 60; done\nEOF\nchmod 0755 /tmp/polilla_emisora\n/bin/sh /tmp/polilla_emisora >/dev/null 2>&1 &\n\ncat > /home/operario/.profile << 'EOF'\nexport PATH=\"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\"\nexport USER=operario\nexport HOME=/home/operario\nexport HOSTNAME=invernadero-central\nexport PS1=\"operario@invernadero-central:\\w$ \"\nEOF\ncp /home/operario/.profile /home/operario/.bashrc\nchown -R operario:operario /home/operario 2>/dev/null || true\n\nexport PATH=\"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\"\nexport USER=operario\nexport HOME=/home/operario\nexport HOSTNAME=invernadero-central\nexport PS1=\"operario@invernadero-central:\\w$ \"\n\nclear\nprintf \"\\n  Estacion Botanica Automatizada N. 4 — invernadero-central\\n\"\nprintf \"  Usuario activo: operario\\n\"\nprintf \"  ALERTA: Sistema comprometido — inicia la auditoria de seguridad.\\n\\n\"\ncd /home/operario\n```",
+    "ssotCommands": "# Script SSoT de Inicialización — Lab 01 \"La Estación Olvidada\"\n\n> **Fuente Única de Verdad (Single Source of Truth) para la configuración del sistema operativo emulado.**\n>\n> Los comandos de terminal Linux a continuación se ejecutan directamente en la máquina virtual Linux (v86) al iniciar el laboratorio para aprovisionar archivos, usuarios, servicios, vulnerabilidades y artefactos.\n\n```bash\n#!/bin/sh\n#!/bin/sh\numask 022\nexport PATH=\"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\"\necho \"invernadero-central\" > /etc/hostname\nhostname invernadero-central 2>/dev/null || true\ncat > /etc/hosts << 'EOF'\n127.0.0.1 localhost\n127.0.1.1 invernadero-central.local invernadero-central\n10.0.2.15 invernadero-central\nEOF\ncat > /etc/resolv.conf << 'EOF'\nnameserver 10.0.2.3\nsearch invernadero.local\nEOF\ncat > /etc/os-release << 'EOF'\nPRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nEOF\nmkdir -p /bin /usr/bin /usr/local/bin /usr/sbin /var/lib/tulip/services\nln -sf /bin/sh /bin/bash 2>/dev/null || true\ncat > /usr/local/bin/hostname << 'EOF'\n#!/bin/sh\n[ $# -gt 0 ] && echo \"$1\" > /etc/hostname && /bin/hostname \"$1\" 2>/dev/null\ncat /etc/hostname 2>/dev/null || echo \"invernadero-central\"\nEOF\nchmod 755 /usr/local/bin/hostname\ncat > /usr/local/bin/whoami << 'EOF'\n#!/bin/sh\necho \"${USER:-operario}\"\nEOF\nchmod 755 /usr/local/bin/whoami\ncat > /usr/local/bin/id << 'EOF'\n#!/bin/sh\nt=\"${1:-${USER:-operario}}\"\nl=\"$(grep -E \"^${t}:\" /etc/passwd 2>/dev/null | head -n 1)\"\n[ -z \"$l\" ] && echo \"id: '$t': no such user\" >&2 && exit 1\nu=\"$(echo \"$l\" | cut -d: -f3)\"; g=\"$(echo \"$l\" | cut -d: -f4)\"\ngn=\"$(grep -E \"^[^:]+:[^:]*:${g}:\" /etc/group 2>/dev/null | head -n 1 | cut -d: -f1)\"\n[ -z \"$gn\" ] && gn=\"$t\"\ns=\"${g}(${gn})\"\nfor gl in $(grep -E \"(^|:|,)${t}(,|$)\" /etc/group 2>/dev/null); do\n  sn=\"$(echo \"$gl\" | cut -d: -f1)\"; sg=\"$(echo \"$gl\" | cut -d: -f3)\"\n  [ \"$sg\" != \"$g\" ] && s=\"${s},${sg}(${sn})\"\ndone\necho \"uid=${u}(${t}) gid=${g}(${gn}) groups=${s}\"\nEOF\nchmod 755 /usr/local/bin/id\ncat > /usr/bin/sudo << 'EOF'\n#!/bin/sh\nexec \"$@\"\nEOF\nchmod 755 /usr/bin/sudo\nln -sf /usr/bin/sudo /bin/sudo 2>/dev/null || true\ncat > /usr/bin/getent << 'EOF'\n#!/bin/sh\nd=\"$1\"; shift\ncase \"$d\" in\n  passwd) [ $# -eq 0 ] && cat /etc/passwd && exit 0; for u in \"$@\"; do grep -E \"^${u}:\" /etc/passwd 2>/dev/null; done ;;\n  group) [ $# -eq 0 ] && cat /etc/group && exit 0; for g in \"$@\"; do grep -E \"^${g}:\" /etc/group 2>/dev/null; done ;;\nes:\nEOF\nchmod 755 /usr/bin/getent\ncat > /usr/bin/usermod << 'EOF'\n#!/bin/sh\nsh=\"\"; lk=0; gp=\"\"; tg=\"\"\nwhile [ $# -gt 0 ]; do\n  case \"$1\" in -s) sh=\"$2\"; shift 2 ;; -L) lk=1; shift ;; -aG) gp=\"$2\"; shift 2 ;; *) tg=\"$1\"; shift ;; esac\ndone\n[ -n \"$sh\" ] && [ -n \"$tg\" ] && sed -i \"s|^\\\\(${tg}:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:\\\\).*|\\\\1${sh}|\" /etc/passwd\nif [ \"$lk\" = \"1\" ] && [ -n \"$tg\" ]; then\n  echo \"$tg\" >> /var/lib/tulip/locked_users\n  [ -f /etc/shadow ] && sed -i \"s|^\\\\(${tg}:\\\\)\\\\([^!].*\\\\)|\\\\1!\\\\2|\" /etc/shadow\nfi\nEOF\nchmod 755 /usr/bin/usermod\ncat > /usr/local/bin/passwd << 'EOF'\n#!/bin/sh\nif [ \"$1\" = \"-S\" ]; then\n  u=\"$2\"; k=0\n  [ -f /var/lib/tulip/locked_users ] && grep -q \"^${u}$\" /var/lib/tulip/locked_users && k=1\n  [ \"$u\" = \"ex_cuidador\" ] && k=1\n  [ \"$k\" = \"1\" ] && echo \"$u L 10/17/2026 0 99999 7 -1\" || echo \"$u P 10/17/2026 0 99999 7 -1\"\n  exit 0\nfi\nexec /usr/bin/passwd \"$@\"\nEOF\nchmod 755 /usr/local/bin/passwd\ncat > /usr/bin/dpkg << 'EOF'\n#!/bin/sh\n[ \"$1\" = \"-l\" ] && cat << 'DPKG_EOF'\nDesired=Unknown/Install/Remove/Purge/Hold\n| Status=Not/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait/Trig-pend\n|/ Err?=(none)/Reinst-required (Status,Err: uppercase=bad)\n||/ Name           Version               Architecture Description\n+++-==============-=====================-============-===================================================\nii  acl            2.3.1-1               amd64        access control list - utilities\nii  bash           5.2.15-2+b7           amd64        GNU Bourne Again SHell\nii  binutils       2.40-2                amd64        GNU assembler, linker and binary utilities\nii  coreutils      9.1-1                 amd64        GNU core utilities\nii  file           1:5.44-3              amd64        Recognize the type of data in a file\nii  nginx          1.22.1-9              amd64        web server\nii  openssh-server 1:9.2p1-2+deb12u3     amd64        secure shell\nDPKG_EOF\nexit 0\nEOF\nchmod 755 /usr/bin/dpkg\ncat > /usr/bin/apt << 'EOF'\n#!/bin/sh\n[ \"$1\" = \"list\" ] && [ \"$2\" = \"--upgradable\" ] && echo \"openssh-server/stable 1:9.2p1-2+deb12u4 amd64 [upgradable from: 1:9.2p1-2+deb12u3]\"\nexit 0\nEOF\nchmod 755 /usr/bin/apt\ncat > /usr/bin/systemctl << 'EOF'\n#!/bin/sh\nS=\"/var/lib/tulip/services\"\nmkdir -p \"$S\"\nfor svc in ssh nginx; do\n  [ -f \"$S/$svc\" ] || echo \"running\" > \"$S/$svc\"\n  [ -f \"$S/$svc.enabled\" ] || echo \"enabled\" > \"$S/$svc.enabled\"\ndone\ncase \"${1:-}\" in\n  status)\n    v=\"$(echo \"${2:-}\" | sed 's/\\.service$//')\"\n    st=\"$(cat \"$S/$v\" 2>/dev/null || echo dead)\"\n    en=\"$(cat \"$S/$v.enabled\" 2>/dev/null || echo unknown)\"\n    if [ \"$v\" = \"nginx\" ] || [ \"$v\" = \"ssh\" ]; then\n      printf '● %s.service\\n   Loaded: loaded (simulated; %s)\\n' \"$v\" \"$en\"\n      if [ \"$st\" = \"running\" ]; then\n        printf '   Active: active (running)\\n'\n      else\n        printf '   Active: inactive (dead)\\n'\n      fi\n    else\n      printf '● %s.service\\n   Loaded: simulated\\n   Active: %s\\n' \"$v\" \"$st\"\n    fi ;;\n  disable|stop)\n    action=\"$1\"; shift\n    now=0\n    if [ \"${1:-}\" = \"--now\" ]; then now=1; shift; fi\n    for svc in \"$@\"; do\n      v=\"$(echo \"$svc\" | sed 's/\\.service$//')\"\n      [ \"$action\" != \"disable\" ] || echo disabled > \"$S/$v.enabled\"\n      if [ \"$action\" = \"stop\" ] || [ \"$now\" = \"1\" ]; then echo stopped > \"$S/$v\"; fi\n    done ;;\n  enable|start)\n    action=\"$1\"; shift\n    now=0\n    if [ \"${1:-}\" = \"--now\" ]; then now=1; shift; fi\n    for svc in \"$@\"; do\n      v=\"$(echo \"$svc\" | sed 's/\\.service$//')\"\n      [ \"$action\" != \"enable\" ] || echo enabled > \"$S/$v.enabled\"\n      if [ \"$action\" = \"start\" ] || [ \"$now\" = \"1\" ]; then echo running > \"$S/$v\"; fi\n    done ;;\n  --type=service)\n    printf '  UNIT          LOAD   ACTIVE SUB\\n'\n    printf '  cron.service  loaded active running\\n'\n    [ \"$(cat \"$S/nginx\" 2>/dev/null)\" = \"running\" ] && printf '  nginx.service loaded active running\\n'\n    [ \"$(cat \"$S/ssh\" 2>/dev/null)\" = \"running\" ] && printf '  ssh.service   loaded active running\\n' ;;\n  is-enabled)\n    v=\"$(echo \"${2:-}\" | sed 's/\\.service$//')\"\n    cat \"$S/$v.enabled\" 2>/dev/null || echo unknown ;;\nesac\nEOF\nchmod 755 /usr/bin/systemctl\ncat > /usr/bin/ss << 'EOF'\n#!/bin/sh\nS=\"/var/lib/tulip/services\"\necho \"Netid  State   Recv-Q  Send-Q   Local Address:Port   Peer Address:Port  Process\"\n[ \"$(cat \"$S/ssh\" 2>/dev/null)\" != \"stopped\" ] && echo \"tcp    LISTEN  0       128            0.0.0.0:22          0.0.0.0:*      users:((\\\"sshd\\\",pid=312,fd=3))\"\n[ \"$(cat \"$S/nginx\" 2>/dev/null)\" != \"stopped\" ] && echo \"tcp    LISTEN  0       128          127.0.0.1:8080        0.0.0.0:*      users:((\\\"nginx\\\",pid=345,fd=6))\"\nEOF\nchmod 755 /usr/bin/ss\ncat > /usr/bin/journalctl << 'EOF'\n#!/bin/sh\ncat << 'J_EOF'\n-- Boot b2e4c85910fa4a91b248466e3981881b --\nOct 17 19:54:02 invernadero-central sshd[261]: Accepted publickey for proveedor from 10.0.2.8 port 41120 ssh2\nOct 17 20:12:08 invernadero-central riego-api[388]: zone=VIV-B02 mode=AUTO->MANUAL actor=cuidador ref=INC-2026-1017-02\nOct 17 20:18:42 invernadero-central riego-api[388]: WARN override expiry unset zone=VIV-B02\nOct 17 20:41:12 invernadero-central sshd[289]: Failed password for invalid user ex_cuidador from 10.0.2.7 port 42418 ssh2\nOct 17 21:07:42 invernadero-central TULIP-LAB[412]: process-watch name=polilla_emisora origin=/tmp owner=www-data action=review_required\nOct 17 21:08:01 invernadero-central TULIP-LAB[412]: integrity-watch path=/tmp/catalogo_orquideas.pdf type_claim=pdf integrity=not_verified\nOct 17 22:00:04 invernadero-central backup-agent[508]: job=BKP-2026-1017-01 status=verification_pending missing=registro_confidencial.csv\nJ_EOF\nEOF\nchmod 755 /usr/bin/journalctl\ncat > /usr/bin/file << 'EOF'\n#!/bin/sh\nfor t in \"$@\"; do\n  [ -e \"$t\" ] || { echo \"$t: cannot open (No such file or directory)\"; continue; }\n  magic=\"$(od -An -tx1 -N4 \"$t\" 2>/dev/null | tr -d ' \\n\\t\\r')\"\n  case \"$magic\" in\n    7f454c46) echo \"$t: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, stripped\" ;;\n    25504446) echo \"$t: PDF document\" ;;\n    *)\n      if grep -aEq '[^[:print:][:space:]]' \"$t\" 2>/dev/null; then\n        echo \"$t: data\"\n      else\n        echo \"$t: ASCII text\"\n      fi\n      ;;\n  esac\ndone\nEOF\nchmod 755 /usr/bin/file\ncat > /usr/bin/strings << 'EOF'\n[ \"${1:-}\" = \"-a\" ] && shift\nfor t in \"$@\"; do\n  [ -r \"$t\" ] || { echo \"strings: '$t': no se puede leer\" >&2; continue; }\n  grep -aEo '[[:print:]]{4,}' \"$t\" 2>/dev/null || true\ndone\nEOF\nchmod 755 /usr/bin/strings\ncat > /usr/local/bin/ps << 'EOF'\n#!/bin/sh\nif [ \"$1\" = \"aux\" ] || [ \"$1\" = \"-ef\" ]; then\n  echo \"USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\"\n  for d in /proc/[0-9]*; do\n    p=\"${d#/proc/}\"\n    if [ -r \"$d/cmdline\" ]; then\n      c=\"$(tr '\\0' ' ' < \"$d/cmdline\" 2>/dev/null | sed 's/ $//')\"\n      [ -z \"$c\" ] && c=\"[$(cat \"$d/comm\" 2>/dev/null)]\"\n      u=\"root\"\n      case \"$c\" in *polilla_emisora*) u=\"www-data\" ;; *riego_nocturno*) u=\"cuidador\" ;; esac\n      printf \"%-8s %5s  0.0  0.1   2480   512 ?        S    08:00   0:00 %s\\n\" \"$u\" \"$p\" \"$c\"\n    fi\n  done\n  exit 0\nfi\nexec /bin/ps \"$@\"\nEOF\nchmod 755 /usr/local/bin/ps\ncat > /usr/local/bin/ip << 'EOF'\n#!/bin/sh\nif [ \"$1\" = \"-br\" ]; then\n  echo \"lo               UNKNOWN        127.0.0.1/8 ::1/128\"\n  echo \"eth0             UP             10.0.2.15/24 fe80::5054:ff:fe12:3456/64\"\nelif [ \"$1\" = \"route\" ]; then\n  echo \"default via 10.0.2.2 dev eth0\"\n  echo \"10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15\"\nelse\n  exec /sbin/ip \"$@\"\nfi\nEOF\nchmod 755 /usr/local/bin/ip\ncat > /etc/group << 'EOF'\nroot:x:0:\nsudo:x:27:operario,admin-it,cuidador\noperario:x:1000:operario\nriego-ops:x:1001:cuidador,www-data\nadministracion:x:1002:ana\nit-admins:x:1003:admin-it\nproveedores:x:1004:proveedor\nwww-data:x:33:\nEOF\ncat > /etc/passwd << 'EOF'\nroot:x:0:0:root:/root:/bin/sh\noperario:x:1000:1000:Operario:/home/operario:/bin/bash\ncuidador:x:1001:1001:Cuidador:/home/cuidador:/bin/bash\nadmin-it:x:1002:1003:IT:/home/admin-it:/bin/bash\nana:x:1003:1002:Admin:/home/ana:/bin/bash\nproveedor:x:1004:1004:Proveedor:/home/proveedor:/bin/bash\nex_cuidador:x:1005:1001:Ex_Cuidador:/home/ex_cuidador:/bin/bash\nwww-data:x:33:33:www-data:/opt/invernadero/web:/usr/sbin/nologin\nEOF\nmkdir -p /etc/sudoers.d\necho \"operario ALL=(ALL) NOPASSWD:ALL\" > /etc/sudoers.d/99-tulip\necho \"cuidador ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers.d/99-tulip\nchmod 0440 /etc/sudoers.d/99-tulip\nmkdir -p /opt/invernadero/scripts /opt/invernadero/docs /srv/invernadero/catalogo /srv/invernadero/informes /var/log/invernadero /var/backups/invernadero /etc/invernadero /home/operario /home/cuidador/.ssh\nchown -R root:root /opt/invernadero\nchown -R root:riego-ops /srv/invernadero\nchmod 0755 /srv/invernadero /srv/invernadero/catalogo /srv/invernadero/informes\nchown -R operario:operario /home/operario 2>/dev/null || true\nchown -R cuidador:riego-ops /home/cuidador 2>/dev/null || true\nchmod 0750 /home/operario\nchmod 0755 /home/cuidador/.ssh\ncat > /etc/invernadero/inventario.csv << 'EOF'\nasset_id,tipo,ubicacion,responsable,criticidad,estado,ultima_revision\nSRV-INV-01,Servidor central de supervision,Armario tecnico norte,admin-it,Alta,En uso,2026-10-15\nEOF\ncat > /etc/invernadero/software-autorizado.txt << 'EOF'\nnginx\nopenssh-server\nEOF\ncat > /srv/invernadero/catalogo/catalogo_publico.csv << 'EOF'\nid,nombre_cientifico,nombre_comun,zona,modo_riego,humedad_objetivo_pct,temperatura_objetivo_c,estado,ultima_revision\nLIL-001,Lilium bulbiferum,Azucena naranja,CAMA-A01,goteo-0630,55,18-24,Disponible,2026-10-17T18:20:00-03:00\nEOF\ncat > /srv/invernadero/informes/registro_confidencial.csv << 'EOF'\ntimestamp,usuario,sector,accion,activo,valor_anterior,valor_nuevo,resultado,referencia\n2026-10-17T19:56:22-03:00,ana,Administracion,consulta,REP-RIEGO-2026-10-17,solo_lectura,solo_lectura,OK,ADM-184\nEOF\nchmod 0644 /srv/invernadero/informes/registro_confidencial.csv\nchown root:riego-ops /srv/invernadero/informes/registro_confidencial.csv\ncat > /home/cuidador/.ssh/id_ed25519 << 'EOF'\n-----BEGIN OPENSSH PRIVATE KEY-----\nTElMSVVNLVNJTlRIRVRJQy1LRVktTk9ULVZBTElELUZPUi1BVVRIRU5USUNBVElPTg==\n-----END OPENSSH PRIVATE KEY-----\nEOF\nchmod 0644 /home/cuidador/.ssh/id_ed25519\nchown cuidador:riego-ops /home/cuidador/.ssh/id_ed25519\nbase64 -d > /tmp/catalogo_orquideas.pdf << 'ELF_BASE64_EOF'\nf0VMRgIBAQAAAAAAAAAAAAIAPgABAAAAABBAAAAAAABAAAAAAAAAACAhAAAAAAAAAAAAAEAAOAAE\nAEAABAADAAEAAAAEAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAAAAAIAEAAAAAAAAgAQAAAAAAAAAQ\nAAAAAAAAAQAAAAUAAAAAEAAAAAAAAAAQQAAAAAAAABBAAAAAAAAqAAAAAAAAACoAAAAAAAAAABAA\nAAAAAAABAAAABAAAAAAgAAAAAAAAACBAAAAAAAAAIEAAAAAAAAMBAAAAAAAAAwEAAAAAAAAAEAAA\nAAAAAFHldGQGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEjHwAEAAABI\nx8cBAAAASI016w8AAEjHwgMBAAAPBUjHwDwAAABIMf8PBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMSUxJVU0gfCBFc3RhY2lv\nbiBib3RhbmljYSBhdXRvbWF0aXphZGEgTi4gNApSRVBPUlRFIERFIENVTFRJVk8gLSBWSVYtQjAy\nClJlZ2lzdHJvOiBPUlEtMDE0IHwgUGhhbGFlbm9wc2lzIGFtYWJpbGlzCkh1bWVkYWQgZGUgc3Vz\ndHJhdG86IDkxJTsgb2JqZXRpdm8gdmlnZW50ZTogNzIlLgpFc3RhZG86IG9ic2VydmFjaW9uOyBy\nZXZpc2FyIFNFTi1IVU0tMDIgeSBsaW5lYSBkZSBuaWVibGEuCk9yZGVuIGRlIHRyYWJham86IElO\nQy0yMDI2LTEwMTctMDIKAC5zaHN0cnRhYgAudGV4dAAucm9kYXRhAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAEA\nAAAGAAAAAAAAAAAQQAAAAAAAABAAAAAAAAAqAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA\nABEAAAABAAAAAgAAAAAAAAAAIEAAAAAAAAAgAAAAAAAAAwEAAAAAAAAAAAAAAAAAAAEAAAAAAAAA\nAAAAAAAAAAABAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAADIQAAAAAAABkAAAAAAAAAAAAAAAAAAAAB\nAAAAAAAAAAAAAAAAAAAA\nELF_BASE64_EOF\nchmod 0644 /tmp/catalogo_orquideas.pdf\nchown root:root /tmp/catalogo_orquideas.pdf 2>/dev/null || true\ncat > /var/backups/invernadero/catalogo_2026-10-17.bak << 'EOF'\nLILIUM-BACKUP/1\nstatus=PARTIAL\nEOF\ncat > /var/backups/invernadero/manifest.txt << 'EOF'\nbackup_id=BKP-2026-1017-01\nEOF\ncat > /var/log/invernadero/README-lab.txt << 'EOF'\nNotas de laboratorio TULIP.\nEOF\ncat > /var/log/invernadero/accesos.log << 'EOF'\nOct 17 20:41:12 invernadero-central sshd[289]: Failed password for invalid user ex_cuidador\nEOF\ncat > /var/log/invernadero/actividad.log << 'EOF'\n2026-10-17T21:07:42-03:00 ERROR process-watch name=polilla_emisora\nEOF\nchmod 0640 /var/log/invernadero/*.log /var/log/invernadero/README-lab.txt\npkill -f riego_nocturno.sh 2>/dev/null || true\npkill -f polilla_emisora 2>/dev/null || true\ncat > /opt/invernadero/scripts/riego_nocturno.sh << 'EOF'\n#!/bin/sh\nwhile true; do sleep 60; done\nEOF\nchmod 0755 /opt/invernadero/scripts/riego_nocturno.sh\n/bin/sh /opt/invernadero/scripts/riego_nocturno.sh >/dev/null 2>&1 &\ncat > /tmp/polilla_emisora << 'EOF'\n#!/bin/sh\nwhile true; do sleep 60; done\nEOF\nchmod 0755 /tmp/polilla_emisora\n/bin/sh /tmp/polilla_emisora >/dev/null 2>&1 &\ncat > /home/operario/.profile << 'EOF'\nexport PATH=\"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\"\nexport USER=operario\nexport HOME=/home/operario\nexport HOSTNAME=invernadero-central\nexport PS1=\"operario@invernadero-central:\\w$ \"\nEOF\ncp /home/operario/.profile /home/operario/.bashrc\nchown -R operario:operario /home/operario 2>/dev/null || true\nexport PATH=\"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\"\nexport USER=operario\nexport HOME=/home/operario\nexport HOSTNAME=invernadero-central\nexport PS1=\"operario@invernadero-central:\\w$ \"\nclear\nprintf \"\\n  Estacion Botanica Automatizada N. 4 — invernadero-central\\n\"\nprintf \"  Usuario activo: operario\\n\"\nprintf \"  ALERTA: Sistema comprometido — inicia la auditoria de seguridad.\\n\\n\"\ncd /home/operario\n```",
     "notes": [
       {
         "id": "lab-01-note-0",
-        "body": "📋 BITÁCORA DE AUDITORÍA TÉCNICA — NIST CSF / CIS Controls\nEstación Botánica Automatizada N.º 4 — Invernadero Central\nOperario: ___________________   Fecha: ___________________\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 0 — IDENTIFICACIÓN DEL INCIDENTE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n [Orientación metodológica — NO EDITAR ESTA LÍNEA]\n Antes de cualquier acción técnica, el operario debe\n identificar el alcance del incidente y los activos\n en riesgo. Alineado con NIST CSF → Función: IDENTIFICAR\n y CIS Control 1 (Inventario de Activos de Hardware).\n\n  Host objetivo: invernadero-central\n  IP del host:   192.168.1.50 / localhost\n  Fecha inicio:  ___________________\n  Hora inicio:   ___________________\n  Gravedad inicial (crítica/alta/media/baja): ___________\n  Descubierto por (herramienta):  Terminal / ps aux / ss -tulpn\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 1 — FASE: IDENTIFICAR (NIST CSF ID)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n [Guía] Documenta los activos críticos descubiertos.\n Aplica la TRÍADA CIA a cada activo.\n Ref: CIS Control 2, 3 | NIST CSF ID.AM-2\n\n 1.1 INVENTARIO DE ACTIVOS CRÍTICOS\n ─────────────────────────────────────\n Activo 1: ___________________________________\n   Ruta/IP: __________________________________\n   Impacto CIA: [ ] Confidencialidad  [ ] Integridad  [ ] Disponibilidad\n\n Activo 2: ___________________________________\n   Ruta/IP: __________________________________\n   Impacto CIA: [ ] Confidencialidad  [ ] Integridad  [ ] Disponibilidad\n\n Activo 3: ___________________________________\n   Ruta/IP: __________________________________\n   Impacto CIA: [ ] Confidencialidad  [ ] Integridad  [ ] Disponibilidad\n\n 1.2 RESULTADO DEL COMANDO \"ps aux\"\n ─────────────────────────────────────\n [Pega aquí la salida relevante de: ps aux | grep -v grep]\n\n\n 1.3 RESULTADO DE \"ss -tulpn\" (puertos en escucha)\n ─────────────────────────────────────────────────\n\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 2 — FASE: PROTEGER (NIST CSF PR)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 2.1 PERMISOS INSEGUROS DETECTADOS\n ─────────────────────────────────────\n Archivo: /etc/shadow\n   Permisos actuales: ________  Permisos correctos: 640\n   Comando aplicado: sudo chmod _____ /etc/shadow\n   Estado: [ ] Pendiente  [ ] Mitigado\n\n Archivo: /home/cuidador/.ssh/id_ed25519\n   Permisos actuales: ________  Permisos correctos: 600\n   Comando aplicado: chmod _____ ~/.ssh/id_ed25519\n   Estado: [ ] Pendiente  [ ] Mitigado\n\n 2.2 SERVICIOS VULNERABLES IDENTIFICADOS\n ─────────────────────────────────────────\n Servicio: in.telnetd (Puerto 23 — Texto plano)\n   Riesgo CIA: Confidencialidad (credenciales expuestas)\n   Acción: sudo systemctl stop telnet.service\n   Estado: [ ] Pendiente  [ ] Mitigado\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 3 — FASE: DETECTAR (NIST CSF DE)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 3.1 PROCESOS SOSPECHOSOS (ps aux)\n ─────────────────────────────────────\n Proceso 1: polilla_emisora\n   Tipo: [x] Amenaza Real  [ ] Falso Positivo\n   Usuario: www-data  |  Conexión: 198.51.100.44:4444\n   PID: _________\n   Acción: kill -15 <PID>  o  kill -9 <PID>\n   Estado: [ ] Activo  [ ] Terminado\n\n Proceso 2: riego_nocturno.sh\n   Tipo: [ ] Amenaza Real  [x] Falso Positivo\n   Usuario: cuidador  |  Verificado con: cat /opt/sensores/riego_nocturno.sh\n   Decisión: [ ] Mantener en ejecución\n   Razonamiento: _________________________________\n\n 3.2 ANÁLISIS DE LOGS (/var/log/auth.log)\n ─────────────────────────────────────\n NTP activo: [ ] Sí  [ ] No\n Comando: grep -i \"failed\" /var/log/auth.log\n Evento crítico:\n   Timestamp: _____________  IP atacante: _____________\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 4 — FASE: RESPONDER (NIST CSF RS)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 4.1 ACCIONES DE CONTENCIÓN APLICADAS\n ──────────────────────────────────────\n [ ] Proceso malicioso terminado (kill -15 ____  PID: ___)\n [ ] Archivo malicioso eliminado (rm /tmp/catalogo_orquideas.pdf)\n [ ] Permisos restaurados (chmod 600 en shadow y id_ed25519)\n [ ] Telnet detenido y deshabilitado\n [ ] DNS corregido en /etc/resolv.conf\n\n 4.2 VERIFICACIÓN POST-CONTENCIÓN\n ────────────────────────────────────\n Sockets abiertos (ss -tulpn): ____________\n Directorio /tmp limpio: [ ] Sí  [ ] No\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 5 — FASE: RECUPERAR (NIST CSF RC)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 5.1 LECCIONES APRENDIDAS\n ─────────────────────────────────────\n a) ¿Por qué el PDF era en realidad un ELF?\n    ___________________________________________________\n\n b) ¿Qué principio viola operar como root?\n    ___________________________________________________\n\n c) ¿Qué relación existe entre NTP y la auditabilidad?\n    ___________________________________________________\n\n 5.2 CONTROLES PREVENTIVOS (CIS IG1)\n ─────────────────────────────────────────────────\n [ ] CIS 3.3  — chmod 600 en claves SSH\n [ ] CIS 4.1  — Eliminar servicios no necesarios (Telnet)\n [ ] CIS 4.8  — Deshabilitar protocolos en texto plano\n [ ] CIS 8.2  — NTP activo para timestamps confiables\n [ ] CIS 10.5 — noexec en /tmp\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n FIRMA Y CIERRE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n Operario: _______________________\n Fecha de cierre: ____________________________\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-        "createdAt": 1792448393481,
-        "updatedAt": 1792448393481
+        "body": "📋 BITÁCORA DE AUDITORÍA TÉCNICA — NIST CSF / CIS Controls\nEstación Botánica Automatizada N.º 4 — Invernadero Central\nOperario: ___________________   Fecha: ___________________\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 0 — IDENTIFICACIÓN DEL INCIDENTE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n [Orientación metodológica — NO EDITAR ESTA LÍNEA]\n Antes de cualquier acción técnica, el operario debe\n identificar el alcance del incidente y los activos\n en riesgo. Alineado con NIST CSF → Función: IDENTIFICAR\n y CIS Control 1 (Inventario de Activos de Hardware).\n\n  Host objetivo: invernadero-central\n  IP del host:   192.168.1.50 / localhost\n  Fecha inicio:  ___________________\n  Hora inicio:   ___________________\n  Gravedad inicial (crítica/alta/media/baja): ___________\n  Descubierto por (herramienta):  Terminal / ps aux / ss -tulpn\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 1 — FASE: IDENTIFICAR (NIST CSF ID)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n [Guía] Documenta los activos críticos descubiertos.\n Aplica la TRÍADA CIA a cada activo.\n Ref: CIS Control 2, 3 | NIST CSF ID.AM-2\n\n 1.1 INVENTARIO DE ACTIVOS CRÍTICOS\n ─────────────────────────────────────\n Activo 1: ___________________________________\n   Ruta/IP: __________________________________\n   Impacto CIA: [ ] Confidencialidad  [ ] Integridad  [ ] Disponibilidad\n\n Activo 2: ___________________________________\n   Ruta/IP: __________________________________\n   Impacto CIA: [ ] Confidencialidad  [ ] Integridad  [ ] Disponibilidad\n\n 1.2 RESULTADO DEL COMANDO \"ps aux\"\n ─────────────────────────────────────\n [Pega aquí la salida relevante de: ps aux | grep -v grep]\n\n\n 1.3 RESULTADO DE \"ss -tulpn\" (puertos en escucha)\n ─────────────────────────────────────────────────\n\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 2 — FASE: PROTEGER (NIST CSF PR)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 2.1 PERMISOS INSEGUROS DETECTADOS\n ─────────────────────────────────────\n Archivo: /etc/shadow\n   Permisos actuales: ________  Permisos correctos: 640\n   Comando aplicado: sudo chmod _____ /etc/shadow\n   Estado: [ ] Pendiente  [ ] Mitigado\n\n Archivo: /home/cuidador/.ssh/id_ed25519\n   Permisos actuales: ________  Permisos correctos: 600\n   Comando aplicado: chmod _____ ~/.ssh/id_ed25519\n   Estado: [ ] Pendiente  [ ] Mitigado\n\n 2.2 SERVICIOS VULNERABLES IDENTIFICADOS\n ─────────────────────────────────────────\n Servicio: in.telnetd (Puerto 23 — Texto plano)\n   Riesgo CIA: Confidencialidad (credenciales expuestas)\n   Acción: sudo systemctl stop telnet.service\n   Estado: [ ] Pendiente  [ ] Mitigado\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 3 — FASE: DETECTAR (NIST CSF DE)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 3.1 PROCESOS SOSPECHOSOS (ps aux)\n ─────────────────────────────────────\n Proceso 1: polilla_emisora\n   Tipo: [x] Amenaza Real  [ ] Falso Positivo\n   Usuario: www-data  |  Conexión: 198.51.100.44:4444\n   PID: _________\n   Acción: kill -15 <PID>  o  kill -9 <PID>\n   Estado: [ ] Activo  [ ] Terminado\n\n Proceso 2: riego_nocturno.sh\n   Tipo: [ ] Amenaza Real  [x] Falso Positivo\n   Usuario: cuidador  |  Verificado con: cat /opt/sensores/riego_nocturno.sh\n   Decisión: [ ] Mantener en ejecución\n   Razonamiento: _________________________________\n\n 3.2 ANÁLISIS DE LOGS (/var/log/auth.log)\n ─────────────────────────────────────\n NTP activo: [ ] Sí  [ ] No\n Comando: grep -i \"failed\" /var/log/auth.log\n Evento crítico:\n   Timestamp: _____________  IP atacante: _____________\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 4 — FASE: RESPONDER (NIST CSF RS)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 4.1 ACCIONES DE CONTENCIÓN APLICADAS\n ──────────────────────────────────────\n [ ] Proceso malicioso terminado (kill -15 ____  PID: ___)\n [ ] Archivo malicioso eliminado (rm /tmp/catalogo_orquideas.pdf)\n [ ] Permisos restaurados (chmod 600 en shadow y id_ed25519)\n [ ] Telnet detenido y deshabilitado\n [ ] DNS corregido en /etc/resolv.conf\n\n 4.2 VERIFICACIÓN POST-CONTENCIÓN\n ────────────────────────────────────\n Sockets abiertos (ss -tulpn): ____________\n Directorio /tmp limpio: [ ] Sí  [ ] No\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 5 — FASE: RECUPERAR (NIST CSF RC)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 5.1 LECCIONES APRENDIDAS\n ─────────────────────────────────────\n a) ¿Por qué el PDF era en realidad un ELF?\n    ___________________________________________________\n\n b) ¿Qué principio viola operar como root?\n    ___________________________________________________\n\n c) ¿Qué relación existe entre NTP y la auditabilidad?\n    ___________________________________________________\n\n 5.2 CONTROLES PREVENTIVOS (CIS IG1)\n ─────────────────────────────────────────────────\n [ ] CIS 3.3  — chmod 600 en claves SSH\n [ ] CIS 4.1  — Eliminar servicios no necesarios (Telnet)\n [ ] CIS 4.8  — Deshabilitar protocolos en texto plano\n [ ] CIS 8.2  — NTP activo para timestamps confiables\n [ ] CIS 10.5 — noexec en /tmp\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n FIRMA Y CIERRE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n Operario: _______________________\n Fecha de cierre: ____________________________\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        "createdAt": 1792455536825,
+        "updatedAt": 1792455536825
       },
       {
         "id": "lab-01-note-1",
         "body": "TICKET LILIUM-ITSM: INC-1049 — Anomalía en Estación 07\n======================================================\nESTADO: Abierto / Prioridad: Alta\nORIGEN: Telemetría de SOC / Alerta automatizada del sistema\n\nDESCRIPCIÓN DEL INCIDENTE:\nSe ha detectado un socket persistente no estándar en el\npuerto TCP 4444 de la Estación 07. Se presume la presencia\nde un script de persistencia ejecutándose en /tmp.\n\nOBJETIVOS DEL ANALISTA DEFENSIVO (NIVEL CIS IG1):\n1. [Inventario] Validar qué activos corren en la máquina\n   → whoami, ip addr, ps aux\n2. [Contención] Terminar el proceso anómalo con kill -15\n   → Preserva la integridad de los logs forenses\n3. [Control de Acceso] Crear usuario nominal con adduser\n   → Evitar cuentas compartidas\n4. [Hardening] Permisos 600 en ~/.ssh/id_ed25519\n   → Blindar /etc/ssh/sshd_config (PermitRootLogin no)",
-        "createdAt": 1792451993481,
-        "updatedAt": 1792451993481
+        "createdAt": 1792459136825,
+        "updatedAt": 1792459136825
       },
       {
         "id": "lab-01-note-2",
         "body": "PLANTILLA: Matriz de Activos, Amenazas y Riesgos\nMódulo 1 — Lab 01 \"La Estación Olvidada\"\n=========================================\n\n1. ACTIVO CRÍTICO:\n   - Activo: Servidor invernadero-central / Clave privada SSH\n   - Pilar CIA comprometido: Confidencialidad e Integridad\n\n2. AMENAZA:\n   - Actor: Proceso no autorizado o actor externo\n   - Vector de entrada: Binario en /tmp y socket TCP :4444\n\n3. VULNERABILIDAD:\n   - Permisos globales laxos (644 en clave privada)\n   - Acceso root directo habilitado en sshd_config\n   - Telnet activo en puerto 23 (texto plano)\n   - DNS desviado a servidor malicioso 10.66.6.6\n\n4. RESPUESTA AL RIESGO (Módulo 1.1):\n   - Estrategia: MITIGAR aplicando controles CIS IG1\n   - Control: chmod 600, kill -15, systemctl stop telnet\n   - Prioridad: Crítica (impacto en toda la Tríada CIA)",
-        "createdAt": 1792455593481,
-        "updatedAt": 1792455593481
+        "createdAt": 1792462736825,
+        "updatedAt": 1792462736825
       },
       {
         "id": "lab-01-note-3",
         "body": "DIARIO: Notas del Antiguo Cuidador\n===================================\n12 de Octubre —\n\n\"El jardín de reliquias no puede quedarse sin telemetría\ndurante el invierno. Las heladas destruyen los bulbos de\nlilium silvestre si la temperatura desciende de los 2°C.\n\nPor eso dejé corriendo esa baliza en /tmp... sé que no\nes la mejor práctica, pero era una emergencia.\n\nTemo que alguien descubra que dejé la clave privada con\npermisos 644 y el servidor Telnet abierto en el puerto 23.\nEl DNS también lo cambié temporalmente a 10.66.6.6 para\npruebas, pero nunca lo revertí. Lo siento.\n\nSi alguien encuentra esto: por favor, asegura la estación\nantes de que caiga la primera nieve.\"",
-        "createdAt": 1792459193481,
-        "updatedAt": 1792459193481
+        "createdAt": 1792466336825,
+        "updatedAt": 1792466336825
       },
       {
         "id": "lab-01-note-4",
         "body": "GUÍA RÁPIDA: Comandos Defensivos Esenciales de Linux\n=====================================================\n\nRECONOCIMIENTO INICIAL\n• whoami              → Cuenta activa en la sesión\n• ip addr / ip a      → Interfaces y direcciones IP\n• uname -a            → Versión del kernel Linux\n\nPROCESOS Y MEMORIA\n• ps aux              → Lista estática de procesos\n• top                 → Monitor dinámico (q para salir)\n• kill -15 <PID>      → Terminación ordenada (SIGTERM)\n• kill -9 <PID>       → Desalojo forzado (SIGKILL)\n\nSISTEMA DE ARCHIVOS\n• ls -la              → Listado con archivos ocultos (.)\n• cat / less / head   → Lectura segura de archivos\n• file <archivo>      → Tipo real por magic numbers\n• sha256sum <archivo> → Huella hash criptográfica\n• find / -name \"*.sh\" → Búsqueda en el sistema\n\nPERMISOS (chmod octal)\n• chmod 600 <archivo> → Solo propietario: leer + escribir\n• chmod 644 <archivo> → Propietario: rw | Grupo/Otros: r\n• chmod 700 <dir>     → Solo propietario: rwx (directorio)\n• chown user:group    → Cambiar propietario y grupo\n\nRED Y SERVICIOS\n• ss -tulpn           → Sockets TCP/UDP en escucha\n• dig <dominio>       → Consulta DNS\n• curl -I <url>       → Cabeceras HTTP\n• ping -c 4 <IP>      → Test de conectividad ICMP\n• systemctl status    → Estado de un servicio systemd\n• systemctl start/stop/restart/disable <servicio>",
-        "createdAt": 1792462793481,
-        "updatedAt": 1792462793481
+        "createdAt": 1792469936825,
+        "updatedAt": 1792469936825
       }
     ]
   },
@@ -778,14 +1026,14 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-02-note-0",
         "body": "TICKET LILIUM-ITSM: INC-2044 — Campaña de Phishing por Suplantación de Identidad\n=============================================================================\nESTADO: Abierto / Prioridad: Alta\nORIGEN: Reporte de usuario corporativo (Finanzas)\n\nDESCRIPCIÓN:\nMúltiples colaboradores han recibido correos solicitando actualización urgente\nde credenciales bancarias provenientes aparentemente del dominio corporativo.\n\nOBJETIVOS DEFENSIVOS:\n1. Inspeccionar cabeceras Authentication-Results (SPF, DKIM, DMARC).\n2. Extraer dominios y direcciones IP de los servidores de envío (Received: from).\n3. Confirmar si existe spoofing o typosquatting en los remitentes.\n4. Aplicar bloqueo y cuarentena en el MTA corporativo.",
-        "createdAt": 1792459193485,
-        "updatedAt": 1792459193485
+        "createdAt": 1792466336829,
+        "updatedAt": 1792466336829
       },
       {
         "id": "lab-02-note-1",
         "body": "REGISTRO     PROPÓSITO                           COMANDO\n─────────────────────────────────────────────────────────────────────────────\nSPF          Autoriza IPs de envío para el dominio dig TXT <dominio>\nDKIM         Firma criptográfica del cuerpo/cabecera openssl dgst -verify ...\nDMARC        Política de rechazo/cuarentena      dig TXT _dmarc.<dominio>",
-        "createdAt": 1792462793485,
-        "updatedAt": 1792462793485
+        "createdAt": 1792469936829,
+        "updatedAt": 1792469936829
       }
     ]
   },
@@ -798,8 +1046,8 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-03-note-0",
         "body": "TICKET LILIUM-ITSM: INC-3011 — Vulnerabilidad BOLA reportada en /api/v1/users\n===========================================================================\nESTADO: En Investigación / Prioridad: Crítica\nHALLAZGO: Modificando el parámetro ID en la petición REST se obtienen perfiles de terceros sin validación de rol.\nACCIONES:\n- Implementar validación estricta de propiedad de recursos en el controlador.\n- Validar firma criptográfica del JWT (evitar algoritmo 'none').",
-        "createdAt": 1792462793485,
-        "updatedAt": 1792462793485
+        "createdAt": 1792469936829,
+        "updatedAt": 1792469936829
       }
     ]
   },
@@ -812,8 +1060,8 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-04-note-0",
         "body": "ZONA ORIGEN       ZONA DESTINO       PUERTO/PROTO    ACCIÓN    JUSTIFICACIÓN\n─────────────────────────────────────────────────────────────────────────────\nInternet (WAN)    Servidor Web       80, 443 / TCP   ALLOW     Acceso público legítimo\nInternet (WAN)    Sensores IoT       Cualquiera      DROP      Aislamiento de dispositivos\nRed Gestión       Servidor Web       22 / TCP        ALLOW     Administración SSH interna\nInternet (WAN)    Servidor Web       22 / TCP        DROP      Mitigación fuerza bruta",
-        "createdAt": 1792462793485,
-        "updatedAt": 1792462793485
+        "createdAt": 1792469936829,
+        "updatedAt": 1792469936829
       }
     ]
   },
@@ -826,8 +1074,8 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-05-note-0",
         "body": "TICKET LILIUM-ITSM: INC-5099 — Cifrado no autorizado en compartido de archivos\n=============================================================================\nESTADO: Crítico / Prioridad: P1\nALERTA: Extensiones .locked detectadas en /var/share/plantas/.\nDIRECTIVAS:\n1. No reiniciar el equipo para preservar claves de cifrado en memoria volátil.\n2. Desconectar interfaces de red inmediatamente para detener propagación.\n3. Preservar logs de autenticación y rastros del binario malicioso.",
-        "createdAt": 1792462793485,
-        "updatedAt": 1792462793485
+        "createdAt": 1792469936829,
+        "updatedAt": 1792469936829
       }
     ]
   },
@@ -840,8 +1088,8 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-06-note-0",
         "body": "AUDITORÍA CIS BENCHMARK v3.0 — SERVIDOR LINUX\n=============================================\nPUNTUACIÓN INICIAL: 42% (Fallo en 28 controles IG1)\nPUNTUACIÓN OBJETIVO: >= 90%\n\nCONTROLES PRIORITARIOS:\n- 1.1 Filesystem Configuration\n- 2.1 Disable Unused Services\n- 3.1 Network Parameters (sysctl)\n- 5.2 SSH Server Hardening",
-        "createdAt": 1792462793485,
-        "updatedAt": 1792462793485
+        "createdAt": 1792469936829,
+        "updatedAt": 1792469936829
       }
     ]
   }

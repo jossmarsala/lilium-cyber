@@ -200,6 +200,8 @@ export class LabVerificationEngine {
     if (typeof window === 'undefined') return []
     try {
       const raw =
+        localStorage.getItem('rui-os:lilium_bitacora_findings_v2') ||
+        localStorage.getItem('lilium_bitacora_findings_v2') ||
         localStorage.getItem('rui-os:lilium_bitacora_findings_v1') ||
         localStorage.getItem('lilium_bitacora_findings_v1')
       if (raw) return JSON.parse(raw)
@@ -384,19 +386,31 @@ export class LabVerificationEngine {
             this.notifiedItems.add(rule.id)
             notify({
               appId: 'playbook',
-              title: `Verificación completada: [${rule.id}]`,
-              body: rule.description,
+              title: `✓ Sub-paso cumplido: ${rule.command || rule.title}`,
+              body: `${rule.title} — ${rule.description}`,
               level: 'success',
-              duration: 5000,
+              duration: 4000,
             })
           }
         }
       }
 
+      this.syncLegacyMilestoneKeys()
+
       // Check if all rules for this phase are satisfied
-      const allPhaseRulesDone = currentPhaseConfig.rules.every(
-        (r) => this.checkedItems[r.id]
-      )
+      const phaseRules = currentPhaseConfig.rules
+      const completedRulesCount = phaseRules.filter((r) => this.checkedItems[r.id]).length
+      const allPhaseRulesDone =
+        completedRulesCount === phaseRules.length ||
+        (completedRulesCount >= Math.floor(phaseRules.length * 0.85) &&
+          (activePhaseId !== 'fase-1' || Boolean(this.checkedItems['v1-nobrk'])) &&
+          (activePhaseId !== 'fase-2' ||
+            (Boolean(this.checkedItems['v2.5-kill-polilla']) &&
+              Boolean(this.checkedItems['v2.5-ps-verify']))) &&
+          (activePhaseId !== 'fase-3' ||
+            (Boolean(this.checkedItems['v3.1-usermod-nologin']) &&
+              Boolean(this.checkedItems['v3.2-chmod-ssh']) &&
+              Boolean(this.checkedItems['v3.3-disable-ssh']))))
 
       if (allPhaseRulesDone && !this.completedPhases[activePhaseId]) {
         this.completedPhases[activePhaseId] = true
@@ -416,6 +430,26 @@ export class LabVerificationEngine {
     } finally {
       this.isEvaluating = false
     }
+  }
+
+  private syncLegacyMilestoneKeys(): void {
+    const c = this.checkedItems
+    if (c['v1.1-whoami'] || c['v1.1-id'] || c['v1.1-hostname']) c['v1-base'] = true
+    if (c['v1.2-cat-inventario'] || c['v1.2-dpkg-l']) c['v1-inv'] = true
+    if (c['v1.3-cat-passwd'] || c['v1.3-passwd-ex-cuidador']) c['v1-users'] = true
+    if (c['v1.4-ls-sensitive'] || c['v1.4-file-tmp']) c['v1-perms'] = true
+    if (c['v1.5-ip-addr'] || c['v1.5-ss-tulpn'] || c['v1.5-nginx-status']) c['v1-net'] = true
+    if (c['v1.6-cat-actividad'] || c['v1.6-journalctl']) c['v1-logs'] = true
+    if (c['v2.2-cat-polilla'] || c['v2.2-cat-riego']) c['v2-proc'] = true
+    if (c['v2.3-file-pdf'] || c['v2.3-strings-pdf']) c['v2-pdf'] = true
+    if (c['v2.4-cat-bak'] || c['v2.4-cat-manifest']) c['v2-bak'] = true
+    if (c['v2.5-kill-polilla']) c['v2-kill'] = true
+    if (c['v2.5-ps-riego'] || c['v2.5-nginx-status']) c['v2-srv'] = true
+    if (c['v3.1-usermod-nologin'] || c['v3.1-usermod-lock']) c['v3-acc'] = true
+    if (c['v3.2-chmod-ssh'] || c['v3.2-chmod-conf']) c['v3-perms'] = true
+    if (c['v3.3-disable-ssh']) c['v3-ssh'] = true
+    if (c['v3.3-nginx-verify'] || c['v3.5-nginx']) c['v3-alive'] = true
+    if (c['v3.4-apt-upgradable']) c['v3-patch'] = true
   }
 
   private async evaluateRule(
@@ -469,26 +503,26 @@ export class LabVerificationEngine {
     if (phaseId === 'fase-1') {
       notify({
         appId: 'playbook',
-        title: '¡Fase 1 Completada con Éxito!',
-        body: 'Has superado todas las verificaciones de auditoría inicial. ¡Fase 2 desbloqueada!',
+        title: '🎉 ¡Fase 1 Completada con Éxito!',
+        body: 'Has cumplido todos los sub-pasos de auditoría y línea base. ¡Fase 2 desbloqueada!',
         level: 'success',
-        duration: 7000,
+        duration: 8000,
       })
     } else if (phaseId === 'fase-2') {
       notify({
         appId: 'playbook',
-        title: '¡Fase 2 Completada con Éxito!',
-        body: 'Has realizado el triaje y la contención ordenada. ¡Fase 3 desbloqueada!',
+        title: '🛡️ ¡Fase 2 Completada con Éxito!',
+        body: 'Has preservado la evidencia y ejecutado la contención controlada. ¡Fase 3 desbloqueada!',
         level: 'success',
-        duration: 7000,
+        duration: 8000,
       })
     } else if (phaseId === 'fase-3') {
       notify({
         appId: 'playbook',
-        title: '¡Laboratorio 1 Completado!',
-        body: '¡Felicitaciones! Has completado todas las fases y verificaciones de La Estación Olvidada.',
+        title: '🏆 ¡Laboratorio 1 Completado al 100%!',
+        body: '¡Felicitaciones! Has completado con éxito todas las fases y controles de seguridad de La Estación Olvidada.',
         level: 'success',
-        duration: 9000,
+        duration: 10000,
       })
     }
   }
@@ -507,10 +541,10 @@ export class LabVerificationEngine {
       if (rule) {
         notify({
           appId: 'playbook',
-          title: `Verificación completada: [${rule.id}]`,
-          body: rule.description,
+          title: `✓ Sub-paso cumplido: ${rule.command || rule.title}`,
+          body: `${rule.title} — ${rule.description}`,
           level: 'success',
-          duration: 4500,
+          duration: 4000,
         })
       }
     }

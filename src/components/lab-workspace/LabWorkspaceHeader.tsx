@@ -14,14 +14,23 @@ import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
 import { ArrowLeft01Icon, Refresh01Icon } from '@hugeicons/core-free-icons'
 import LiliumIcon from '@/components/LiliumIcon'
 import type { LabItem } from '@/data/labsData'
+import type { DemoThemeChoice } from '@react-ui-os/demo'
+import MinimizedOsSelector from '@/components/lab-workspace/MinimizedOsSelector'
 import styles from './LabWorkspaceHeader.module.css'
 
 interface LabWorkspaceHeaderProps {
   lab: LabItem
   onBack: () => void
+  themeChoice?: DemoThemeChoice
+  onThemeChange?: (choice: DemoThemeChoice) => void
 }
 
-export default function LabWorkspaceHeader({ lab, onBack }: LabWorkspaceHeaderProps) {
+export default function LabWorkspaceHeader({
+  lab,
+  onBack,
+  themeChoice,
+  onThemeChange,
+}: LabWorkspaceHeaderProps) {
   // Format lab number, e.g. "lab-01" -> "01"
   const labNum = lab.id.replace(/^lab-/, '').padStart(2, '0')
 
@@ -63,6 +72,13 @@ export default function LabWorkspaceHeader({ lab, onBack }: LabWorkspaceHeaderPr
             />
             <span className={styles.btnLabel}>Volver</span>
           </button>
+
+          {themeChoice && onThemeChange && (
+            <MinimizedOsSelector
+              currentTheme={themeChoice}
+              onThemeChange={onThemeChange}
+            />
+          )}
 
           <button
             type="button"

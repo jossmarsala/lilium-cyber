@@ -71,3 +71,67 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb:hover {
   background: #bbb;
 }
+
+/* ── react-ui-os navbar (MenuBar) and desktop positioning ── */
+:root {
+  --lab-header-height: 0px;
+}
+
+[data-rui-menubar] {
+  top: var(--lab-header-height, 0px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+  max-width: 80vw !important;
+  height: 25px !important;
+  min-height: 25px !important;
+  max-height: 25px !important;
+  font-size: 13px !important;
+  line-height: 25px !important;
+  border-radius: 0 0 12px 12px !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-top: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
+  box-sizing: border-box !important;
+  padding: 0 14px !important;
+}
+
+[data-rui-menubar] button,
+[data-rui-menubar] span,
+[data-rui-menubar] time {
+  padding: 2px 7px !important;
+  font-size: 13px !important;
+}
+
+[data-rui-desktop] {
+  top: var(--lab-header-height, 0px) !important;
+  height: calc(100vh - var(--lab-header-height, 0px)) !important;
+}
+
+[data-rui-dock][data-dock-position="left"] {
+  top: calc(var(--lab-header-height, 0px) + 25px) !important;
+}
+
+[data-rui-notification-center] {
+  top: calc(var(--lab-header-height, 0px) + 25px) !important;
+  right: max(0px, 10vw) !important;
+}
+
+aside[aria-label="Notifications"] {
+  top: calc(var(--lab-header-height, 0px) + 36px) !important;
+  right: max(12px, calc(10vw + 8px)) !important;
+}
+
+[aria-label="Quick Settings"] {
+  top: calc(var(--lab-header-height, 0px) + 32px) !important;
+  right: max(12px, calc(10vw + 6px)) !important;
+}
+
+[role="listbox"][aria-label="Desktop icons"] {
+  top: calc(var(--lab-header-height, 0px) + 36px) !important;
+  right: max(12px, calc(10vw + 12px)) !important;
+}

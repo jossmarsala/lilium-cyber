@@ -6,6 +6,8 @@
   min-width: 0;
   height: 100%;
   position: relative;
+  z-index: 1;
+  isolation: isolate;
   overflow: hidden;
 
   /* Subtle inset frame so the OS feels contained */

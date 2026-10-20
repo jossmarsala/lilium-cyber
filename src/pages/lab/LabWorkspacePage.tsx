@@ -18,40 +18,47 @@
 
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import {
+  persistThemeChoice,
+  readInitialThemeChoice,
+  type DemoThemeChoice,
+} from '@react-ui-os/demo'
 import { LABS } from '@/data/labsData'
-import { COMPILED_LABS } from '@/data/compiledLabs'
 import LabWorkspaceHeader from '@/components/lab-workspace/LabWorkspaceHeader'
-import LabGuideSidebar from '@/components/lab-workspace/LabGuideSidebar'
 import OSCanvas from '@/components/lab-workspace/OSCanvas'
 import styles from './LabWorkspacePage.module.css'
 
 export default function LabWorkspacePage() {
   const { labId } = useParams<{ labId: string }>()
   const navigate = useNavigate()
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [themeChoice, setThemeChoice] = useState<DemoThemeChoice>(readInitialThemeChoice)
 
   const lab = LABS.find((l) => l.id === labId) ?? LABS[0]
-  const compiled = COMPILED_LABS.find((l) => l.id === lab.id)
 
   const handleBack = () => navigate('/labs')
+
+  const handleThemeChange = (choice: DemoThemeChoice) => {
+    setThemeChoice(choice)
+    persistThemeChoice(choice)
+  }
 
   return (
     <div className={styles.workspace}>
       <LabWorkspaceHeader
         lab={lab}
         onBack={handleBack}
+        themeChoice={themeChoice}
+        onThemeChange={handleThemeChange}
       />
 
       <div className={styles.body}>
-        <LabGuideSidebar
-          open={sidebarOpen}
-          onToggle={() => setSidebarOpen((v) => !v)}
-          lab={lab}
-          compiled={compiled}
+        <OSCanvas
+          labId={lab.id}
+          themeChoice={themeChoice}
+          onThemeChange={handleThemeChange}
         />
-
-        <OSCanvas labId={lab.id} />
       </div>
     </div>
   )
 }
+

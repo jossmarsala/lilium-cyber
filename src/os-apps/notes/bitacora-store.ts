@@ -36,7 +36,7 @@ export interface ConsignaAssignment {
   updatedAt: number;
 }
 
-const FINDINGS_STORAGE_KEY = "lilium_bitacora_findings_v1";
+const FINDINGS_STORAGE_KEY = "lilium_bitacora_findings_v2";
 const CONSIGNAS_STORAGE_KEY = "lilium_bitacora_consignas_v1";
 const NOTES_STORAGE_KEY = "notes";
 
@@ -75,57 +75,6 @@ export const INITIAL_FINDINGS: BitacoraFinding[] = [
     createdAt: Date.now() - 3600000 * 3,
     updatedAt: Date.now() - 3600000 * 3,
   },
-  {
-    id: "H-03",
-    fecha: "2026-10-19 01:25",
-    activo: "polilla_emisora (PID en memoria)",
-    evidencia: "pgrep -af polilla_emisora && ps aux | grep polilla\n-> Ejecutándose bajo usuario www-data con conexión a 198.51.100.44:4444",
-    hallazgo: "Proceso no autorizado en ejecución con socket saliente no catalogado en software autorizado.",
-    vulnerabilidad: "Ejecución de binario no catalogado en memoria sin controles de whitelisting.",
-    amenazaRiesgo: "Canal simulado de C2 o exfiltración de telemetría de la estación.",
-    triadaCIA: ["C", "I"],
-    prioridad: "Crítica",
-    prioridadJustificacion: "Proceso activo generando tráfico no verificado en interfaz de red.",
-    accion: "Preservar /proc/PID/cmdline y terminar mediante sudo kill -15 PID. Verificar continuidad de Nginx.",
-    gradoCerteza: "Confirmado",
-    faseAsociada: "Fase 2: Triaje y contención",
-    createdAt: Date.now() - 3600000 * 2,
-    updatedAt: Date.now() - 3600000 * 2,
-  },
-  {
-    id: "H-04",
-    fecha: "2026-10-19 01:35",
-    activo: "/tmp/catalogo_orquideas.pdf",
-    evidencia: "file /tmp/catalogo_orquideas.pdf\n-> ASCII text\nsha256sum /tmp/catalogo_orquideas.pdf",
-    hallazgo: "Archivo con extensión .pdf que en realidad contiene texto ASCII simulado por el aprovisionamiento.",
-    vulnerabilidad: "Extensión engañosa en directorio temporal de acceso público (/tmp).",
-    amenazaRiesgo: "Engaño a operadores mediante ingeniería social o señuelo inerte.",
-    triadaCIA: ["I"],
-    prioridad: "Baja",
-    prioridadJustificacion: "Artefacto inerte sin capacidad de auto-ejecución ni malware activo.",
-    accion: "Registrar huella SHA-256 en la bitácora y preservar para trazabilidad sin ejecutar.",
-    gradoCerteza: "Confirmado",
-    faseAsociada: "Fase 2: Triaje y contención",
-    createdAt: Date.now() - 3600000,
-    updatedAt: Date.now() - 3600000,
-  },
-  {
-    id: "H-05",
-    fecha: "2026-10-19 01:45",
-    activo: "Cuenta ex_cuidador",
-    evidencia: "getent passwd ex_cuidador && sudo passwd -S ex_cuidador\n-> Shell interactiva asignada, sin responsable activo en la estación.",
-    hallazgo: "Cuenta obsoleta de personal desvinculado aún existente en la base de cuentas del sistema.",
-    vulnerabilidad: "Persistencia de cuentas inactivas con shells funcionales (CIS 5 / 6).",
-    amenazaRiesgo: "Reactivación inadvertida o aprovechamiento como vector de acceso lateral.",
-    triadaCIA: ["I"],
-    prioridad: "Media",
-    prioridadJustificacion: "Reducción de superficie de identidades sin romper dependencias de archivos históricos.",
-    accion: "sudo usermod -s /usr/sbin/nologin ex_cuidador && sudo usermod -L ex_cuidador",
-    gradoCerteza: "Confirmado",
-    faseAsociada: "Fase 3: Hardening",
-    createdAt: Date.now() - 1800000,
-    updatedAt: Date.now() - 1800000,
-  },
 ];
 
 /** Extract initial consignas from compiled lab phases (Lab 01 by default) */
@@ -157,9 +106,17 @@ export function getInitialConsignas(labId = "lab-01"): ConsignaAssignment[] {
 
 export function readFindings(storage: StorageAdapter): BitacoraFinding[] {
   const raw = storage.get<BitacoraFinding[]>(FINDINGS_STORAGE_KEY);
-  if (Array.isArray(raw) && raw.length > 0) return raw;
+  if (Array.isArray(raw) && raw.length > 0) {
+    if (raw.length === 5 && raw[0]?.id === "H-01" && raw[4]?.id === "H-05") {
+      storage.set(FINDINGS_STORAGE_KEY, INITIAL_FINDINGS);
+      syncToStandardNotes(storage, INITIAL_FINDINGS);
+      return INITIAL_FINDINGS;
+    }
+    return raw;
+  }
   // Initialize with default findings template if empty
   storage.set(FINDINGS_STORAGE_KEY, INITIAL_FINDINGS);
+  syncToStandardNotes(storage, INITIAL_FINDINGS);
   return INITIAL_FINDINGS;
 }
 

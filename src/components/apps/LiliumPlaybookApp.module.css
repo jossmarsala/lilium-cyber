@@ -294,33 +294,84 @@
   background: rgba(255, 255, 255, 0.05);
   color: rgba(0, 0, 0, 0.85);
   border-radius: 4px;
-  padding: 5px 12px;
+  padding: 5px 11px;
   font-size: 12.5px;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: all 120ms ease;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 120ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 150ms ease;
   user-select: none;
 }
 
 .subphaseBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.28);
   color: #000000;
 }
 
+.subphaseBtn:active {
+  transform: scale(0.97);
+}
+
 .subphaseBtnActive {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.45);
   color: #000000;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.subphaseBtnChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), opacity 140ms ease;
+  opacity: 0.65;
+}
+
+.subphaseBtn:hover .subphaseBtnChevron {
+  opacity: 0.95;
+}
+
+.subphaseBtnChevronOpen {
+  transform: rotate(180deg);
+  opacity: 1;
 }
 
 /* ─────────────────────────────────────────────────────
    DROPDOWNS (HERRAMIENTAS & SOLUCIÓN)
-   Neutral frosted container
+   Swift open & close animations via CSS Grid transitions
    ───────────────────────────────────────────────────── */
-.subphaseDropdown {
+.dropdownCollapseWrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    margin-top 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 200ms;
+  overflow: hidden;
+  margin-top: 0;
+  visibility: hidden;
+}
+
+.dropdownCollapseWrapperOpen {
+  grid-template-rows: 1fr;
   margin-top: 6px;
+  visibility: visible;
+}
+
+.dropdownCollapseInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.subphaseDropdown {
   padding: 12px 14px;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -330,18 +381,16 @@
   gap: 10px;
   font-size: 13.5px;
   line-height: 1.5;
-  animation: fadeIn 120ms ease-out;
+  transition:
+    opacity 180ms ease,
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateY(-4px);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-2px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.dropdownCollapseWrapperOpen .subphaseDropdown {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .dropdownHeader {
@@ -488,6 +537,50 @@
   flex-shrink: 0;
 }
 
+.stepBulletDone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.16);
+  color: #10b981;
+  font-size: 10px;
+  font-weight: 800;
+  flex-shrink: 0;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.stepBadgeDone {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  line-height: 1.2;
+}
+
+.codeSnippetDone {
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+}
+
+.subphaseProgressBadge {
+  margin-left: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #10b981;
+  opacity: 0.9;
+}
+
 .stepDetail {
   font-size: 12px;
   font-style: italic;
@@ -548,7 +641,6 @@
 .preludeContainer {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   padding: 10px 14px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.03);
@@ -557,12 +649,10 @@
   font-size: 13.5px;
   line-height: 1.55;
   color: rgba(0, 0, 0, 0.85);
-  animation: fadeIn 120ms ease-out;
-  transition: all 140ms ease;
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .preludeContainerCollapsed {
-  gap: 0;
   padding: 8px 14px;
 }
 
@@ -580,6 +670,11 @@
   color: inherit;
   text-align: left;
   width: fit-content;
+  transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.preludeHeader:active {
+  transform: scale(0.98);
 }
 
 .preludeHeader:hover .preludeHeading {
@@ -611,7 +706,7 @@
   background: rgba(0, 0, 0, 0.04);
   color: rgba(0, 0, 0, 0.55);
   transition:
-    transform 180ms ease,
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
     background 120ms ease,
     color 120ms ease;
 }
@@ -620,11 +715,43 @@
   transform: rotate(180deg);
 }
 
+.preludeCollapseWrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    margin-top 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 200ms;
+  overflow: hidden;
+  margin-top: 0;
+  visibility: hidden;
+}
+
+.preludeCollapseWrapperOpen {
+  grid-template-rows: 1fr;
+  margin-top: 10px;
+  visibility: visible;
+}
+
+.preludeCollapseInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
 .preludeBody {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  animation: fadeIn 120ms ease-out;
+  transition:
+    opacity 180ms ease,
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.preludeCollapseWrapperOpen .preludeBody {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .preludeSubheading {
@@ -644,8 +771,17 @@
 
 .preludeParagraph {
   margin: 0;
-  white-space: pre-line;
   color: rgba(0, 0, 0, 0.8);
+}
+
+.preludeParaBlock {
+  margin: 0 0 10px 0;
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.preludeParaBlock:last-child {
+  margin-bottom: 0;
 }
 
 .rulesList {
@@ -657,5 +793,72 @@
 }
 
 .ruleItem {
+  color: rgba(0, 0, 0, 0.8);
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────────────
+   INLINE MARKDOWN FORMATTING (BOLDS, CODE LABELS, ITALICS)
+   Monochrome, crisp typography & subtle pills
+   ───────────────────────────────────────────────────── */
+.inlineBold {
+  font-weight: 650;
+  color: rgba(0, 0, 0, 0.95);
+  letter-spacing: -0.01em;
+}
+
+.inlineCode {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.86em;
+  background: rgba(0, 0, 0, 0.055);
+  color: rgba(0, 0, 0, 0.92);
+  padding: 1.5px 5.5px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.01em;
+  word-break: break-word;
+  vertical-align: baseline;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03);
+}
+
+.inlineItalic {
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* Highlighted code label within dropdowns */
+.subphaseDropdown .inlineCode {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.92);
+}
+
+.subphaseDropdown .inlineBold {
+  color: rgba(0, 0, 0, 0.95);
+}
+
+.subphaseDropdown .inlineItalic {
+  color: rgba(0, 0, 0, 0.82);
+}
+
+/* Fallback styling for standard markdown elements within the playbook container */
+.container strong:not(.inlineBold) {
+  font-weight: 650;
+  color: rgba(0, 0, 0, 0.95);
+}
+
+.container code:not(.codeSnippet):not(.inlineCode) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.86em;
+  background: rgba(0, 0, 0, 0.055);
+  color: rgba(0, 0, 0, 0.92);
+  padding: 1.5px 5.5px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  vertical-align: baseline;
+}
+
+.container em:not(.inlineItalic) {
+  font-style: italic;
   color: rgba(0, 0, 0, 0.8);
 }

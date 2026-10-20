@@ -12,12 +12,12 @@ import {
 import {
   applyDemoIcons,
   applyDemoSettingsIcon,
-  buildDemoTheme,
   localIcon,
   persistThemeChoice,
   readInitialThemeChoice,
   type DemoThemeChoice,
 } from "@react-ui-os/demo";
+import { buildCustomOsTheme } from "@/utils/osTheme";
 import { exampleApps } from "@react-ui-os/example-apps";
 import { liliumTerminalApp } from "@/os-apps/terminal";
 import { liliumPlaybookApp } from "@/os-apps/playbook";
@@ -137,7 +137,7 @@ export default function DesktopPage() {
   const [themeChoice, setThemeChoice] =
     useState<DemoThemeChoice>(readInitialThemeChoice);
   const theme = useMemo<OsTheme>(
-    () => buildDemoTheme(themeChoice, ASSET_BASE),
+    () => buildCustomOsTheme(themeChoice, ASSET_BASE),
     [themeChoice],
   );
 

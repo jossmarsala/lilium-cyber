@@ -2,6 +2,7 @@
    Full-viewport shell for the interactive lab environment. */
 
 .workspace {
+  --lab-header-height: 56px;
   display: flex;
   flex-direction: column;
   width: 100vw;
@@ -9,6 +10,12 @@
   overflow: hidden;
   background: #ffffff;
   position: relative;
+}
+
+@media (max-width: 860px) {
+  .workspace {
+    --lab-header-height: 52px;
+  }
 }
 
 .body {

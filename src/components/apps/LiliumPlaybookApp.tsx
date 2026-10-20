@@ -4,7 +4,28 @@ import React, { useState, useMemo } from 'react'
 import type { AppContentProps } from '@react-ui-os/core'
 import { getCompiledLab, COMPILED_LABS } from '@/data/compiledLabs'
 import { useLabVerifier } from '@/hooks/useLabVerifier'
+import { getLabVerificationConfig, type VerificationRule } from '@/services/verification'
 import styles from './LiliumPlaybookApp.module.css'
+
+function findMatchingRule(
+  phaseRules: VerificationRule[],
+  stepId: string,
+  command?: string
+): VerificationRule | undefined {
+  if (!command) return undefined
+  const normCmd = command.trim().toLowerCase()
+  return (
+    phaseRules.find(
+      (r) =>
+        r.stepId === stepId &&
+        r.command &&
+        r.command.trim().toLowerCase() === normCmd
+    ) ||
+    phaseRules.find(
+      (r) => r.command && r.command.trim().toLowerCase() === normCmd
+    )
+  )
+}
 
 export interface PlaybookPhase {
   id: string
@@ -69,6 +90,107 @@ function getSubphaseData(
   }
 }
 
+/**
+ * Lightweight inline markdown parser for bold, inline code, and italics.
+ * Supports:
+ * - `code` -> <code className={styles.inlineCode}>
+ * - **bold** -> <strong className={styles.inlineBold}>
+ * - *italic* or _italic_ -> <em className={styles.inlineItalic}>
+ * Recursively parses nested markdown (e.g. bold or code within italics).
+ */
+export function renderPlaybookMarkdown(
+  text: string,
+  keyPrefix: string | number = 'pb'
+): React.ReactNode {
+  if (!text) return null
+
+  // Fast path: plain text without markdown markers
+  if (!text.includes('`') && !text.includes('*') && !text.includes('_')) {
+    return text
+  }
+
+  // Regex matching:
+  // 1. `inline code`
+  // 2. **bold**
+  // 3. *italic* (with lookaround to avoid mid-word matching)
+  // 4. _italic_ (with lookaround to avoid snake_case e.g. ex_cuidador)
+  const regex =
+    /(`[^`]+`|\*\*[^*]+?\*\*|(?<!\w)\*[^*]+?\*(?!\w)|(?<!\w)_[^_]+?_(?!\w))/g
+
+  const parts = text.split(regex)
+
+  const elements = parts.map((part, i) => {
+    if (!part) return null
+
+    // Inline code: `...`
+    if (part.startsWith('`') && part.endsWith('`') && part.length >= 2) {
+      return (
+        <code key={`${keyPrefix}-c-${i}`} className={styles.inlineCode}>
+          {part.slice(1, -1)}
+        </code>
+      )
+    }
+
+    // Bold: **...**
+    if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
+      const inner = part.slice(2, -2)
+      return (
+        <strong key={`${keyPrefix}-b-${i}`} className={styles.inlineBold}>
+          {renderPlaybookMarkdown(inner, `${keyPrefix}-b-${i}`)}
+        </strong>
+      )
+    }
+
+    // Italic: *...*
+    if (part.startsWith('*') && part.endsWith('*') && part.length >= 2) {
+      const inner = part.slice(1, -1)
+      return (
+        <em key={`${keyPrefix}-i-${i}`} className={styles.inlineItalic}>
+          {renderPlaybookMarkdown(inner, `${keyPrefix}-i-${i}`)}
+        </em>
+      )
+    }
+
+    // Italic: _..._
+    if (part.startsWith('_') && part.endsWith('_') && part.length >= 2) {
+      const inner = part.slice(1, -1)
+      return (
+        <em key={`${keyPrefix}-u-${i}`} className={styles.inlineItalic}>
+          {renderPlaybookMarkdown(inner, `${keyPrefix}-u-${i}`)}
+        </em>
+      )
+    }
+
+    return part
+  })
+
+  return <React.Fragment key={keyPrefix}>{elements}</React.Fragment>
+}
+
+function DropdownChevron({ isOpen }: { isOpen: boolean }) {
+  return (
+    <span
+      className={`${styles.subphaseBtnChevron} ${
+        isOpen ? styles.subphaseBtnChevronOpen : ''
+      }`}
+      aria-hidden="true"
+    >
+      <svg
+        width="11"
+        height="11"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+    </span>
+  )
+}
+
 export function LiliumPlaybookApp({ focused }: AppContentProps) {
   // Active Lab detection (from ?lab=lab-XX URL query or fallback to lab-01)
   const activeLabId = useMemo(() => {
@@ -100,6 +222,19 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
     togglePhaseCompleted,
   } = useLabVerifier(activeLabId)
 
+  // Declarative lab verification rules configuration
+  const verificationConfig = useMemo(() => {
+    return getLabVerificationConfig(activeLabId)
+  }, [activeLabId])
+
+  const allRulesMap = useMemo(() => {
+    const map: Record<string, VerificationRule[]> = {}
+    for (const phase of verificationConfig.phases) {
+      map[phase.id] = phase.rules
+    }
+    return map
+  }, [verificationConfig])
+
   // Prelude dropdown state (Misión & Reglas from playbook.md)
   const [showPrelude, setShowPrelude] = useState(true)
 
@@ -127,11 +262,6 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
 
 
 
-  const completedCount = useMemo(
-    () => playbookPhases.filter((p) => completedPhases[p.id]).length,
-    [playbookPhases, completedPhases]
-  )
-
   const hasPreludeData = Boolean(
     currentLab?.mission || (currentLab?.rules && currentLab.rules.length > 0)
   )
@@ -151,19 +281,11 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
           </span>
         </div>
 
-        <div className={styles.headerMeta}>
-          {currentLab?.metadata?.referencia && (
-            <>
-              <span>{currentLab.metadata.referencia}</span>
-              <span>•</span>
-            </>
-          )}
-          <span>{playbookPhases.length} fases</span>
-          <span>•</span>
-          <span>
-            {completedCount} de {playbookPhases.length} completadas
-          </span>
-        </div>
+        {currentLab?.metadata?.referencia && (
+          <div className={styles.headerMeta}>
+            <span>{currentLab.metadata.referencia}</span>
+          </div>
+        )}
 
         {/* ── Collapsible Prelude: Misión & Reglas de Trabajo (from playbook.md) ── */}
         {hasPreludeData && (
@@ -203,25 +325,38 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
               </span>
             </button>
 
-            {showPrelude && (
-              <div className={styles.preludeBody}>
-                {currentLab?.mission && (
-                  <p className={styles.preludeParagraph}>{currentLab.mission}</p>
-                )}
-                {currentLab?.rules && currentLab.rules.length > 0 && (
-                  <div className={styles.preludeSection}>
-                    <h5 className={styles.preludeSubheading}>Reglas de Trabajo</h5>
-                    <ul className={styles.rulesList}>
-                      {currentLab.rules.map((rule, rIdx) => (
-                        <li key={rIdx} className={styles.ruleItem}>
-                          {rule}
-                        </li>
+            <div
+              className={`${styles.preludeCollapseWrapper} ${
+                showPrelude ? styles.preludeCollapseWrapperOpen : ''
+              }`}
+              aria-hidden={!showPrelude}
+            >
+              <div className={styles.preludeCollapseInner}>
+                <div className={styles.preludeBody}>
+                  {currentLab?.mission && (
+                    <div className={styles.preludeParagraph}>
+                      {currentLab.mission.split('\n\n').map((para, pIdx) => (
+                        <p key={pIdx} className={styles.preludeParaBlock}>
+                          {renderPlaybookMarkdown(para, `m-${pIdx}`)}
+                        </p>
                       ))}
-                    </ul>
-                  </div>
-                )}
+                    </div>
+                  )}
+                  {currentLab?.rules && currentLab.rules.length > 0 && (
+                    <div className={styles.preludeSection}>
+                      <h5 className={styles.preludeSubheading}>Reglas de Trabajo</h5>
+                      <ul className={styles.rulesList}>
+                        {currentLab.rules.map((rule, rIdx) => (
+                          <li key={rIdx} className={styles.ruleItem}>
+                            {renderPlaybookMarkdown(rule, `r-${rIdx}`)}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
+            </div>
           </div>
         )}
       </div>
@@ -250,6 +385,7 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
           playbookPhases.map((phase) => {
             const isPhaseDone = Boolean(completedPhases[phase.id])
             const isLocked = isPhaseLocked(phase.id)
+            const phaseRules = allRulesMap[phase.id] ?? []
 
             return (
               <div
@@ -298,7 +434,9 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                         {phase.title}
                       </span>
                     </div>
-                    <p className={styles.milestoneDesc}>{phase.subtitle}</p>
+                    <p className={styles.milestoneDesc}>
+                      {renderPlaybookMarkdown(phase.subtitle, `ps-${phase.id}`)}
+                    </p>
                   </div>
                 </div>
 
@@ -309,6 +447,17 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                     const isHintOpen = Boolean(openSubphaseHints[subId])
                     const isSolOpen = Boolean(openSubphaseSolutions[subId])
                     const subData = getSubphaseData(phase, dir, idx)
+
+                    const stepsWithCommand =
+                      subData.guide?.steps.filter((s) => s.command) || []
+                    const completedStepsCount = stepsWithCommand.filter((s) => {
+                      const r = findMatchingRule(
+                        phaseRules,
+                        subData.stepId,
+                        s.command
+                      )
+                      return r && checkedItems[r.id]
+                    }).length
 
                     const titleParts = dir.title.split('—')
                     const stepNumberLabel =
@@ -322,14 +471,16 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                       <div key={idx} className={styles.subphaseCard}>
                         <div className={styles.subphaseHeader}>
                           <span className={styles.subphaseNumber}>
-                            {stepNumberLabel}
+                            {renderPlaybookMarkdown(stepNumberLabel, `sn-${subId}`)}
                           </span>
                           <h4 className={styles.subphaseTitle}>
-                            {stepTitleText}
+                            {renderPlaybookMarkdown(stepTitleText, `st-${subId}`)}
                           </h4>
                         </div>
 
-                        <p className={styles.subphaseText}>{dir.text}</p>
+                        <p className={styles.subphaseText}>
+                          {renderPlaybookMarkdown(dir.text, `dt-${subId}`)}
+                        </p>
 
                         {/* Dedicated Action Buttons per Subphase */}
                         <div className={styles.subphaseButtonsRow}>
@@ -339,10 +490,14 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                             className={`${styles.subphaseBtn} ${
                               isHintOpen ? styles.subphaseBtnActive : ''
                             }`}
+                            aria-expanded={isHintOpen}
                           >
-                            {isHintOpen
-                              ? 'Ocultar herramientas'
-                              : 'Herramientas sugeridas'}
+                            <span>
+                              {isHintOpen
+                                ? 'Ocultar herramientas'
+                                : 'Herramientas sugeridas'}
+                            </span>
+                            <DropdownChevron isOpen={isHintOpen} />
                           </button>
 
                           <button
@@ -351,144 +506,81 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                             className={`${styles.subphaseBtn} ${
                               isSolOpen ? styles.subphaseBtnActive : ''
                             }`}
+                            aria-expanded={isSolOpen}
                           >
-                            {isSolOpen ? 'Ocultar solución' : 'Solución'}
+                            <span>
+                              {isSolOpen ? 'Ocultar solución' : 'Solución'}
+                              {stepsWithCommand.length > 0 && (
+                                <span className={styles.subphaseProgressBadge}>
+                                  ({completedStepsCount}/{stepsWithCommand.length})
+                                </span>
+                              )}
+                            </span>
+                            <DropdownChevron isOpen={isSolOpen} />
                           </button>
                         </div>
 
                         {/* ── Dropdown: Herramientas Sugeridas ── */}
-                        {isHintOpen && (
-                          <div className={styles.subphaseDropdown}>
-                            <div className={styles.dropdownHeader}>
-                              <span className={styles.dropdownTitle}>
-                                Herramientas sugeridas
-                              </span>
-                            </div>
-
-                            {subData.hints.length === 0 ? (
-                              <p className={styles.emptyNote}>
-                                No hay herramientas registradas para este paso.
-                              </p>
-                            ) : (
-                              <div className={styles.hintsList}>
-                                {subData.hints.map((hint, hIdx) => (
-                                  <div key={hIdx} className={styles.hintItem}>
-                                    <div className={styles.hintMeta}>
-                                      <span className={styles.hintTool}>
-                                        {hint.tool}:
-                                      </span>
-                                      <span className={styles.hintDesc}>
-                                        {hint.description}
-                                      </span>
-                                    </div>
-                                    {hint.command && (
-                                      <div className={styles.codeBlockRow}>
-                                        <code className={styles.codeSnippet}>
-                                          {hint.command}
-                                        </code>
-                                        <button
-                                          type="button"
-                                          className={`${styles.inlineCopyBtn} ${
-                                            copiedKey === `cmd-${subId}-${hIdx}`
-                                              ? styles.inlineCopyBtnCopied
-                                              : ''
-                                          }`}
-                                          onClick={() =>
-                                            handleCopy(
-                                              hint.command!,
-                                              `cmd-${subId}-${hIdx}`
-                                            )
-                                          }
-                                          title={
-                                            copiedKey === `cmd-${subId}-${hIdx}`
-                                              ? 'Copiado'
-                                              : 'Copiar comando'
-                                          }
-                                          aria-label={
-                                            copiedKey === `cmd-${subId}-${hIdx}`
-                                              ? 'Copiado'
-                                              : 'Copiar comando'
-                                          }
-                                        >
-                                          {copiedKey === `cmd-${subId}-${hIdx}` ? (
-                                            <CheckIcon size={12} />
-                                          ) : (
-                                            <CopyIcon size={12} />
-                                          )}
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
-                                ))}
+                        <div
+                          className={`${styles.dropdownCollapseWrapper} ${
+                            isHintOpen ? styles.dropdownCollapseWrapperOpen : ''
+                          }`}
+                          aria-hidden={!isHintOpen}
+                        >
+                          <div className={styles.dropdownCollapseInner}>
+                            <div className={styles.subphaseDropdown}>
+                              <div className={styles.dropdownHeader}>
+                                <span className={styles.dropdownTitle}>
+                                  Herramientas sugeridas
+                                </span>
                               </div>
-                            )}
-                          </div>
-                        )}
 
-                        {/* ── Dropdown: Solución ── */}
-                        {isSolOpen && (
-                          <div className={styles.subphaseDropdown}>
-                            <div className={styles.dropdownHeader}>
-                              <span className={styles.dropdownTitle}>
-                                Solución y guía paso a paso
-                              </span>
-                            </div>
-
-                            {!subData.guide ? (
-                              <p className={styles.emptyNote}>
-                                No hay guía de solución registrada para este paso.
-                              </p>
-                            ) : (
-                              <div className={styles.solutionContent}>
-                                {subData.guide.rationale && (
-                                  <div className={styles.solutionRationale}>
-                                    {subData.guide.rationale}
-                                  </div>
-                                )}
-
-                                <div className={styles.stepsList}>
-                                  {subData.guide.steps.map((step, sIdx) => (
-                                    <div key={sIdx} className={styles.stepItem}>
-                                      <div className={styles.stepAction}>
-                                        <span className={styles.stepBullet}>
-                                          →
+                              {subData.hints.length === 0 ? (
+                                <p className={styles.emptyNote}>
+                                  No hay herramientas registradas para este paso.
+                                </p>
+                              ) : (
+                                <div className={styles.hintsList}>
+                                  {subData.hints.map((hint, hIdx) => (
+                                    <div key={hIdx} className={styles.hintItem}>
+                                      <div className={styles.hintMeta}>
+                                        <span className={styles.hintTool}>
+                                          {renderPlaybookMarkdown(hint.tool, `ht-${subId}-${hIdx}`)}:
                                         </span>
-                                        <span>{step.action}</span>
+                                        <span className={styles.hintDesc}>
+                                          {renderPlaybookMarkdown(hint.description, `hd-${subId}-${hIdx}`)}
+                                        </span>
                                       </div>
-                                      {step.command && (
+                                      {hint.command && (
                                         <div className={styles.codeBlockRow}>
                                           <code className={styles.codeSnippet}>
-                                            {step.command}
+                                            {hint.command}
                                           </code>
                                           <button
                                             type="button"
                                             className={`${styles.inlineCopyBtn} ${
-                                              copiedKey ===
-                                              `solcmd-${subId}-${sIdx}`
+                                              copiedKey === `cmd-${subId}-${hIdx}`
                                                 ? styles.inlineCopyBtnCopied
                                                 : ''
                                             }`}
                                             onClick={() =>
                                               handleCopy(
-                                                step.command!,
-                                                `solcmd-${subId}-${sIdx}`
+                                                hint.command!,
+                                                `cmd-${subId}-${hIdx}`
                                               )
                                             }
                                             title={
-                                              copiedKey ===
-                                              `solcmd-${subId}-${sIdx}`
+                                              copiedKey === `cmd-${subId}-${hIdx}`
                                                 ? 'Copiado'
                                                 : 'Copiar comando'
                                             }
                                             aria-label={
-                                              copiedKey ===
-                                              `solcmd-${subId}-${sIdx}`
+                                              copiedKey === `cmd-${subId}-${hIdx}`
                                                 ? 'Copiado'
                                                 : 'Copiar comando'
                                             }
                                           >
-                                            {copiedKey ===
-                                            `solcmd-${subId}-${sIdx}` ? (
+                                            {copiedKey === `cmd-${subId}-${hIdx}` ? (
                                               <CheckIcon size={12} />
                                             ) : (
                                               <CopyIcon size={12} />
@@ -496,18 +588,187 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                                           </button>
                                         </div>
                                       )}
-                                      {step.detail && (
-                                        <div className={styles.stepDetail}>
-                                          {step.detail}
-                                        </div>
-                                      )}
                                     </div>
                                   ))}
                                 </div>
-                              </div>
-                            )}
+                              )}
+                            </div>
                           </div>
-                        )}
+                        </div>
+
+                        {/* ── Dropdown: Solución ── */}
+                        <div
+                          className={`${styles.dropdownCollapseWrapper} ${
+                            isSolOpen ? styles.dropdownCollapseWrapperOpen : ''
+                          }`}
+                          aria-hidden={!isSolOpen}
+                        >
+                          <div className={styles.dropdownCollapseInner}>
+                            <div className={styles.subphaseDropdown}>
+                              <div className={styles.dropdownHeader}>
+                                <span className={styles.dropdownTitle}>
+                                  Solución y guía paso a paso
+                                </span>
+                              </div>
+
+                              {!subData.guide ? (
+                                <p className={styles.emptyNote}>
+                                  No hay guía de solución registrada para este paso.
+                                </p>
+                              ) : (
+                                <div className={styles.solutionContent}>
+                                  {subData.guide.rationale && (
+                                    <div className={styles.solutionRationale}>
+                                      {renderPlaybookMarkdown(subData.guide.rationale, `sr-${subId}`)}
+                                    </div>
+                                  )}
+
+                                  <div className={styles.stepsList}>
+                                    {subData.guide.steps.map((step, sIdx) => {
+                                      const matchedRule = findMatchingRule(
+                                        phaseRules,
+                                        subData.stepId,
+                                        step.command
+                                      )
+                                      const isStepDone = Boolean(
+                                        matchedRule && checkedItems[matchedRule.id]
+                                      )
+
+                                      return (
+                                        <div
+                                          key={sIdx}
+                                          className={`${styles.stepItem} ${
+                                            isStepDone ? styles.stepItemDone : ''
+                                          }`}
+                                        >
+                                          <div className={styles.stepAction}>
+                                            {isStepDone ? (
+                                              <span
+                                                className={styles.stepBulletDone}
+                                                title={
+                                                  matchedRule
+                                                    ? `Sub-paso cumplido [${matchedRule.id}]`
+                                                    : 'Sub-paso cumplido'
+                                                }
+                                                style={{
+                                                  cursor:
+                                                    matchedRule && !isLocked
+                                                      ? 'pointer'
+                                                      : 'default',
+                                                }}
+                                                onClick={() => {
+                                                  if (matchedRule && !isLocked) {
+                                                    toggleCheckItem(
+                                                      matchedRule.id,
+                                                      phase.id
+                                                    )
+                                                  }
+                                                }}
+                                              >
+                                                ✓
+                                              </span>
+                                            ) : (
+                                              <span
+                                                className={styles.stepBullet}
+                                                title={
+                                                  matchedRule && !isLocked
+                                                    ? `Marcar como verificado [${matchedRule.id}]`
+                                                    : undefined
+                                                }
+                                                style={{
+                                                  cursor:
+                                                    matchedRule && !isLocked
+                                                      ? 'pointer'
+                                                      : 'default',
+                                                }}
+                                                onClick={() => {
+                                                  if (matchedRule && !isLocked) {
+                                                    toggleCheckItem(
+                                                      matchedRule.id,
+                                                      phase.id
+                                                    )
+                                                  }
+                                                }}
+                                              >
+                                                →
+                                              </span>
+                                            )}
+                                            <span>
+                                              {renderPlaybookMarkdown(
+                                                step.action,
+                                                `sa-${subId}-${sIdx}`
+                                              )}
+                                            </span>
+                                            {isStepDone && (
+                                              <span className={styles.stepBadgeDone}>
+                                                Cumplido
+                                              </span>
+                                            )}
+                                          </div>
+                                          {step.command && (
+                                            <div className={styles.codeBlockRow}>
+                                              <code
+                                                className={`${styles.codeSnippet} ${
+                                                  isStepDone
+                                                    ? styles.codeSnippetDone
+                                                    : ''
+                                                }`}
+                                              >
+                                                {step.command}
+                                              </code>
+                                              <button
+                                                type="button"
+                                                className={`${styles.inlineCopyBtn} ${
+                                                  copiedKey ===
+                                                  `solcmd-${subId}-${sIdx}`
+                                                    ? styles.inlineCopyBtnCopied
+                                                    : ''
+                                                }`}
+                                                onClick={() =>
+                                                  handleCopy(
+                                                    step.command!,
+                                                    `solcmd-${subId}-${sIdx}`
+                                                  )
+                                                }
+                                                title={
+                                                  copiedKey ===
+                                                  `solcmd-${subId}-${sIdx}`
+                                                    ? 'Copiado'
+                                                    : 'Copiar comando'
+                                                }
+                                                aria-label={
+                                                  copiedKey ===
+                                                  `solcmd-${subId}-${sIdx}`
+                                                    ? 'Copiado'
+                                                    : 'Copiar comando'
+                                                }
+                                              >
+                                                {copiedKey ===
+                                                `solcmd-${subId}-${sIdx}` ? (
+                                                  <CheckIcon size={12} />
+                                                ) : (
+                                                  <CopyIcon size={12} />
+                                                )}
+                                              </button>
+                                            </div>
+                                          )}
+                                          {step.detail && (
+                                            <div className={styles.stepDetail}>
+                                              {renderPlaybookMarkdown(
+                                                step.detail,
+                                                `sd-${subId}-${sIdx}`
+                                              )}
+                                            </div>
+                                          )}
+                                        </div>
+                                      )
+                                    })}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )
                   })}
@@ -546,7 +807,7 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                               checked={isChecked}
                               onChange={() => toggleCheckItem(v.id, phase.id)}
                             />
-                            <span>{v.label}</span>
+                            <span>{renderPlaybookMarkdown(v.label, `vl-${v.id}`)}</span>
                           </div>
                         )
                       })

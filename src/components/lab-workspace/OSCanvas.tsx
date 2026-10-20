@@ -20,12 +20,12 @@ import {
 import {
   applyDemoIcons,
   applyDemoSettingsIcon,
-  buildDemoTheme,
   localIcon,
   persistThemeChoice,
   readInitialThemeChoice,
   type DemoThemeChoice,
 } from '@react-ui-os/demo'
+import { buildCustomOsTheme } from '@/utils/osTheme'
 import { exampleApps } from '@react-ui-os/example-apps'
 import { liliumTerminalApp } from '@/os-apps/terminal'
 import { liliumPlaybookApp } from '@/os-apps/playbook'
@@ -35,7 +35,6 @@ import { hasRecents } from '@/pages/desktop/recents'
 import { RecentsFolder } from '@/pages/desktop/RecentsFolder'
 import { RecentsIcon } from '@/pages/desktop/RecentsIcon'
 import { StartRecents } from '@/pages/desktop/StartRecents'
-import { ThemeSwitcher } from '@/pages/desktop/ThemeSwitcher'
 import { UbuntuQuickSettings } from '@/pages/desktop/UbuntuQuickSettings'
 import { labVerificationEngine } from '@/services/verification'
 import styles from './OSCanvas.module.css'
@@ -166,18 +165,30 @@ function ExternalAppLauncher() {
 interface OSCanvasProps {
   /** Lab id passed for context — unused in render, reserved for future per-lab config */
   labId: string
+  themeChoice?: DemoThemeChoice
+  onThemeChange?: (choice: DemoThemeChoice) => void
 }
 
-export default function OSCanvas({ labId: _labId }: OSCanvasProps) {
-  const [themeChoice, setThemeChoice] = useState<DemoThemeChoice>(readInitialThemeChoice)
+export default function OSCanvas({
+  labId: _labId,
+  themeChoice: propThemeChoice,
+  onThemeChange: propOnThemeChange,
+}: OSCanvasProps) {
+  const [localThemeChoice, setLocalThemeChoice] = useState<DemoThemeChoice>(readInitialThemeChoice)
+  const themeChoice = propThemeChoice ?? localThemeChoice
+
   const theme = useMemo<OsTheme>(
-    () => buildDemoTheme(themeChoice, ASSET_BASE),
+    () => buildCustomOsTheme(themeChoice, ASSET_BASE),
     [themeChoice]
   )
 
   const handleThemeChange = (choice: DemoThemeChoice) => {
-    setThemeChoice(choice)
-    persistThemeChoice(choice)
+    if (propOnThemeChange) {
+      propOnThemeChange(choice)
+    } else {
+      setLocalThemeChoice(choice)
+      persistThemeChoice(choice)
+    }
   }
 
   return (
@@ -186,7 +197,7 @@ export default function OSCanvas({ labId: _labId }: OSCanvasProps) {
         <DesktopInitializer />
         {themeChoice === 'ubuntu' && <UbuntuQuickSettings />}
         <StartRecents />
-        <ThemeSwitcher value={themeChoice} onChange={handleThemeChange} />
+        {/* Minimized OS switcher is positioned in the bottom corner of workspace */}
         <LabAutoLauncher />
         <ExternalAppLauncher />
       </Desktop>
