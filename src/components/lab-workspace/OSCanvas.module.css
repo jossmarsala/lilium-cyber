@@ -1,0 +1,25 @@
+/* OSCanvas.module.css
+   Framed viewport container for the react-ui-os Desktop component. */
+
+.canvasFrame {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+
+  /* Subtle inset frame so the OS feels contained */
+  border-radius: 0;
+  background: #111;
+
+  /* The Desktop component fills this entirely */
+  display: flex;
+  flex-direction: column;
+}
+
+/* The Desktop component renders with position:absolute or fills 100%;
+   ensure its root inherits the container dimensions. */
+.canvasFrame > * {
+  flex: 1;
+  min-height: 0;
+}

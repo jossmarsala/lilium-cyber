@@ -501,7 +501,7 @@ export default function LabsPage() {
                     cursor: 'pointer',
                   }}
                   onClick={() => {
-                    navigate(`/desktop?lab=${activeModalLab.id}`)
+                    navigate(`/lab/${activeModalLab.id}`)
                   }}
                 >
                   Iniciar Laboratorio

@@ -8,13 +8,17 @@ import HomePage from '@/pages/HomePage'
 import DocsPage from '@/pages/DocsPage'
 import LabsPage from '@/pages/LabsPage'
 import DesktopPage from '@/pages/desktop/DesktopPage'
+import LabWorkspacePage from '@/pages/lab/LabWorkspacePage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Fullscreen React UI OS Desktop environment */}
+        {/* Interactive Lab Workspace — lab shell wrapping the OS desktop */}
+        <Route path="lab/:labId" element={<LabWorkspacePage />} />
+
+        {/* Legacy fullscreen React UI OS Desktop (raw, no workspace chrome) */}
         <Route path="desktop" element={<DesktopPage />} />
         <Route path="os" element={<DesktopPage />} />
 

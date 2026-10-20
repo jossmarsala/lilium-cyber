@@ -39,10 +39,14 @@ const LAYERS: LayerItem[] = [
     title: 'Comprender.',
     subtitle: 'Conocer el entorno antes de tomar decisiones de seguridad.',
     functions: [
-      { code: '01. UNDERSTAND', name: 'Aprender fundamentos teóricos', icon: Search01Icon },
       {
-        code: '02. DISCOVER',
-        name: 'Identificar activos y riesgos en la PyME',
+        code: '01. ENTENDER',
+        name: 'Lineamientos: Aprender fundamentos teóricos',
+        icon: Search01Icon,
+      },
+      {
+        code: '02. DESCUBRIR',
+        name: 'Inventario: Identificar activos y riesgos en la PyME',
         icon: Layers01Icon,
       },
     ],
@@ -52,8 +56,16 @@ const LAYERS: LayerItem[] = [
     title: 'Construir.',
     subtitle: 'Diseñar e implementar una arquitectura que reduzca los riesgos.',
     functions: [
-      { code: '03. DESIGN', name: 'Diseñar controles y segmentación', icon: Settings02Icon },
-      { code: '04. PROTECT', name: 'Proteger accesos, datos y sistemas', icon: Shield01Icon },
+      {
+        code: '03. DISEÑAR',
+        name: 'Lógica: Diseñar controles y segmentación',
+        icon: Settings02Icon,
+      },
+      {
+        code: '04. PROTEGER',
+        name: 'Implementación: Proteger accesos, datos y sistemas',
+        icon: Shield01Icon,
+      },
     ],
   },
   {
@@ -61,8 +73,16 @@ const LAYERS: LayerItem[] = [
     title: 'Operar.',
     subtitle: 'Detectar amenazas, responder ante incidentes y recuperar la operación.',
     functions: [
-      { code: '05. DETECT', name: 'Detectar anomalías y amenazas', icon: Target01Icon },
-      { code: '06. RESPOND & RECOVER', name: 'Responder y restaurar operación', icon: ZapIcon },
+      {
+        code: '05. DETECTAR',
+        name: 'Umbrales: Detectar anomalías y amenazas',
+        icon: Target01Icon,
+      },
+      {
+        code: '06. RESPONDER Y RECUPERAR',
+        name: 'Mitigación: Responder y restaurar operación',
+        icon: ZapIcon,
+      },
     ],
   },
 ]
@@ -103,8 +123,9 @@ export default function SecurityFramework() {
           capa por capa
         </h2>
         <p className={styles.subtitle}>
-          Framework para comprender, implementar y responder, basado en referencias reconocidas de
-          ciberseguridad.
+          Framework estructurado en 6 capas: <strong>L</strong>ineamientos, <strong>I</strong>
+          nventario, <strong>L</strong>ógica, <strong>I</strong>mplementación,
+          <strong>U</strong>mbrales y <strong>M</strong>itigación.".
         </p>
       </div>
 

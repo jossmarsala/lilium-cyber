@@ -1,6 +1,6 @@
 # ⚜️ LILIUM: Cibersecurity Playbook
 
-### Threat Understanding Layered Infrastructure Protection
+### Lineamientos, Inventario, Lógica, Implementación, Umbrales y Mitigación.
 
 **Build security, layer by layer.**
 
@@ -18,16 +18,16 @@ Rather than starting with tools, LILIUM starts with risks and works toward pract
 
 ## The Framework
 
-LILIUM organizes cybersecurity into **3 layers and 6 functional sublayers**, guiding users from understanding their environment to building defenses and responding to incidents.
+LILIUM organizes cybersecurity into **3 layers and 6 functional sublayers** representing the acronym **LILIUM** (1 to 6: Understand, Discover, Design, Protect, Detect, Respond/Recover):
 
-| Layer                  | Sublayer          | Focus                                                                     |
-| :--------------------- | :---------------- | :------------------------------------------------------------------------ |
-| 🪴 **01 · Understand** | Understand        | Risks, threats, vulnerabilities, and security fundamentals.               |
-|                        | Discover          | Asset inventory, attack surface, and vulnerability assessment.            |
-| 🛠️ **02 · Build**      | Design            | Secure architecture, network segmentation, and trust boundaries.          |
-|                        | Protect           | Access control, hardening, secure configuration, and preventive controls. |
-| 🔎 **03 · Operate**    | Detect            | Monitoring, logs, alerts, and suspicious activity detection.              |
-|                        | Respond & Recover | Incident response, containment, investigation, and recovery.              |
+| Layer                  | Sublayer (LILIUM)              | Focus                                                                     |
+| :--------------------- | :----------------------------- | :------------------------------------------------------------------------ |
+| 🪴 **01 · Understand** | Understand (**L**ineamientos)   | Risks, threats, vulnerabilities, and security fundamentals.               |
+|                        | Discover (**I**nventario)      | Asset inventory, attack surface, and vulnerability assessment.            |
+| 🛠️ **02 · Build**      | Design (**L**ógica)            | Secure architecture, network segmentation, and trust boundaries.          |
+|                        | Protect (**I**mplementación)   | Access control, hardening, secure configuration, and preventive controls. |
+| 🔎 **03 · Operate**    | Detect (**U**mbrales)          | Monitoring, logs, alerts, and suspicious activity detection.              |
+|                        | Respond & Recover (**M**itigación) | Incident response, containment, investigation, and recovery.          |
 
 ## 📚 Documentation & Labs
 

@@ -1,0 +1,18 @@
+/* LabWorkspacePage.module.css
+   Full-viewport shell for the interactive lab environment. */
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}

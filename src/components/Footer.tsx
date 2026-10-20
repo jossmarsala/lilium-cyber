@@ -146,7 +146,7 @@ export default function Footer({ id = 'contact', className, showCta = true }: Fo
               <span className={styles.brandName}>lilium</span>
             </Link>
             <p className={styles.brandTagline}>
-              Threat Understanding Layered Infrastructure Protection.
+              Lineamientos, Inventario, Lógica, Implementación, Umbrales y Mitigación.
             </p>
             <p className={styles.brandCopyright}>
               © {new Date().getFullYear()} Lilium. Todos los derechos reservados.

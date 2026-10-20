@@ -162,8 +162,8 @@ export default function HomePage() {
             para tu empresa
           </h1>
           <p className={styles.heroDesc}>
-            Lilium (Threat Understanding Layered Infrastructure Protection) es un playbook enfocado
-            en construir una arquitectura digital segura para tu PyME con laboratorios interactivos.
+            Lilium es un playbook enfocado en construir una arquitectura digital segura para tu PyME
+            con prácticas interactivas.
           </p>
           <div className={styles.heroCta}>
             <SpecularButton
@@ -303,7 +303,7 @@ export default function HomePage() {
                   </div>
                   <div className={styles.liliumCardMeta}>
                     <span className={styles.liliumCardTitle}>Defensa en Capas</span>
-                    <span className={styles.liliumCardSub}>Metodología Lilium</span>
+                    <span className={styles.liliumCardSub}>Framework lilium</span>
                   </div>
                 </div>
               </TiltMagneticBadge>
@@ -361,7 +361,7 @@ export default function HomePage() {
           </div>
 
           <div className={styles.stats} id="stats">
-            <Stat label="Laboratorios" value="5+" />
+            <Stat label="Módulos" value="6" />
             <Stat label="Open-Source" value="100%" />
             <Stat label="Experiencia" value="de 0 a 100" />
           </div>
