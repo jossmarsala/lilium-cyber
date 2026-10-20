@@ -116,6 +116,53 @@ function LabAutoLauncher() {
   return null
 }
 
+export const OPEN_OS_APP_EVENT = 'lilium:open-os-app'
+
+export function triggerOpenOsApp(appId: string) {
+  window.dispatchEvent(new CustomEvent(OPEN_OS_APP_EVENT, { detail: { appId } }))
+}
+
+function ExternalAppLauncher() {
+  const { openWindow, focusWindow, restoreWindow, windows } = useWindowManager()
+  const appsCtx = useApps()
+  const theme = useTheme()
+
+  useEffect(() => {
+    const handleOpen = (e: Event) => {
+      const { appId } = (e as CustomEvent<{ appId: string }>).detail
+      if (!appId) return
+
+      let targetId = appId.toLowerCase()
+      if (targetId === 'term' || targetId === 'terminal') targetId = 'terminal'
+      if (targetId === 'notes' || targetId === 'bitacora' || targetId === 'bitácora') targetId = 'notes'
+      if (targetId === 'playbook') targetId = 'playbook'
+
+      const existing = windows.find(
+        (w) => w.payload.kind === 'app' && w.payload.appId === targetId
+      )
+      if (existing) {
+        restoreWindow(existing.id)
+        focusWindow(existing.id)
+        return
+      }
+
+      const bounds = pickInitialBounds(
+        { kind: 'app', appId: targetId },
+        theme,
+        appsCtx,
+        undefined,
+        windows.length
+      )
+      openWindow({ kind: 'app', appId: targetId }, bounds)
+    }
+
+    window.addEventListener(OPEN_OS_APP_EVENT, handleOpen)
+    return () => window.removeEventListener(OPEN_OS_APP_EVENT, handleOpen)
+  }, [openWindow, focusWindow, restoreWindow, windows, theme, appsCtx])
+
+  return null
+}
+
 interface OSCanvasProps {
   /** Lab id passed for context — unused in render, reserved for future per-lab config */
   labId: string
@@ -141,6 +188,7 @@ export default function OSCanvas({ labId: _labId }: OSCanvasProps) {
         <StartRecents />
         <ThemeSwitcher value={themeChoice} onChange={handleThemeChange} />
         <LabAutoLauncher />
+        <ExternalAppLauncher />
       </Desktop>
     </div>
   )

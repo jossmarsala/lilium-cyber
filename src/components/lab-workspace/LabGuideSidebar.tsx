@@ -1,28 +1,32 @@
 /**
- * LabGuideSidebar — collapsible left panel external to the OS desktop.
+ * LabGuideSidebar — renders the lab playbook guide in the style and shape of
+ * DocsSidebar (eased hairline gradient borders, light #fafafb surface,
+ * branch tree line hierarchy, collapsible sections).
  *
- * Shows:
- *  - Lab mission / briefing
- *  - Objectives per phase (from compiled phases)
- *  - Per-step hints (collapsible inline)
- *  - A "rendered" view of the full playbook sections
- *
- * When collapsed, renders a narrow icon rail with a toggle button.
+ * Includes:
+ *  - App quick-launch pills that trigger opening OS apps (Terminal, Bitácora, Playbook)
+ *  - The full text of playbook.md (Tu misión, Reglas de trabajo, Fases con directivas y pistas)
+ *  - Interactive command copying and direct terminal launch
+ *  - Collapsible to a 44px icon rail that spreads on click
  */
 
 import { useState } from 'react'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
 import {
+  TerminalIcon,
+  NoteIcon,
   BookOpen01Icon,
-  Target01Icon,
-  BulbIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  BulbIcon,
   InformationCircleIcon,
+  Copy01Icon,
+  Tick02Icon,
   SidebarLeftIcon,
 } from '@hugeicons/core-free-icons'
 import type { LabItem } from '@/data/labsData'
 import type { CompiledLab } from '@/data/compiledLabs'
+import { triggerOpenOsApp } from './OSCanvas'
 import styles from './LabGuideSidebar.module.css'
 
 interface LabGuideSidebarProps {
@@ -32,12 +36,11 @@ interface LabGuideSidebarProps {
   compiled?: CompiledLab
 }
 
-/** Lightweight inline markdown renderer (headings, bold, code, lists, blockquotes). */
-function renderMarkdownLine(text: string, key: string | number) {
-  // Bold: **text**
+/** Lightweight inline markdown parser for bold, inline code, and backticks. */
+function renderMarkdownLine(text: string, keyPrefix: string | number) {
   const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g)
   return (
-    <span key={key}>
+    <span key={keyPrefix}>
       {parts.map((part, i) => {
         if (part.startsWith('**') && part.endsWith('**')) {
           return <strong key={i}>{part.slice(2, -2)}</strong>
@@ -51,117 +54,185 @@ function renderMarkdownLine(text: string, key: string | number) {
   )
 }
 
-interface CollapsibleHintProps {
+interface HintItemProps {
   tool: string
   description: string
   command?: string
 }
 
-function CollapsibleHint({ tool, description, command }: CollapsibleHintProps) {
-  const [open, setOpen] = useState(false)
+function HintItem({ tool, description, command }: HintItemProps) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!command) return
+    navigator.clipboard.writeText(command)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleRun = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    triggerOpenOsApp('terminal')
+  }
+
   return (
-    <div className={styles.hint}>
-      <button
-        type="button"
-        className={styles.hintToggle}
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-      >
-        <HugeiconsIcon
-          icon={open ? ChevronDownIcon as IconSvgElement : ChevronRightIcon as IconSvgElement}
-          size={12}
-          strokeWidth={2}
-          aria-hidden="true"
-        />
-        <span className={styles.hintTool}>{tool}</span>
-      </button>
-      {open && (
-        <div className={styles.hintBody}>
-          <p className={styles.hintDesc}>{description}</p>
-          {command && (
-            <pre className={styles.hintCmd}><code>{command}</code></pre>
-          )}
+    <div className={styles.hintCard}>
+      <span className={styles.hintToolName}>{tool}</span>
+      <p className={styles.hintDesc}>{description}</p>
+      {command && (
+        <div className={styles.cmdBox}>
+          <code className={styles.cmdText}>{command}</code>
+          <div className={styles.cmdActions}>
+            <button
+              type="button"
+              className={`${styles.copyBtn} ${copied ? styles.copyBtnActive : ''}`}
+              onClick={handleCopy}
+              title="Copiar comando al portapapeles"
+            >
+              <HugeiconsIcon
+                icon={(copied ? Tick02Icon : Copy01Icon) as IconSvgElement}
+                size={11}
+                strokeWidth={2}
+              />
+              <span>{copied ? 'Listo' : 'Copiar'}</span>
+            </button>
+            <button
+              type="button"
+              className={styles.runBtn}
+              onClick={handleRun}
+              title="Abrir Terminal en el escritorio"
+            >
+              <HugeiconsIcon icon={TerminalIcon as IconSvgElement} size={11} strokeWidth={2} />
+              <span>Terminal</span>
+            </button>
+          </div>
         </div>
       )}
     </div>
   )
 }
 
-interface PhaseAccordionProps {
+interface PhaseSectionProps {
   phase: CompiledLab['phases'][0]
   index: number
 }
 
-function PhaseAccordion({ phase, index }: PhaseAccordionProps) {
-  const [open, setOpen] = useState(index === 0)
+function PhaseSection({ phase, index }: PhaseSectionProps) {
+  const [open, setOpen] = useState(true)
   const [hintsOpen, setHintsOpen] = useState(false)
 
   return (
-    <div className={styles.phase}>
+    <div className={styles.sectionCard}>
       <button
         type="button"
-        className={styles.phaseToggle}
+        className={styles.sectionToggle}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
       >
-        <span className={styles.phaseNum}>{String(index + 1).padStart(2, '0')}</span>
-        <span className={styles.phaseTitle}>{phase.title.replace(/^FASE \d+:\s*/i, '')}</span>
+        <div className={styles.sectionToggleLeft}>
+          <span className={styles.sectionNumberBadge}>
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <span className={styles.sectionTitle}>
+            {phase.title.replace(/^FASE \d+:\s*/i, '')}
+          </span>
+        </div>
         <HugeiconsIcon
-          icon={open ? ChevronDownIcon as IconSvgElement : ChevronRightIcon as IconSvgElement}
+          icon={(open ? ChevronDownIcon : ChevronRightIcon) as IconSvgElement}
           size={13}
           strokeWidth={1.8}
+          className={styles.chevron}
           aria-hidden="true"
-          className={styles.phaseChevron}
         />
       </button>
 
       {open && (
-        <div className={styles.phaseBody}>
+        <div className={styles.sectionBody}>
           {phase.subtitle && (
-            <p className={styles.phaseSubtitle}>{phase.subtitle}</p>
+            <p className={styles.sectionSubtitle}>{phase.subtitle}</p>
           )}
 
-          {/* Directives list */}
-          <ol className={styles.directiveList}>
-            {phase.directives.map((d, di) => (
-              <li key={di} className={styles.directiveItem}>
-                <span className={styles.directiveTitle}>
-                  {renderMarkdownLine(d.title, `t-${di}`)}
-                </span>
-                <p className={styles.directiveText}>
-                  {renderMarkdownLine(d.text, `b-${di}`)}
-                </p>
-              </li>
-            ))}
-          </ol>
+          {/* Directives with branch tree line */}
+          <div className={styles.directivesTree}>
+            {phase.directives.map((d, di) => {
+              const mentionsTerminal = /terminal|comando|bash|whoami|dpkg|ip|ss|cat|grep|sudo/i.test(
+                d.text + d.title
+              )
+              const mentionsNotes = /bit[aá]cora|registro|documenta|anotar/i.test(
+                d.text + d.title
+              )
 
-          {/* Collapsible hints section */}
+              return (
+                <div key={di} className={styles.directiveItem}>
+                  <div className={styles.directiveHeader}>
+                    <span className={styles.directiveTitle}>
+                      {renderMarkdownLine(d.title, `dt-${di}`)}
+                    </span>
+                  </div>
+                  <p className={styles.directiveText}>
+                    {renderMarkdownLine(d.text, `db-${di}`)}
+                  </p>
+
+                  {/* Contextual OS launcher pill */}
+                  {mentionsTerminal && (
+                    <button
+                      type="button"
+                      className={styles.directiveActionPill}
+                      onClick={() => triggerOpenOsApp('terminal')}
+                      title="Abrir Terminal en el escritorio"
+                    >
+                      <HugeiconsIcon
+                        icon={TerminalIcon as IconSvgElement}
+                        size={10}
+                        strokeWidth={2}
+                      />
+                      <span>Abrir Terminal</span>
+                    </button>
+                  )}
+                  {!mentionsTerminal && mentionsNotes && (
+                    <button
+                      type="button"
+                      className={styles.directiveActionPill}
+                      onClick={() => triggerOpenOsApp('notes')}
+                      title="Abrir Bitácora en el escritorio"
+                    >
+                      <HugeiconsIcon
+                        icon={NoteIcon as IconSvgElement}
+                        size={10}
+                        strokeWidth={2}
+                      />
+                      <span>Abrir Bitácora</span>
+                    </button>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Collapsible hints */}
           {phase.hints && phase.hints.length > 0 && (
-            <div className={styles.hintsSection}>
+            <div className={styles.hintsContainer}>
               <button
                 type="button"
-                className={styles.hintsSectionToggle}
+                className={styles.hintsToggle}
                 onClick={() => setHintsOpen((v) => !v)}
                 aria-expanded={hintsOpen}
               >
+                <div className={styles.hintsToggleLeft}>
+                  <HugeiconsIcon icon={BulbIcon as IconSvgElement} size={12} strokeWidth={2} />
+                  <span>Pistas y comandos ({phase.hints.length})</span>
+                </div>
                 <HugeiconsIcon
-                  icon={BulbIcon as IconSvgElement}
-                  size={12}
-                  strokeWidth={1.8}
-                  aria-hidden="true"
-                />
-                <span>Pistas y comandos</span>
-                <HugeiconsIcon
-                  icon={hintsOpen ? ChevronDownIcon as IconSvgElement : ChevronRightIcon as IconSvgElement}
+                  icon={(hintsOpen ? ChevronDownIcon : ChevronRightIcon) as IconSvgElement}
                   size={12}
                   strokeWidth={2}
-                  aria-hidden="true"
                 />
               </button>
               {hintsOpen && (
                 <div className={styles.hintsList}>
                   {phase.hints.map((hint, hi) => (
-                    <CollapsibleHint key={hi} {...hint} />
+                    <HintItem key={hi} {...hint} />
                   ))}
                 </div>
               )}
@@ -173,15 +244,24 @@ function PhaseAccordion({ phase, index }: PhaseAccordionProps) {
   )
 }
 
-export default function LabGuideSidebar({ open, onToggle, lab, compiled }: LabGuideSidebarProps) {
-  const [activeTab, setActiveTab] = useState<'mission' | 'phases'>('mission')
+export default function LabGuideSidebar({
+  open,
+  onToggle,
+  compiled,
+}: LabGuideSidebarProps) {
+  const [missionOpen, setMissionOpen] = useState(true)
 
   return (
     <aside
       className={`${styles.sidebar} ${!open ? styles.collapsed : ''}`}
-      aria-label="Guía de laboratorio"
+      aria-label="Playbook del laboratorio"
       onClick={!open ? onToggle : undefined}
     >
+      {/* ── Gradient borders (Docs style) ── */}
+      <div className={styles.topBorder} aria-hidden="true" />
+      <div className={styles.bottomBorder} aria-hidden="true" />
+      <div className={styles.rightBorder} aria-hidden="true" />
+
       {/* ── Collapsed icon rail ── */}
       <div className={styles.rail} aria-hidden={open}>
         <button
@@ -191,15 +271,13 @@ export default function LabGuideSidebar({ open, onToggle, lab, compiled }: LabGu
             e.stopPropagation()
             onToggle()
           }}
-          title="Desplegar guía del laboratorio"
-          aria-label="Desplegar guía del laboratorio"
+          title="Desplegar Playbook"
+          aria-label="Desplegar Playbook"
         >
-          <HugeiconsIcon
-            icon={SidebarLeftIcon as IconSvgElement}
-            size={15}
-            strokeWidth={1.8}
-          />
+          <HugeiconsIcon icon={SidebarLeftIcon as IconSvgElement} size={15} strokeWidth={2} />
         </button>
+
+        <span className={styles.railDivider} aria-hidden="true" />
 
         <div className={styles.railIcons}>
           <button
@@ -207,192 +285,158 @@ export default function LabGuideSidebar({ open, onToggle, lab, compiled }: LabGu
             className={styles.railIconBtn}
             onClick={(e) => {
               e.stopPropagation()
-              setActiveTab('mission')
-              onToggle()
+              triggerOpenOsApp('terminal')
             }}
-            title="Misión del lab (clic para desplegar)"
-            aria-label="Misión del lab"
+            title="Abrir Terminal en el escritorio"
+            aria-label="Abrir Terminal"
+          >
+            <HugeiconsIcon icon={TerminalIcon as IconSvgElement} size={16} strokeWidth={1.8} />
+          </button>
+          <button
+            type="button"
+            className={styles.railIconBtn}
+            onClick={(e) => {
+              e.stopPropagation()
+              triggerOpenOsApp('notes')
+            }}
+            title="Abrir Bitácora en el escritorio"
+            aria-label="Abrir Bitácora"
+          >
+            <HugeiconsIcon icon={NoteIcon as IconSvgElement} size={16} strokeWidth={1.8} />
+          </button>
+          <button
+            type="button"
+            className={styles.railIconBtn}
+            onClick={(e) => {
+              e.stopPropagation()
+              triggerOpenOsApp('playbook')
+            }}
+            title="Abrir Playbook interno en el escritorio"
+            aria-label="Abrir Playbook"
           >
             <HugeiconsIcon icon={BookOpen01Icon as IconSvgElement} size={16} strokeWidth={1.8} />
-          </button>
-          <button
-            type="button"
-            className={styles.railIconBtn}
-            onClick={(e) => {
-              e.stopPropagation()
-              setActiveTab('phases')
-              onToggle()
-            }}
-            title="Fases y objetivos (clic para desplegar)"
-            aria-label="Fases y objetivos"
-          >
-            <HugeiconsIcon icon={Target01Icon as IconSvgElement} size={16} strokeWidth={1.8} />
-          </button>
-          <button
-            type="button"
-            className={styles.railIconBtn}
-            onClick={(e) => {
-              e.stopPropagation()
-              setActiveTab('phases')
-              onToggle()
-            }}
-            title="Pistas y comandos (clic para desplegar)"
-            aria-label="Pistas y comandos"
-          >
-            <HugeiconsIcon icon={BulbIcon as IconSvgElement} size={16} strokeWidth={1.8} />
           </button>
         </div>
       </div>
 
-      {/* ── Expanded full content ── */}
+      {/* ── Expanded content ── */}
       <div className={styles.expandedContent} aria-hidden={!open}>
-        {/* ── Sidebar header ── */}
-        <div className={styles.sidebarHead}>
-          <div className={styles.sidebarTitle}>
-            <HugeiconsIcon
-              icon={BookOpen01Icon as IconSvgElement}
-              size={14}
-              strokeWidth={1.8}
-              aria-hidden="true"
-            />
-            <span>Guía del Lab</span>
+        {/* Header */}
+        <div className={styles.sidebarHeader}>
+          <div className={styles.headerTitleGroup}>
+            <HugeiconsIcon icon={BookOpen01Icon as IconSvgElement} size={14} strokeWidth={2} />
+            <span className={styles.headerTitle}>Playbook</span>
           </div>
-          <div className={styles.headActions}>
-            <span className={styles.labTag}>{lab.tag}</span>
+          <button
+            type="button"
+            className={styles.collapseToggleBtn}
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggle()
+            }}
+            title="Colapsar panel"
+            aria-label="Colapsar panel"
+          >
+            <HugeiconsIcon icon={SidebarLeftIcon as IconSvgElement} size={14} strokeWidth={2} />
+          </button>
+        </div>
+
+        {/* OS App Launcher Pills Bar */}
+        <div className={styles.appPillsBar}>
+          <div className={styles.pillsHeader}>
+            <span className={styles.pillsLabel}>Apps del OS</span>
+            <span className={styles.pillsSubLabel}>clic para abrir</span>
+          </div>
+          <div className={styles.pillsList}>
             <button
               type="button"
-              className={styles.collapseBtn}
-              onClick={(e) => {
-                e.stopPropagation()
-                onToggle()
-              }}
-              title="Colapsar guía"
-              aria-label="Colapsar guía"
+              className={styles.appPill}
+              onClick={() => triggerOpenOsApp('terminal')}
+              title="Abrir Terminal en el escritorio"
             >
-              <HugeiconsIcon
-                icon={SidebarLeftIcon as IconSvgElement}
-                size={14}
-                strokeWidth={1.8}
-              />
+              <HugeiconsIcon icon={TerminalIcon as IconSvgElement} size={13} strokeWidth={2} />
+              <span>Terminal</span>
+            </button>
+            <button
+              type="button"
+              className={styles.appPill}
+              onClick={() => triggerOpenOsApp('notes')}
+              title="Abrir Bitácora de notas en el escritorio"
+            >
+              <HugeiconsIcon icon={NoteIcon as IconSvgElement} size={13} strokeWidth={2} />
+              <span>Bitácora</span>
+            </button>
+            <button
+              type="button"
+              className={styles.appPill}
+              onClick={() => triggerOpenOsApp('playbook')}
+              title="Abrir Playbook interactivo en el escritorio"
+            >
+              <HugeiconsIcon icon={BookOpen01Icon as IconSvgElement} size={13} strokeWidth={2} />
+              <span>Playbook OS</span>
             </button>
           </div>
         </div>
 
-      {/* ── Tab switcher ── */}
-      <div className={styles.tabs} role="tablist">
-        <button
-          role="tab"
-          aria-selected={activeTab === 'mission'}
-          className={`${styles.tab} ${activeTab === 'mission' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('mission')}
-        >
-          Misión
-        </button>
-        <button
-          role="tab"
-          aria-selected={activeTab === 'phases'}
-          className={`${styles.tab} ${activeTab === 'phases' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('phases')}
-        >
-          Fases
-        </button>
-      </div>
+        {/* Scroll area with top/bottom fades */}
+        <div className={styles.topFade} aria-hidden="true" />
+        <div className={styles.bottomFade} aria-hidden="true" />
 
-      {/* ── Scrollable body ── */}
-      <div className={styles.scrollBody}>
-
-        {/* MISSION TAB */}
-        {activeTab === 'mission' && (
-          <div className={styles.missionTab}>
-            {/* Lab title + meta */}
-            <div className={styles.labMeta}>
-              <span className={styles.labCategory}>{lab.category}</span>
-              <h2 className={styles.labName}>{lab.title}</h2>
-              <p className={styles.labDesc}>{lab.description}</p>
-            </div>
-
-            {/* Mission block */}
-            {compiled?.mission && (
-              <div className={styles.missionBlock}>
-                <div className={styles.blockLabel}>
-                  <HugeiconsIcon
-                    icon={InformationCircleIcon as IconSvgElement}
-                    size={12}
-                    strokeWidth={1.8}
-                    aria-hidden="true"
-                  />
-                  Tu misión
-                </div>
-                <p className={styles.missionText}>{compiled.mission}</p>
+        <div className={styles.scrollArea}>
+          {/* Misión y Reglas Card */}
+          <div className={styles.sectionCard}>
+            <button
+              type="button"
+              className={styles.sectionToggle}
+              onClick={() => setMissionOpen((v) => !v)}
+              aria-expanded={missionOpen}
+            >
+              <div className={styles.sectionToggleLeft}>
+                <HugeiconsIcon
+                  icon={InformationCircleIcon as IconSvgElement}
+                  size={15}
+                  strokeWidth={2}
+                />
+                <span className={styles.sectionTitle}>Misión y Reglas</span>
               </div>
-            )}
+              <HugeiconsIcon
+                icon={(missionOpen ? ChevronDownIcon : ChevronRightIcon) as IconSvgElement}
+                size={13}
+                strokeWidth={1.8}
+                className={styles.chevron}
+                aria-hidden="true"
+              />
+            </button>
 
-            {/* Work rules */}
-            {compiled?.rules && compiled.rules.length > 0 && (
-              <div className={styles.rulesBlock}>
-                <div className={styles.blockLabel}>Reglas de trabajo</div>
-                <ul className={styles.rulesList}>
-                  {compiled.rules.map((rule, i) => (
-                    <li key={i} className={styles.rulesItem}>
-                      {renderMarkdownLine(rule, i)}
-                    </li>
-                  ))}
-                </ul>
+            {missionOpen && (
+              <div className={styles.sectionBody}>
+                {compiled?.mission && (
+                  <p className={styles.missionText}>{compiled.mission}</p>
+                )}
+
+                {compiled?.rules && compiled.rules.length > 0 && (
+                  <ul className={styles.rulesList}>
+                    {compiled.rules.map((rule, ri) => (
+                      <li key={ri} className={styles.ruleItem}>
+                        {renderMarkdownLine(rule, `r-${ri}`)}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            )}
-
-            {/* Highlights */}
-            {lab.highlights && lab.highlights.length > 0 && (
-              <div className={styles.highlightsBlock}>
-                <div className={styles.blockLabel}>
-                  <HugeiconsIcon
-                    icon={Target01Icon as IconSvgElement}
-                    size={12}
-                    strokeWidth={1.8}
-                    aria-hidden="true"
-                  />
-                  Temas cubiertos
-                </div>
-                <ul className={styles.highlightsList}>
-                  {lab.highlights.map((h, i) => (
-                    <li key={i} className={styles.highlightItem}>{h}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Lab metadata strip */}
-            <div className={styles.metaStrip}>
-              <span className={styles.metaPair}>
-                <span className={styles.metaKey}>Dificultad</span>
-                <span className={styles.metaVal}>{lab.difficulty}</span>
-              </span>
-              <span className={styles.metaPair}>
-                <span className={styles.metaKey}>Duración</span>
-                <span className={styles.metaVal}>{lab.duration}</span>
-              </span>
-              <span className={styles.metaPair}>
-                <span className={styles.metaKey}>Pasos</span>
-                <span className={styles.metaVal}>{lab.totalSteps}</span>
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* PHASES TAB */}
-        {activeTab === 'phases' && (
-          <div className={styles.phasesTab}>
-            {compiled?.phases && compiled.phases.length > 0 ? (
-              compiled.phases.map((phase, i) => (
-                <PhaseAccordion key={phase.id} phase={phase} index={i} />
-              ))
-            ) : (
-              <p className={styles.emptyState}>No hay fases disponibles para este laboratorio.</p>
             )}
           </div>
-        )}
+
+          {/* Phases from playbook.md */}
+          {compiled?.phases && compiled.phases.length > 0 ? (
+            compiled.phases.map((phase, pi) => (
+              <PhaseSection key={phase.id} phase={phase} index={pi} />
+            ))
+          ) : (
+            <p className={styles.missionText}>No hay fases disponibles.</p>
+          )}
+        </div>
       </div>
-    </div>
-  </aside>
-)
+    </aside>
+  )
 }

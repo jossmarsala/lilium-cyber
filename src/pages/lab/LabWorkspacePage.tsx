@@ -39,8 +39,6 @@ export default function LabWorkspacePage() {
     <div className={styles.workspace}>
       <LabWorkspaceHeader
         lab={lab}
-        sidebarOpen={sidebarOpen}
-        onToggleSidebar={() => setSidebarOpen((v) => !v)}
         onBack={handleBack}
       />
 
