@@ -387,6 +387,22 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
             const isLocked = isPhaseLocked(phase.id)
             const phaseRules = allRulesMap[phase.id] ?? []
 
+            // Calculate subtasks completion stats for clear minimal phase indicator
+            const phaseSubtasksDoneCount = phase.directives.filter((dir, idx) => {
+              const subData = getSubphaseData(phase, dir, idx)
+              const stepsWithCommand = subData.guide?.steps.filter((s) => s.command) || []
+              if (stepsWithCommand.length === 0) return false
+              return stepsWithCommand.every((s) => {
+                const r = findMatchingRule(phaseRules, subData.stepId, s.command)
+                return Boolean(r && checkedItems[r.id])
+              })
+            }).length
+
+            const phaseProgressPct =
+              phase.directives.length > 0
+                ? (phaseSubtasksDoneCount / phase.directives.length) * 100
+                : 0
+
             return (
               <div
                 key={phase.id}
@@ -433,10 +449,65 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                       <span className={styles.milestoneTitle}>
                         {phase.title}
                       </span>
+                      <div className={styles.phaseStatusBadgeGroup}>
+                        {isPhaseDone ? (
+                          <span className={styles.phaseBadgeDone}>
+                            <svg
+                              width="10"
+                              height="10"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="3.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden="true"
+                            >
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Completada
+                          </span>
+                        ) : isLocked ? (
+                          <span className={styles.phaseBadgeLocked}>
+                            <svg
+                              width="10"
+                              height="10"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden="true"
+                            >
+                              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                            Bloqueada
+                          </span>
+                        ) : (
+                          <span className={styles.phaseBadgeActive}>
+                            {phaseSubtasksDoneCount}/{phase.directives.length} sub-tareas
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <p className={styles.milestoneDesc}>
                       {renderPlaybookMarkdown(phase.subtitle, `ps-${phase.id}`)}
                     </p>
+                    {!isLocked && phase.directives.length > 0 && (
+                      <div
+                        className={styles.phaseProgressBarTrack}
+                        title={`Progreso de la fase: ${Math.round(isPhaseDone ? 100 : phaseProgressPct)}%`}
+                      >
+                        <div
+                          className={`${styles.phaseProgressBarFill} ${
+                            isPhaseDone ? styles.phaseProgressBarFillDone : ''
+                          }`}
+                          style={{ width: `${isPhaseDone ? 100 : phaseProgressPct}%` }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -458,6 +529,9 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                       )
                       return r && checkedItems[r.id]
                     }).length
+                    const isSubtaskDone =
+                      stepsWithCommand.length > 0 &&
+                      completedStepsCount === stepsWithCommand.length
 
                     const titleParts = dir.title.split('—')
                     const stepNumberLabel =
@@ -468,14 +542,62 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                         : dir.title
 
                     return (
-                      <div key={idx} className={styles.subphaseCard}>
+                      <div
+                        key={idx}
+                        className={`${styles.subphaseCard} ${
+                          isSubtaskDone ? styles.subphaseCardDone : ''
+                        }`}
+                      >
                         <div className={styles.subphaseHeader}>
-                          <span className={styles.subphaseNumber}>
-                            {renderPlaybookMarkdown(stepNumberLabel, `sn-${subId}`)}
-                          </span>
-                          <h4 className={styles.subphaseTitle}>
-                            {renderPlaybookMarkdown(stepTitleText, `st-${subId}`)}
-                          </h4>
+                          <div className={styles.subphaseTitleGroup}>
+                            <span className={styles.subphaseNumber}>
+                              {renderPlaybookMarkdown(stepNumberLabel, `sn-${subId}`)}
+                            </span>
+                            <h4 className={styles.subphaseTitle}>
+                              {renderPlaybookMarkdown(stepTitleText, `st-${subId}`)}
+                            </h4>
+                          </div>
+
+                          {/* Minimal Progress / Completion Indicator on each subtask */}
+                          {stepsWithCommand.length > 0 && (
+                            <div
+                              className={`${styles.subtaskProgressBadge} ${
+                                isSubtaskDone
+                                  ? styles.subtaskProgressBadgeDone
+                                  : completedStepsCount > 0
+                                  ? styles.subtaskProgressBadgeActive
+                                  : styles.subtaskProgressBadgePending
+                              }`}
+                              title={
+                                isSubtaskDone
+                                  ? `Sub-tarea completada (${completedStepsCount}/${stepsWithCommand.length})`
+                                  : completedStepsCount > 0
+                                  ? `Progreso de sub-tarea: ${completedStepsCount} de ${stepsWithCommand.length} completados`
+                                  : `Sub-tarea pendiente (0 de ${stepsWithCommand.length})`
+                              }
+                            >
+                              {isSubtaskDone ? (
+                                <>
+                                  <svg
+                                    width="10"
+                                    height="10"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="3.2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    aria-hidden="true"
+                                  >
+                                    <polyline points="20 6 9 17 4 12" />
+                                  </svg>
+                                  <span>{completedStepsCount}/{stepsWithCommand.length}</span>
+                                </>
+                              ) : (
+                                <span>{completedStepsCount}/{stepsWithCommand.length}</span>
+                              )}
+                            </div>
+                          )}
                         </div>
 
                         <p className={styles.subphaseText}>
@@ -508,14 +630,7 @@ export function LiliumPlaybookApp({ focused }: AppContentProps) {
                             }`}
                             aria-expanded={isSolOpen}
                           >
-                            <span>
-                              {isSolOpen ? 'Ocultar solución' : 'Solución'}
-                              {stepsWithCommand.length > 0 && (
-                                <span className={styles.subphaseProgressBadge}>
-                                  ({completedStepsCount}/{stepsWithCommand.length})
-                                </span>
-                              )}
-                            </span>
+                            <span>{isSolOpen ? 'Ocultar solución' : 'Solución'}</span>
                             <DropdownChevron isOpen={isSolOpen} />
                           </button>
                         </div>

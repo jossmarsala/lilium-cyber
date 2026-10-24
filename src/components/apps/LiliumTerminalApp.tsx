@@ -131,7 +131,7 @@ export function LiliumTerminalApp({ focused }: AppContentProps) {
     if (rawBuffer.length > 0) {
       printTerminalDisclaimers()
       term.write(rawBuffer)
-      liliumVmService.serial0_send('\n')
+      liliumVmService.serial0_send('\n', true)
       reportedReady = true
     } else {
       printTerminalDisclaimers()

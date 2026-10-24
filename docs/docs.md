@@ -1,8 +1,38 @@
 # 1) Comprender <!-- id: layer-1 -->
 
-Everything you need to set up and run the Cyber Range locally for the first time.
+# **Módulo 1: Fundamentos y Superficie de Defensa**
 
-## Fundamentos <!-- id: introduction, icon: Book02Icon -->
+La seguridad comienza mucho antes de instalar una herramienta o configurar una defensa. Es indispensable comprender qué se está protegiendo, qué componentes forman parte del entorno, qué riesgos existen y de qué manera se relacionan entre sí.
+
+Este módulo establece dicha base: desde los **conceptos esenciales de la ciberseguridad** y el análisis de amenazas hasta los sistemas operativos, las redes y los principios que orientan una arquitectura defensiva sólida.
+
+## **¿Qué vas a aprender?**
+
+- Reconocer los conceptos fundamentales de la ciberseguridad y el análisis de riesgos.
+- Comprender amenazas, vulnerabilidades, vectores de ataque y superficie de exposición.
+- Familiarizarse con marcos de referencia y herramientas de seguridad defensiva.
+- Comprender los fundamentos de redes, sistemas operativos e infraestructura.
+- Incorporar principios de seguridad que orientan las decisiones técnicas informadas.
+
+## **¿Para quién está pensado?**
+
+Este módulo está dirigido a quienes se inician en la ciberseguridad o necesitan estructurar y consolidar sus conocimientos fundamentales. No se requiere experiencia profesional previa, sino disposición para leer, observar, formular preguntas y experimentar de forma metódica.
+
+:::subindex
+title="Índice del módulo"
+:::
+
+## **Laboratorio integrador — La estación olvidada**
+
+Ingresarás a un sistema que quedó sin mantenimiento y del cual solo se conservan algunos archivos, registros y configuraciones. Tu rol será el de operario de seguridad: investigar su estado, comprender qué requiere atención y restablecer una base de seguridad confiable sin interrumpir los servicios esenciales.
+
+El laboratorio combina exploración guiada con práctica técnica en un entorno aislado. Podrás utilizar las herramientas disponibles, experimentar de manera controlada, observar las consecuencias de tus decisiones y reiniciar el entorno cuando lo consideres necesario.
+
+Tu objetivo con los laboratorios será demostrar la capacidad de comprender un sistema antes de intervenirlo, reconocer aspectos críticos para su seguridad y verificar rigurosamente los resultados de tus acciones. No existe una única secuencia estricta de comandos; la misión orienta el rumbo, pero la investigación y la resolución dependen de tu criterio dentro de los límites del entorno.
+
+_Comprender primero es la mejor forma de proteger._
+
+## Fundamentos <!-- id: introduction, icon: Book02Icon, displayTitle: 01.1 — Fundamentos de ciberseguridad, description: Conceptos esenciales, objetivos de seguridad y análisis de riesgos. -->
 
 La ciberseguridad consiste en proteger los sistemas, la información y las operaciones frente a amenazas que puedan comprometer su funcionamiento. Para una organización, esto no implica únicamente prevenir ataques: también significa preservar la confianza, reducir pérdidas y mantener la continuidad del negocio.
 
@@ -105,7 +135,7 @@ La gestión del riesgo no es un documento estático. Para comprobar que el proce
 > [!WARNING:Limitaciones]
 > La gestión del riesgo se basa en predicciones y en el conocimiento disponible en el momento. No garantiza que no ocurran incidentes (especialmente frente a vulnerabilidades de "día cero" o amenazas no documentadas), sino que asegura que la organización invierte sus recursos defensivos en los problemas que estadísticamente causarán el mayor daño.
 
-## Panorama de amenazas <!-- id: threats-attacks, icon: threat -->
+## Panorama de amenazas <!-- id: threats-attacks, icon: threat, displayTitle: 01.2 — Amenazas y superficie de ataque, description: Identificación de elementos que podrían comprometer un sistema y comprensión de sus vías de exposición. -->
 
 ## 1.2. Panorama de amenazas y vectores de ataque
 
@@ -258,7 +288,7 @@ El Marco de Ciberseguridad del NIST (NIST CSF 2.0) organiza las medidas defensiv
 > [!NOTE]
 > Las primeras 4 funciones pueden operan de manera simultánea y continua para prevenir amenazas, mientras que "Responder" y "Recuperar" se mantienen preparadas en todo momento para activarse en el instante en que ocurre una brecha.
 
-## Frameworks y Referencias <!-- id: frameworks-references, icon: Bookmark01Icon -->
+## Frameworks y Referencias <!-- id: frameworks-references, icon: Bookmark01Icon, displayTitle: 01.3 — Marcos de referencia, description: Una primera aproximación a los marcos, estándares y buenas prácticas que orientan el trabajo defensivo. -->
 
 ## 1.3. Marcos de trabajo, controles y referencias oficiales
 
@@ -424,7 +454,7 @@ _Ejemplo práctico:_ Revisar periódicamente los registros de inicio de sesión 
 
 De esta forma, los marcos orientan la gestión de la seguridad, los controles reducen riesgos específicos, y los procedimientos convierten las decisiones estratégicas en acciones verificables. Ninguna referencia garantiza por sí sola la seguridad de una organización; su verdadero valor depende enteramente de cómo se adapta al contexto del negocio, cómo se implementa en la infraestructura y cómo se verifica su efectividad operativa de forma continua.
 
-## Kit de Herramientas <!-- id: toolkit, icon: ToolsIcon -->
+## Kit de Herramientas <!-- id: toolkit, icon: ToolsIcon, displayTitle: 01.4 — Ecosistema de herramientas de defensa, description: Problemas que resuelven las distintas categorías de herramientas, junto con sus alcances y limitaciones. -->
 
 ## 1.4. El ecosistema de herramientas de defensa
 
@@ -543,7 +573,7 @@ Una herramienta comercial costosa no sustituye un buen control. Alternativas _op
 Asegurarse de que las herramientas seleccionadas (por ejemplo, el EDR y el firewall) puedan compartir información o integrarse a través de un SIEM/SOAR para evitar silos de información que retrasen la detección de incidentes.
 :::
 
-## Fundamentos de Redes <!-- id: networks-operating-systems-networks, icon: ServerIcon -->
+## Fundamentos de Redes <!-- id: networks-operating-systems-networks, icon: ServerIcon, displayTitle: 01.5.A — Fundamentos de Redes, description: Fundamentos técnicos indispensables para comprender los entornos y protocolos que deben protegerse. -->
 
 ## 1.5.A. Fundamentos de Redes
 
@@ -979,7 +1009,7 @@ Para controlar estos flujos, se emplean **Listas de Control de Acceso (ACL)** y 
 
 La segmentación es, entonces, tanto una decisión de arquitectura como un control defensivo. Su eficacia debe verificarse comprobando que las comunicaciones permitidas funcionan y que las no autorizadas quedan efectivamente bloqueadas (disponibilidad y confidencialidad).
 
-## Fundamentos de Sistemas Operativos <!-- id: networks-operating-systems-os, icon: CpuIcon -->
+## Fundamentos de Sistemas Operativos <!-- id: networks-operating-systems-os, icon: CpuIcon, displayTitle: 01.5.B — Fundamentos de Sistemas Operativos, description: Arquitectura y comportamiento del SO, procesos, usuarios, permisos y servicios esenciales en Linux. -->
 
 ## 1.5.B. Fundamentos de Sistemas Operativos
 
@@ -1887,14 +1917,14 @@ La configuración defensiva del servicio SSH se centraliza en el archivo `/etc/s
 
 Principales directivas defensivas a auditar en `/etc/ssh/sshd_config`:
 
-| Directiva en `sshd_config` | Valor Seguro Recomendado        | Justificación Defensiva                                                                                                                  |
-| :------------------------- | :------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------- |
-| `PermitRootLogin`          | `no`                            | **Regla de oro 1:** Impide que el superusuario `root` inicie sesión directamente por red; exige acceso nominal con `sudo`.              |
-| `PasswordAuthentication`   | `no`                            | **Regla de oro 2:** Desactiva contraseñas comunes y obliga a usar exclusivamente llaves SSH criptográficas.                            |
-| `AllowUsers`               | `usuario1 usuario2`             | **Regla de oro 3:** Restringe el acceso SSH exclusivamente a las cuentas listadas; bloquea a cualquier otro usuario del sistema.        |
-| `PubkeyAuthentication`     | `yes`                           | Habilita formalmente el ingreso validado por el par de claves pública y privada.                                                         |
-| `MaxAuthTries`             | `3`                             | Limita la cantidad de intentos fallidos antes de interrumpir la conexión, dificultando ataques de sondeo.                                |
-| `Port`                     | Puerto no estándar (ej. `2222`) | Cambiar el puerto predeterminado (22) reduce notablemente el ruido generado por escáneres automatizados de Internet.                     |
+| Directiva en `sshd_config` | Valor Seguro Recomendado        | Justificación Defensiva                                                                                                          |
+| :------------------------- | :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------- |
+| `PermitRootLogin`          | `no`                            | **Regla de oro 1:** Impide que el superusuario `root` inicie sesión directamente por red; exige acceso nominal con `sudo`.       |
+| `PasswordAuthentication`   | `no`                            | **Regla de oro 2:** Desactiva contraseñas comunes y obliga a usar exclusivamente llaves SSH criptográficas.                      |
+| `AllowUsers`               | `usuario1 usuario2`             | **Regla de oro 3:** Restringe el acceso SSH exclusivamente a las cuentas listadas; bloquea a cualquier otro usuario del sistema. |
+| `PubkeyAuthentication`     | `yes`                           | Habilita formalmente el ingreso validado por el par de claves pública y privada.                                                 |
+| `MaxAuthTries`             | `3`                             | Limita la cantidad de intentos fallidos antes de interrumpir la conexión, dificultando ataques de sondeo.                        |
+| `Port`                     | Puerto no estándar (ej. `2222`) | Cambiar el puerto predeterminado (22) reduce notablemente el ruido generado por escáneres automatizados de Internet.             |
 
 > [!TIP]
 > Recuerde que cualquier cambio efectuado en `/etc/ssh/sshd_config` requiere reiniciar o recargar el servicio para surtir efecto en el sistema: `sudo systemctl restart ssh.service`. Es una excelente práctica mantener una sesión SSH abierta de respaldo mientras se comprueba la nueva configuración desde otra terminal para evitar quedar bloqueado fuera del servidor ante un posible error de sintaxis.
@@ -1911,7 +1941,7 @@ En la práctica, la gran mayoría de incidentes y brechas no derivan de técnica
 - **Desactualización del software y parches pendientes:** Servidores y dependencias operando con vulnerabilidades públicas conocidas (CVE) que cuentan con exploits automatizados fácilmente accesibles.
 - **Asignación de permisos excesivos:** Cuentas con privilegios administrativos universales, permisos `777` en el sistema de archivos o roles IAM en la nube con facultades irrestrictas que amplifican exponencialmente el impacto de cualquier falla.
 
-## Mentalidad de Seguridad <!-- id: security-mentality, icon: BrainIcon -->
+## Mentalidad de Seguridad <!-- id: security-mentality, icon: BrainIcon, displayTitle: 01.6 — Principios de seguridad, description: Criterios fundamentales para diseñar sistemas más seguros y tomar mejores decisiones técnicas. -->
 
 ## 1.6. Mentalidad de Seguridad
 
@@ -1984,7 +2014,7 @@ High-level design decisions and conventions used across the codebase.
 
 High-level design decisions and conventions used across the codebase.
 
-# 3) Responder y Recuperar <!-- id: layer-6 -->
+# 6) Responder y Recuperar <!-- id: layer-6 -->
 
 High-level design decisions and conventions used across the codebase.
 

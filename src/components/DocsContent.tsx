@@ -11,6 +11,7 @@
  *  - File trees & prose
  */
 import { type ReactNode, useRef, useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import type { DocSection, DocSubSection, DocBlock, StepItem } from '@/data/docs'
 
 export const DOCS_SCROLL_PROGRESS_EVENT = 'docs-scroll-progress'
@@ -110,7 +111,7 @@ function renderBody(text: string) {
 }
 
 /* ── Dynamic Block Renderer ── */
-function renderBlock(block: DocBlock, index: number): ReactNode {
+function renderBlock(block: DocBlock, index: number, section?: DocSection): ReactNode {
   switch (block.type) {
     case 'paragraph': {
       const isStandaloneRef =
@@ -277,6 +278,30 @@ function renderBlock(block: DocBlock, index: number): ReactNode {
         />
       )
 
+    case 'subindex': {
+      if (!section || section.subsections.length === 0) return null
+      return (
+        <div className={styles.subIndex} key={index}>
+          <div className={styles.subIndexHeader}>
+            <h2 className={styles.subIndexHeading}>{block.title ?? 'Índice del módulo'}</h2>
+            <span className={styles.subIndexCount}>
+              {section.subsections.length} subíndices
+            </span>
+          </div>
+          <div className={styles.subIndexListStacked}>
+            {section.subsections.map((sub, idx) => (
+              <DocsSubindexCard
+                key={sub.id}
+                sectionId={section.id}
+                subSection={sub}
+                index={idx + 1}
+              />
+            ))}
+          </div>
+        </div>
+      )
+    }
+
     default:
       return null
   }
@@ -387,14 +412,22 @@ export default function DocsContent({ section, subSection }: Props) {
     >
       <div className={styles.inner}>
         <header className={styles.header}>
-          <span className={styles.breadcrumb}>{subSection ? section.title : 'Documentation'}</span>
+          <span className={styles.breadcrumb}>
+            {subSection ? (
+              <Link to={`/docs/${section.id}`} className={styles.breadcrumbLink}>
+                {section.title}
+              </Link>
+            ) : (
+              'Documentation'
+            )}
+          </span>
           <h1 className={styles.title}>{title}</h1>
         </header>
 
         <div className={styles.body}>
           {/* Dynamically render JSON blocks if configured */}
           {hasBlocks ? (
-            target.blocks!.map((block, idx) => renderBlock(block, idx))
+            target.blocks!.map((block, idx) => renderBlock(block, idx, section))
           ) : fallbackText ? (
             /* Fallback to plain-text / markdown renderer */
             renderBody(fallbackText)
@@ -402,16 +435,16 @@ export default function DocsContent({ section, subSection }: Props) {
             <p className={styles.empty}>No content yet.</p>
           )}
 
-          {/* Section overview → subsection quick-nav cards */}
-          {!subSection && section.subsections.length > 0 && (
+          {/* Section overview → subsection quick-nav cards (rendered if not already present inline) */}
+          {!subSection && section.subsections.length > 0 && !target.blocks?.some((b) => b.type === 'subindex') && (
             <div className={styles.subIndex}>
               <div className={styles.subIndexHeader}>
-                <h2 className={styles.subIndexHeading}>En esta sección</h2>
+                <h2 className={styles.subIndexHeading}>Índice del módulo</h2>
                 <span className={styles.subIndexCount}>
                   {section.subsections.length} subíndices
                 </span>
               </div>
-              <div className={styles.subIndexGrid}>
+              <div className={styles.subIndexListStacked}>
                 {section.subsections.map((sub, idx) => (
                   <DocsSubindexCard
                     key={sub.id}

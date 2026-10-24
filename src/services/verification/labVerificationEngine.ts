@@ -19,6 +19,7 @@ import type {
 } from './types'
 import { getLabVerificationConfig } from './rules'
 import { liliumVmService } from '@/services/liliumVmService'
+import { getLabSetupScript } from '@/data/compiledLabs'
 
 const MAX_OUTPUT_BUFFER_LENGTH = 131072 // 128 KB
 const EVAL_DEBOUNCE_MS = 250
@@ -48,13 +49,15 @@ export class LabVerificationEngine {
   }
 
   private setupVmListeners(): void {
-    // Automatically observe any serial input sent to the VM
+    // Automatically observe any serial input sent to the VM (excluding muted SSoT commands)
     liliumVmService.subscribeSerialInput((data) => {
+      if (liliumVmService.getIsSerialMuted()) return
       this.onTerminalInput(data)
     })
 
-    // Automatically observe any serial output chunks from the VM
+    // Automatically observe any serial output chunks from the VM (excluding muted SSoT output)
     liliumVmService.subscribeSerialChunks((chunk) => {
+      if (liliumVmService.getIsSerialMuted()) return
       this.onSerialOutputChunk(chunk)
     })
   }
@@ -131,10 +134,39 @@ export class LabVerificationEngine {
     try {
       const savedCmds = sessionStorage.getItem(keys.commandHistory)
       if (savedCmds) {
-        this.commandHistory = JSON.parse(savedCmds)
+        const rawHistory: CommandRecord[] = JSON.parse(savedCmds)
+        const cleanHistory = rawHistory.filter((c) => !this.isSsotCommand(c.command))
+        this.commandHistory = cleanHistory
+        if (cleanHistory.length !== rawHistory.length) {
+          sessionStorage.setItem(keys.commandHistory, JSON.stringify(cleanHistory.slice(-200)))
+        }
       }
     } catch (err) {
       console.warn('[LabVerificationEngine] Error loading command history:', err)
+    }
+
+    // Sanitize any state falsely checked by past SSoT initialization runs
+    if (this.commandHistory.length === 0) {
+      const automatedRuleIds = [
+        'v1.1-whoami',
+        'v1.1-id',
+        'v1.1-hostname',
+        'v1.1-uname',
+        'v1.1-os-release',
+        'v1.1-uptime',
+        'v1-nobrk',
+        'v1-base',
+      ]
+      let cleanedAny = false
+      for (const id of automatedRuleIds) {
+        if (this.checkedItems[id]) {
+          delete this.checkedItems[id]
+          cleanedAny = true
+        }
+      }
+      if (cleanedAny) {
+        delete this.completedPhases['fase-1']
+      }
     }
   }
 
@@ -226,10 +258,66 @@ export class LabVerificationEngine {
 
   /* ── Terminal Input & Output Ingestion ── */
   /**
+   * Identifies whether a command belongs to the SSoT environment setup/provisioning scripts
+   * so it is never recorded or counted toward lab milestone verification.
+   */
+  public isSsotCommand(cmd: string): boolean {
+    const trimmed = cmd.trim()
+    if (!trimmed) return true
+
+    // Heredocs, script headers, and environment provisioning markers
+    if (
+      trimmed.startsWith('#!') ||
+      trimmed.includes('<<') ||
+      trimmed.startsWith('cat >') ||
+      trimmed.includes('ELF_BASE64_EOF') ||
+      trimmed.includes('DPKG_EOF') ||
+      trimmed.includes('J_EOF') ||
+      trimmed.includes('LILIUM_EOF') ||
+      trimmed.includes('base64 -d >') ||
+      trimmed.startsWith('umask 022') ||
+      trimmed.startsWith('export PATH=') ||
+      trimmed.startsWith('export USER=') ||
+      trimmed.startsWith('export HOME=') ||
+      trimmed.startsWith('export HOSTNAME=') ||
+      trimmed.startsWith('export PS1=') ||
+      trimmed.includes('/var/lib/tulip/services') ||
+      trimmed.startsWith('adduser -D') ||
+      trimmed.startsWith('mkdir -p /bin /usr/bin') ||
+      trimmed.startsWith('pkill -f') ||
+      trimmed.includes('LILIUM-BACKUP/1') ||
+      trimmed.includes('status=PARTIAL') ||
+      trimmed.includes('backup_id=BKP') ||
+      trimmed.includes('127.0.0.1 localhost') ||
+      trimmed.includes('nameserver 10.0.2.3') ||
+      trimmed.startsWith('chmod 755 /usr/local/bin/') ||
+      trimmed.startsWith('chmod 755 /usr/bin/')
+    ) {
+      return true
+    }
+
+    // Direct match against compiled SSoT setup lines for this lab
+    const setupLines = getLabSetupScript(this.labId)
+    if (setupLines.length > 0) {
+      const lower = trimmed.toLowerCase()
+      if (setupLines.some((line) => line.trim().toLowerCase() === lower)) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  /**
    * Feed raw keystrokes/data from xterm or serial0_send.
    * Assembles whole commands when Enter (\r or \n) is encountered.
    */
   public onTerminalInput(data: string | Uint8Array): void {
+    if (liliumVmService.getIsSerialMuted()) {
+      this.inputLineBuffer = ''
+      return
+    }
+
     const text =
       typeof data === 'string'
         ? data
@@ -272,6 +360,11 @@ export class LabVerificationEngine {
     const trimmed = cmd.trim()
     if (!trimmed) return
 
+    // Never include SSoT setup commands in lab verification
+    if (this.isSsotCommand(trimmed)) {
+      return
+    }
+
     const activePhaseId = this.getActivePhaseId()
     const record: CommandRecord = {
       command: trimmed,
@@ -292,6 +385,10 @@ export class LabVerificationEngine {
    * Feed output chunk from ttyS0 to accumulate stdout for regex evaluation.
    */
   public onSerialOutputChunk(chunk: Uint8Array | string): void {
+    if (liliumVmService.getIsSerialMuted()) {
+      return
+    }
+
     const text =
       typeof chunk === 'string'
         ? chunk

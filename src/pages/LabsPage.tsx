@@ -106,26 +106,13 @@ export default function LabsPage() {
 
                 <div className={styles.featuredCardContent}>
                   <div className={styles.featuredTopArea}>
-                    <div className={styles.featuredMetaRow}>
-                      <span className={styles.categoryTagLight}>
-                        {recommendedLabs[0].category}
-                      </span>
-                      <Pill variant="dark" size="sm">
-                        {recommendedLabs[0].tag}
-                      </Pill>
-                    </div>
                     <h3 className={styles.featuredTitle}>{recommendedLabs[0].title}</h3>
                     <p className={styles.featuredDesc}>{recommendedLabs[0].description}</p>
                   </div>
 
                   <div className={styles.featuredBottomRow}>
                     <div className={styles.featuredMetrics}>
-                      <Pill
-                        variant="dark"
-                        size="sm"
-                        dot
-                        dotActive={recommendedLabs[0].difficulty === 'Avanzado'}
-                      >
+                      <Pill variant="dark" size="sm" dot>
                         {recommendedLabs[0].difficulty}
                       </Pill>
                       <span className={styles.featuredDuration}>
@@ -184,26 +171,13 @@ export default function LabsPage() {
 
                 <div className={styles.featuredCardContent}>
                   <div className={styles.featuredTopArea}>
-                    <div className={styles.featuredMetaRow}>
-                      <span className={styles.categoryTagLight}>
-                        {recommendedLabs[1].category}
-                      </span>
-                      <Pill variant="dark" size="sm">
-                        {recommendedLabs[1].tag}
-                      </Pill>
-                    </div>
                     <h3 className={styles.featuredTitle}>{recommendedLabs[1].title}</h3>
                     <p className={styles.featuredDesc}>{recommendedLabs[1].description}</p>
                   </div>
 
                   <div className={styles.featuredBottomRow}>
                     <div className={styles.featuredMetrics}>
-                      <Pill
-                        variant="dark"
-                        size="sm"
-                        dot
-                        dotActive={recommendedLabs[1].difficulty === 'Avanzado'}
-                      >
+                      <Pill variant="dark" size="sm" dot>
                         {recommendedLabs[1].difficulty}
                       </Pill>
                       <span className={styles.featuredDuration}>
@@ -351,7 +325,7 @@ export default function LabsPage() {
                       {lab.duration}
                     </span>
 
-                    <Pill variant="light" size="sm" dot dotActive={lab.difficulty === 'Avanzado'}>
+                    <Pill variant="light" size="sm" dot>
                       {lab.difficulty}
                     </Pill>
                   </div>
@@ -472,21 +446,6 @@ export default function LabsPage() {
               <div className={styles.modalCtaRow}>
                 <button
                   type="button"
-                  onClick={() => setActiveModalLab(null)}
-                  style={{
-                    padding: '0.65rem 1.15rem',
-                    background: '#f0f0f0',
-                    border: 'none',
-                    borderRadius: '999px',
-                    fontSize: '0.85rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  Cerrar
-                </button>
-                <button
-                  type="button"
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -504,7 +463,7 @@ export default function LabsPage() {
                     navigate(`/lab/${activeModalLab.id}`)
                   }}
                 >
-                  Iniciar Laboratorio
+                  Iniciar Lab
                   <HugeiconsIcon
                     icon={ArrowRight01Icon as IconSvgElement}
                     size={14}

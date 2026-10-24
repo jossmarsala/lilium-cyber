@@ -6,6 +6,8 @@
       {
         "id": "introduction",
         "title": "Fundamentos",
+        "displayTitle": "01.1 — Fundamentos de ciberseguridad",
+        "description": "Conceptos esenciales, objetivos de seguridad y análisis de riesgos.",
         "icon": "Book02Icon",
         "blocks": [
           {
@@ -193,6 +195,8 @@
       {
         "id": "threats-attacks",
         "title": "Panorama de amenazas",
+        "displayTitle": "01.2 — Amenazas y superficie de ataque",
+        "description": "Identificación de elementos que podrían comprometer un sistema y comprensión de sus vías de exposición.",
         "icon": "threat",
         "blocks": [
           {
@@ -412,6 +416,8 @@
       {
         "id": "frameworks-references",
         "title": "Frameworks y Referencias",
+        "displayTitle": "01.3 — Marcos de referencia",
+        "description": "Una primera aproximación a los marcos, estándares y buenas prácticas que orientan el trabajo defensivo.",
         "icon": "Bookmark01Icon",
         "blocks": [
           {
@@ -675,6 +681,8 @@
       {
         "id": "toolkit",
         "title": "Kit de Herramientas",
+        "displayTitle": "01.4 — Ecosistema de herramientas de defensa",
+        "description": "Problemas que resuelven las distintas categorías de herramientas, junto con sus alcances y limitaciones.",
         "icon": "ToolsIcon",
         "blocks": [
           {
@@ -901,6 +909,8 @@
       {
         "id": "networks-operating-systems-networks",
         "title": "Fundamentos de Redes",
+        "displayTitle": "01.5.A — Fundamentos de Redes",
+        "description": "Fundamentos técnicos indispensables para comprender los entornos y protocolos que deben protegerse.",
         "icon": "ServerIcon",
         "blocks": [
           {
@@ -1674,6 +1684,8 @@
       {
         "id": "networks-operating-systems-os",
         "title": "Fundamentos de Sistemas Operativos",
+        "displayTitle": "01.5.B — Fundamentos de Sistemas Operativos",
+        "description": "Arquitectura y comportamiento del SO, procesos, usuarios, permisos y servicios esenciales en Linux.",
         "icon": "CpuIcon",
         "blocks": [
           {
@@ -3343,6 +3355,8 @@
       {
         "id": "security-mentality",
         "title": "Mentalidad de Seguridad",
+        "displayTitle": "01.6 — Principios de seguridad",
+        "description": "Criterios fundamentales para diseñar sistemas más seguros y tomar mejores decisiones técnicas.",
         "icon": "BrainIcon",
         "blocks": [
           {
@@ -3436,37 +3450,131 @@
         ]
       }
     ],
-    "overview": "Everything you need to set up and run the Cyber Range locally for the first time."
+    "overview": "# **Módulo 1: Fundamentos y Superficie de Defensa**\n\nLa seguridad comienza mucho antes de instalar una herramienta o configurar una defensa. Es indispensable comprender qué se está protegiendo, qué componentes forman parte del entorno, qué riesgos existen y de qué manera se relacionan entre sí.\n\nEste módulo establece dicha base: desde los **conceptos esenciales de la ciberseguridad** y el análisis de amenazas hasta los sistemas operativos, las redes y los principios que orientan una arquitectura defensiva sólida.\n\n## **¿Qué vas a aprender?**\n\n- Reconocer los conceptos fundamentales de la ciberseguridad y el análisis de riesgos.\n- Comprender amenazas, vulnerabilidades, vectores de ataque y superficie de exposición.\n- Familiarizarse con marcos de referencia y herramientas de seguridad defensiva.\n- Comprender los fundamentos de redes, sistemas operativos e infraestructura.\n- Incorporar principios de seguridad que orientan las decisiones técnicas informadas.\n\n## **¿Para quién está pensado?**\n\nEste módulo está dirigido a quienes se inician en la ciberseguridad o necesitan estructurar y consolidar sus conocimientos fundamentales. No se requiere experiencia profesional previa, sino disposición para leer, observar, formular preguntas y experimentar de forma metódica.\n\n:::subindex\ntitle=\"Índice del módulo\"\n:::\n\n## **Laboratorio integrador — La estación olvidada**\n\nIngresarás a un sistema que quedó sin mantenimiento y del cual solo se conservan algunos archivos, registros y configuraciones. Tu rol será el de operario de seguridad: investigar su estado, comprender qué requiere atención y restablecer una base de seguridad confiable sin interrumpir los servicios esenciales.\n\nEl laboratorio combina exploración guiada con práctica técnica en un entorno aislado. Podrás utilizar las herramientas disponibles, experimentar de manera controlada, observar las consecuencias de tus decisiones y reiniciar el entorno cuando lo consideres necesario.\n\nTu objetivo con los laboratorios será demostrar la capacidad de comprender un sistema antes de intervenirlo, reconocer aspectos críticos para su seguridad y verificar rigurosamente los resultados de tus acciones. No existe una única secuencia estricta de comandos; la misión orienta el rumbo, pero la investigación y la resolución dependen de tu criterio dentro de los límites del entorno.\n\n_Comprender primero es la mejor forma de proteger._",
+    "blocks": [
+      {
+        "type": "heading",
+        "level": 1,
+        "text": "**Módulo 1: Fundamentos y Superficie de Defensa**"
+      },
+      {
+        "type": "paragraph",
+        "text": "La seguridad comienza mucho antes de instalar una herramienta o configurar una defensa. Es indispensable comprender qué se está protegiendo, qué componentes forman parte del entorno, qué riesgos existen y de qué manera se relacionan entre sí."
+      },
+      {
+        "type": "paragraph",
+        "text": "Este módulo establece dicha base: desde los **conceptos esenciales de la ciberseguridad** y el análisis de amenazas hasta los sistemas operativos, las redes y los principios que orientan una arquitectura defensiva sólida."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "**¿Qué vas a aprender?**"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Reconocer los conceptos fundamentales de la ciberseguridad y el análisis de riesgos.",
+          "Comprender amenazas, vulnerabilidades, vectores de ataque y superficie de exposición.",
+          "Familiarizarse con marcos de referencia y herramientas de seguridad defensiva.",
+          "Comprender los fundamentos de redes, sistemas operativos e infraestructura.",
+          "Incorporar principios de seguridad que orientan las decisiones técnicas informadas."
+        ]
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "**¿Para quién está pensado?**"
+      },
+      {
+        "type": "paragraph",
+        "text": "Este módulo está dirigido a quienes se inician en la ciberseguridad o necesitan estructurar y consolidar sus conocimientos fundamentales. No se requiere experiencia profesional previa, sino disposición para leer, observar, formular preguntas y experimentar de forma metódica."
+      },
+      {
+        "type": "subindex",
+        "title": "Índice del módulo"
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "**Laboratorio integrador — La estación olvidada**"
+      },
+      {
+        "type": "paragraph",
+        "text": "Ingresarás a un sistema que quedó sin mantenimiento y del cual solo se conservan algunos archivos, registros y configuraciones. Tu rol será el de operario de seguridad: investigar su estado, comprender qué requiere atención y restablecer una base de seguridad confiable sin interrumpir los servicios esenciales."
+      },
+      {
+        "type": "paragraph",
+        "text": "El laboratorio combina exploración guiada con práctica técnica en un entorno aislado. Podrás utilizar las herramientas disponibles, experimentar de manera controlada, observar las consecuencias de tus decisiones y reiniciar el entorno cuando lo consideres necesario."
+      },
+      {
+        "type": "paragraph",
+        "text": "Tu objetivo con los laboratorios será demostrar la capacidad de comprender un sistema antes de intervenirlo, reconocer aspectos críticos para su seguridad y verificar rigurosamente los resultados de tus acciones. No existe una única secuencia estricta de comandos; la misión orienta el rumbo, pero la investigación y la resolución dependen de tu criterio dentro de los límites del entorno."
+      },
+      {
+        "type": "paragraph",
+        "text": "_Comprender primero es la mejor forma de proteger._"
+      }
+    ]
   },
   {
     "id": "layer-2",
     "title": "2) Descubrir",
     "subsections": [],
-    "overview": "High-level design decisions and conventions used across the codebase."
+    "overview": "High-level design decisions and conventions used across the codebase.",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "High-level design decisions and conventions used across the codebase."
+      }
+    ]
   },
   {
     "id": "layer-3",
     "title": "3) Diseñar",
     "subsections": [],
-    "overview": "High-level design decisions and conventions used across the codebase."
+    "overview": "High-level design decisions and conventions used across the codebase.",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "High-level design decisions and conventions used across the codebase."
+      }
+    ]
   },
   {
     "id": "layer-4",
     "title": "4) Proteger",
     "subsections": [],
-    "overview": "High-level design decisions and conventions used across the codebase."
+    "overview": "High-level design decisions and conventions used across the codebase.",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "High-level design decisions and conventions used across the codebase."
+      }
+    ]
   },
   {
     "id": "layer-5",
     "title": "5) Detectar",
     "subsections": [],
-    "overview": "High-level design decisions and conventions used across the codebase."
+    "overview": "High-level design decisions and conventions used across the codebase.",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "High-level design decisions and conventions used across the codebase."
+      }
+    ]
   },
   {
     "id": "layer-6",
-    "title": "3) Responder y Recuperar",
+    "title": "6) Responder y Recuperar",
     "subsections": [],
-    "overview": "High-level design decisions and conventions used across the codebase."
+    "overview": "High-level design decisions and conventions used across the codebase.",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "High-level design decisions and conventions used across the codebase."
+      }
+    ]
   },
   {
     "id": "showcase",
@@ -4161,6 +4269,12 @@
         ]
       }
     ],
-    "overview": "Catálogo exhaustivo y entorno interactivo de pruebas para todos los componentes de la plataforma de documentación y diseño de Cyber Range. Esta sección oculta sirve como banco de pruebas visual y guía de implementación técnica para desarrolladores y autores de contenido."
+    "overview": "Catálogo exhaustivo y entorno interactivo de pruebas para todos los componentes de la plataforma de documentación y diseño de Cyber Range. Esta sección oculta sirve como banco de pruebas visual y guía de implementación técnica para desarrolladores y autores de contenido.",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Catálogo exhaustivo y entorno interactivo de pruebas para todos los componentes de la plataforma de documentación y diseño de Cyber Range. Esta sección oculta sirve como banco de pruebas visual y guía de implementación técnica para desarrolladores y autores de contenido."
+      }
+    ]
   }
 ]

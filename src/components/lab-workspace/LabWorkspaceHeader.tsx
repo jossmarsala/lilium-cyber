@@ -50,8 +50,6 @@ export default function LabWorkspaceHeader({
         {/* Middle: Lab name and number (nothing else) */}
         <div className={styles.middle}>
           <div className={styles.labTitle}>
-            <span className={styles.labNumber}>Lab {labNum}</span>
-            <span className={styles.labSep}>·</span>
             <span className={styles.labName}>{lab.title}</span>
           </div>
         </div>
@@ -65,19 +63,12 @@ export default function LabWorkspaceHeader({
             title="Volver a los laboratorios"
             aria-label="Volver a los laboratorios"
           >
-            <HugeiconsIcon
-              icon={ArrowLeft01Icon as IconSvgElement}
-              size={15}
-              strokeWidth={2}
-            />
+            <HugeiconsIcon icon={ArrowLeft01Icon as IconSvgElement} size={15} strokeWidth={2} />
             <span className={styles.btnLabel}>Volver</span>
           </button>
 
           {themeChoice && onThemeChange && (
-            <MinimizedOsSelector
-              currentTheme={themeChoice}
-              onThemeChange={onThemeChange}
-            />
+            <MinimizedOsSelector currentTheme={themeChoice} onThemeChange={onThemeChange} />
           )}
 
           <button
@@ -87,11 +78,7 @@ export default function LabWorkspaceHeader({
             title="Reiniciar entorno"
             aria-label="Reiniciar entorno"
           >
-            <HugeiconsIcon
-              icon={Refresh01Icon as IconSvgElement}
-              size={14}
-              strokeWidth={2}
-            />
+            <HugeiconsIcon icon={Refresh01Icon as IconSvgElement} size={14} strokeWidth={2} />
             <span className={styles.btnLabel}>Reiniciar</span>
           </button>
         </div>

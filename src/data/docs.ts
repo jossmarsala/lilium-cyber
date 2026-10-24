@@ -59,10 +59,13 @@ export type DocBlock =
       description?: string
       variant?: 'card' | 'banner' | 'pill' | 'compact'
     }
+  | { type: 'subindex'; title?: string }
 
 export interface DocSubSection {
   id: string
   title: string
+  displayTitle?: string
+  description?: string
   icon?: string
   content?: string
   blocks?: DocBlock[]

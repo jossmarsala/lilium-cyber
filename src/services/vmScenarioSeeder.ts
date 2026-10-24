@@ -250,7 +250,7 @@ export async function seedVmScenario(targetLabId?: string): Promise<void> {
     for (let i = 0; i < cmds.length; i += BATCH_SIZE) {
       const batch = cmds.slice(i, i + BATCH_SIZE)
       for (const line of batch) {
-        liliumVmService.serial0_send(line + '\n')
+        liliumVmService.serial0_send(line + '\n', true)
       }
       await new Promise<void>((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
     }
@@ -262,7 +262,7 @@ export async function seedVmScenario(targetLabId?: string): Promise<void> {
     liliumVmService.setSerialMuted(false)
 
     // Trigger prompt refresh in case the shell needs a newline redraw
-    liliumVmService.serial0_send('\n')
+    liliumVmService.serial0_send('\n', true)
 
     console.info(`[vmScenarioSeeder] ${labId} scenario seeded into v86 VM successfully.`)
     notifySeedingCompleted()

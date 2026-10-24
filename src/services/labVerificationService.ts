@@ -588,7 +588,7 @@ class LabVerificationService {
     if (liliumVmService.getStatus() === 'ready') {
       const containmentScript =
         'kill -15 $(pgrep -f baliza_eco 2>/dev/null || pgrep -f "nc -l -p 4444" 2>/dev/null || echo "") 2>/dev/null; rm -f /tmp/.baliza_eco.sh'
-      liliumVmService.serial0_send(`\n ${containmentScript}\n`)
+      liliumVmService.serial0_send(`\n ${containmentScript}\n`, true)
     }
 
     this.setMilestoneCompleted('m4', true)
@@ -684,7 +684,7 @@ class LabVerificationService {
       'fi',
     ].join('\n')
 
-    liliumVmService.serial0_send(`\n${setupScript}\n`)
+    liliumVmService.serial0_send(`\n${setupScript}\n`, true)
   }
 
   public async evaluateLab(): Promise<void> {
@@ -720,7 +720,7 @@ class LabVerificationService {
           'echo "{\\"m1\\":$M1,\\"m2\\":$M2,\\"m3\\":$M3,\\"m4\\":$M4,\\"m5\\":$M5,\\"m6\\":$M6}" > /tmp/lilium_audit.json',
         ].join('; ')
 
-        liliumVmService.serial0_send(` ${auditCmd}\n`)
+        liliumVmService.serial0_send(` ${auditCmd}\n`, true)
 
         await new Promise((res) => setTimeout(res, 450))
 

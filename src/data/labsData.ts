@@ -3,7 +3,8 @@
  * Provides metadata and manifest for LILIUM interactive cyber-range labs.
  */
 
-export type LabDifficulty = 'Principiante' | 'Intermedio' | 'Avanzado'
+export type LabDifficulty =
+  'Módulo 1' | 'Módulo 2' | 'Módulo 3' | 'Módulo 4' | 'Módulo 5' | 'Módulo 6'
 
 export interface LabItem {
   id: string
@@ -27,12 +28,12 @@ export const LABS: LabItem[] = [
   {
     id: 'lab-01',
     slug: 'estacion-olvidada',
-    title: 'La estación olvidada: Primer contacto con la terminal',
+    title: 'Lab 1: Primer Contacto con la Ciberseguridad',
     category: 'Fundamentos de Sistemas y Seguridad',
     description:
-      'Un equipo olvidado vuelve a encenderse, nadie sabe en qué estado quedó. Tendrás que asumir el rol de custodio/a del sistema: explora a través de la terminal sus archivos, usuarios y procesos, documenta tus hallazgos, trabaja con herramientas SIEM y EDR ficticias y aplica medidas básicas de seguridad aprendidas en el Módulo 1. Investiga a tu ritmo, y descubre qué rastros dejó el tiempo.',
+      'Una estación botánica lleva semanas en piloto automático y nadie conoce su estado actual. Como operario/a de seguridad tendrás que usar la terminal de Linux para investigar y documentar tus evidencias en la Bitácora.',
     duration: '25 min',
-    difficulty: 'Principiante',
+    difficulty: 'Módulo 1',
     totalSteps: 4,
     completedSteps: 0,
     recommendedFor: 'Recomendado para nuevos usuarios y principiantes',
@@ -43,7 +44,7 @@ export const LABS: LabItem[] = [
     highlights: [
       'Exploración del sistema de archivos Linux y sus componentes.',
       'Identificación de usuarios, procesos y recursos relevantes.',
-      'Reconocimiento de configuraciones y permisos que pueden representar riesgos.',
+      'Reconocimiento y documentación de activos y riesgos.',
       'Aplicación de buenas practicas y una mentalidad de seguridad',
     ],
   },
@@ -55,7 +56,7 @@ export const LABS: LabItem[] = [
     description:
       'Inspecciona cabeceras SPF, DKIM y DMARC en un cliente de correo simulado e intercepta vectores de ingeniería social dirigidos a identidades empresariales.',
     duration: '15 min',
-    difficulty: 'Principiante',
+    difficulty: 'Módulo 2',
     totalSteps: 4,
     completedSteps: 0,
     recommendedFor: 'Recomendado por Fundamentos de Amenazas',
@@ -73,7 +74,7 @@ export const LABS: LabItem[] = [
     description:
       'Identifica y remedia inyecciones SQL ciegas, fallos de validación en tokens JWT y desconfiguraciones CORS críticas en servicios expuestos.',
     duration: '30 min',
-    difficulty: 'Intermedio',
+    difficulty: 'Módulo 3',
     totalSteps: 8,
     completedSteps: 0,
     recommendedFor: 'Basado en Arquitectura Segura',
@@ -91,7 +92,7 @@ export const LABS: LabItem[] = [
     description:
       'Modela zonas de contención de tráfico este-oeste, túneles VPN autenticados y aislamiento perimetral para evitar movimientos laterales del adversario.',
     duration: '25 min',
-    difficulty: 'Intermedio',
+    difficulty: 'Módulo 4',
     totalSteps: 5,
     completedSteps: 0,
     recommendedFor: 'Basado en Redes y Sistemas',
@@ -109,7 +110,7 @@ export const LABS: LabItem[] = [
     description:
       'Rastrea eventos anómalos en logs unificados de servidores, correlaciona ataques de fuerza bruta concurrentes y dispara alertas automáticas.',
     duration: '35 min',
-    difficulty: 'Avanzado',
+    difficulty: 'Módulo 5',
     totalSteps: 7,
     completedSteps: 0,
     recommendedFor: 'Basado en Detección & Logs',
@@ -127,7 +128,7 @@ export const LABS: LabItem[] = [
     description:
       'Ejecuta el protocolo de contención inmediata: aislamiento de host comprometido, validación de respaldos inmutables y reapertura segura del servicio.',
     duration: '40 min',
-    difficulty: 'Avanzado',
+    difficulty: 'Módulo 6',
     totalSteps: 9,
     completedSteps: 0,
     recommendedFor: 'Basado en Resiliencia PyME',

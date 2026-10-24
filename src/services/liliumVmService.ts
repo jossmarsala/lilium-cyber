@@ -293,15 +293,18 @@ class LiliumVmService {
    * Encodes strings into UTF-8 bytes to guarantee that pipe (|), redirects (>, >>),
    * accents, and control sequences are transmitted accurately without character corruption.
    */
-  public serial0_send(data: string | Uint8Array): void {
+  public serial0_send(data: string | Uint8Array, isInternal = false): void {
     const bytes = typeof data === 'string' ? new TextEncoder().encode(data) : data
 
-    // Notify serial input subscribers (e.g. lab verification engine)
-    for (const listener of this.inputListeners) {
-      try {
-        listener(data)
-      } catch (err) {
-        console.error('[LiliumVmService] Error in serial input listener:', err)
+    // Notify serial input subscribers (e.g. lab verification engine) ONLY for interactive user input
+    // and NEVER for internal setup commands or when serial is muted (e.g. SSoT seeding).
+    if (!isInternal && !this.isSerialMuted) {
+      for (const listener of this.inputListeners) {
+        try {
+          listener(data)
+        } catch (err) {
+          console.error('[LiliumVmService] Error in serial input listener:', err)
+        }
       }
     }
 

@@ -1004,7 +1004,7 @@ class SecurityTelemetryService {
       if (isLive) {
         const containmentCmd =
           'kill -15 $(pgrep -f baliza_eco 2>/dev/null || pgrep -f "nc -l -p 4444" 2>/dev/null || echo "") 2>/dev/null; rm -f /tmp/.baliza_eco.sh'
-        liliumVmService.serial0_send(`\n ${containmentCmd}\n`)
+        liliumVmService.serial0_send(`\n ${containmentCmd}\n`, true)
       }
 
       // Update EDR detection state
@@ -1067,7 +1067,7 @@ class SecurityTelemetryService {
 
       if (detectionId === 'EDR-02') {
         if (isLive) {
-          liliumVmService.serial0_send('\n chmod 600 /home/custodio/.ssh/id_ed25519 2>/dev/null\n')
+          liliumVmService.serial0_send('\n chmod 600 /home/custodio/.ssh/id_ed25519 2>/dev/null\n', true)
         }
 
         this.edrDetections = this.edrDetections.map((d) => {
@@ -1113,7 +1113,7 @@ class SecurityTelemetryService {
 
       if (detectionId === 'EDR-03') {
         if (isLive) {
-          liliumVmService.serial0_send('\n chmod 640 /etc/estacion_confidencial.conf 2>/dev/null\n')
+          liliumVmService.serial0_send('\n chmod 640 /etc/estacion_confidencial.conf 2>/dev/null\n', true)
         }
 
         this.edrDetections = this.edrDetections.map((d) => {
@@ -1174,7 +1174,7 @@ class SecurityTelemetryService {
         if (isLive) {
           const qCmd =
             'mkdir -p /tmp/.quarantine && mv -f /tmp/.baliza_eco.sh /tmp/.quarantine/ 2>/dev/null'
-          liliumVmService.serial0_send(`\n ${qCmd}\n`)
+          liliumVmService.serial0_send(`\n ${qCmd}\n`, true)
         }
 
         if (!this.quarantinedFiles.includes('/tmp/.baliza_eco.sh')) {
@@ -1247,7 +1247,7 @@ class SecurityTelemetryService {
       'echo "LILIUM_SEC_PROBE:baliza=$B_ACT:key=$KEY_PERM:conf=$CONF_PERM"',
     ].join('; ')
 
-    liliumVmService.serial0_send(` ${checkCmd}\n`)
+    liliumVmService.serial0_send(` ${checkCmd}\n`, true)
 
     await new Promise((res) => setTimeout(res, 500))
 

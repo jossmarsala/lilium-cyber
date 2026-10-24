@@ -47,6 +47,16 @@
   margin-bottom: 0.6rem;
 }
 
+.breadcrumbLink {
+  color: inherit;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.breadcrumbLink:hover {
+  color: #111111;
+}
+
 .breadcrumb::before {
   content: '';
   display: inline-block;
@@ -114,6 +124,10 @@
   margin: 2.25rem 0 1.25rem;
   letter-spacing: -0.025em;
   line-height: 1.25;
+}
+
+.heading1:first-child {
+  margin-top: 0;
 }
 
 .heading2 {
@@ -286,9 +300,16 @@
 
 /* ── "In this section" quick-nav ── */
 .subIndex {
-  margin-top: 2.75rem;
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
   padding-top: 1.75rem;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.subIndexListStacked {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
 }
 
 .subIndexHeader {

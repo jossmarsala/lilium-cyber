@@ -240,7 +240,20 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
               aria-expanded={kids ? isOpen : undefined}
               aria-current={isHeadActive ? 'true' : undefined}
               data-active={isHeadActive ? '' : undefined}
-              onClick={() => (kids ? toggle(i) : select(leafValue, item))}
+              onClick={() => {
+                if (kids) {
+                  if (item.value) {
+                    select(item.value, item)
+                  }
+                  if (isHeadActive) {
+                    toggle(i)
+                  } else if (!isOpen) {
+                    toggle(i)
+                  }
+                } else {
+                  select(leafValue, item)
+                }
+              }}
               title={item.label}
             >
               {item.label}

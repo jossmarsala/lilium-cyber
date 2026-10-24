@@ -101,40 +101,80 @@
   border-style: dashed;
 }
 
+.phaseStatusBadgeGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
 .phaseBadgeLocked {
-  font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
 }
 
 .phaseBadgeActive {
-  font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 4px;
-  background: rgba(24, 147, 255, 0.15);
-  border: 1px solid rgba(24, 147, 255, 0.35);
+  background: rgba(24, 147, 255, 0.12);
+  border: 1px solid rgba(24, 147, 255, 0.32);
   color: #1893ff;
+  white-space: nowrap;
 }
 
 .phaseBadgeDone {
-  font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 4px;
-  background: rgba(63, 185, 80, 0.15);
+  background: rgba(63, 185, 80, 0.14);
   border: 1px solid rgba(63, 185, 80, 0.35);
   color: #3fb950;
+  white-space: nowrap;
+}
+
+.phaseProgressBarTrack {
+  width: 100%;
+  height: 3px;
+  border-radius: 1.5px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  margin-top: 8px;
+  margin-bottom: 2px;
+}
+
+.phaseProgressBarFill {
+  height: 100%;
+  background: #1893ff;
+  border-radius: 1.5px;
+  transition: width 300ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms ease;
+}
+
+.phaseProgressBarFillDone {
+  background: #3fb950;
 }
 
 .lockedBanner {
@@ -237,18 +277,70 @@
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: border-color 120ms ease;
+  transition: border-color 140ms ease, background 140ms ease;
 }
 
 .subphaseCard:hover {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.subphaseCardDone {
+  border-color: rgba(16, 185, 129, 0.28);
+  background: rgba(16, 185, 129, 0.025);
+}
+
+.subphaseCardDone:hover {
+  border-color: rgba(16, 185, 129, 0.4);
 }
 
 .subphaseHeader {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.subphaseTitleGroup {
+  display: flex;
   align-items: baseline;
   gap: 8px;
   flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.subtaskProgressBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  padding: 2px 7px;
+  border-radius: 4px;
+  line-height: 1.2;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 140ms ease;
+}
+
+.subtaskProgressBadgePending {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.subtaskProgressBadgeActive {
+  background: rgba(24, 147, 255, 0.12);
+  border: 1px solid rgba(24, 147, 255, 0.3);
+  color: #1893ff;
+}
+
+.subtaskProgressBadgeDone {
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #10b981;
 }
 
 .subphaseNumber {

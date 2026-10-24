@@ -30,12 +30,14 @@ function extractHeadingMetadata(line) {
   const meta = {}
 
   if (commentMatch) {
-    const rawMeta = commentMatch[1]
-    const pairs = rawMeta.split(',')
-    for (const pair of pairs) {
-      const [k, v] = pair.split(':').map((s) => s.trim())
-      if (k && v) {
-        meta[k] = v
+    const rawMeta = commentMatch[1].trim()
+    const regex = /(\w+)\s*:\s*(.*?)(?=\s*,\s*\w+\s*:|$)/gs
+    let match
+    while ((match = regex.exec(rawMeta)) !== null) {
+      const key = match[1].trim()
+      const val = match[2].trim()
+      if (key && val) {
+        meta[key] = val
       }
     }
   }
@@ -280,6 +282,23 @@ export function parseMarkdownToBlocks(markdown) {
         ...(attrs.sectionTitle || attrs.section ? { sectionTitle: attrs.sectionTitle || attrs.section } : {}),
         ...(attrs.description ? { description: attrs.description } : {}),
         ...(attrs.variant ? { variant: attrs.variant } : {}),
+      })
+      continue
+    }
+
+    // ── 3d. Custom container: :::subindex or :::module-index ──
+    if (trimmed.startsWith(':::subindex') || trimmed.startsWith(':::module-index')) {
+      const attrs = parseDirectiveAttrs(trimmed)
+      i++
+      while (i < lines.length && !lines[i].trim().startsWith(':::')) {
+        i++
+      }
+      if (i < lines.length && lines[i].trim().startsWith(':::')) {
+        i++
+      }
+      blocks.push({
+        type: 'subindex',
+        title: attrs.title || 'Índice del módulo',
       })
       continue
     }
@@ -801,6 +820,7 @@ export function parseMarkdownToSections(markdown) {
       const overviewText = sectionOverviewLines.join('\n').trim()
       if (overviewText) {
         currentSection.overview = overviewText
+        currentSection.blocks = parseMarkdownToBlocks(overviewText)
       }
       sections.push(currentSection)
       currentSection = null
@@ -840,12 +860,9 @@ export function parseMarkdownToSections(markdown) {
     }
 
     // Subsection: `## Fundamentos <!-- id: introduction, icon: Book02Icon -->`
-    // Identifies a subsection when it has `id:` or when no subsection is currently open under currentSection
     const isSubSectionHeader =
       trimmed.startsWith('## ') &&
-      (trimmed.includes('id:') ||
-        trimmed.includes('icon:') ||
-        (!currentSubSection && currentSection))
+      (trimmed.includes('id:') || trimmed.includes('icon:'))
 
     if (isSubSectionHeader && currentSection) {
       commitSubSection()
@@ -858,6 +875,8 @@ export function parseMarkdownToSections(markdown) {
       currentSubSection = {
         id,
         title: cleanTitle,
+        ...(meta.displayTitle ? { displayTitle: meta.displayTitle } : {}),
+        ...(meta.description ? { description: meta.description } : {}),
         ...(meta.icon ? { icon: meta.icon } : {}),
         ...(isSubHidden ? { hidden: true } : {}),
       }
