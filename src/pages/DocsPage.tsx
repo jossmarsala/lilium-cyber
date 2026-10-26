@@ -23,13 +23,6 @@ export default function DocsPage() {
   }>()
   const navigate = useNavigate()
 
-  // Default to first section when arriving at /docs with no params
-  useEffect(() => {
-    if (!sectionId && docs.length > 0) {
-      navigate(`/docs/${docs[0].id}`, { replace: true })
-    }
-  }, [sectionId, navigate])
-
   // Support aliases: /docs/components or /docs/component-showcase -> /docs/showcase
   const resolvedSectionId =
     sectionId === 'components' || sectionId === 'component-showcase' ? 'showcase' : sectionId
@@ -39,6 +32,32 @@ export default function DocsPage() {
   const activeSubSection = subSectionId
     ? activeSection?.subsections.find((ss) => ss.id === subSectionId)
     : undefined
+
+  // Default to first section / subsection when arriving at /docs with no params,
+  // or when navigating to an index with no standalone content of its own
+  useEffect(() => {
+    if (!sectionId && docs.length > 0) {
+      const first = docs[0]
+      if (
+        (first.id === '00-introduccion' ||
+          (first.subsections.length === 1 && (!first.blocks || first.blocks.length === 0))) &&
+        first.subsections[0]
+      ) {
+        navigate(`/docs/${first.id}/${first.subsections[0].id}`, { replace: true })
+      } else {
+        navigate(`/docs/${first.id}`, { replace: true })
+      }
+    } else if (
+      !subSectionId &&
+      activeSection &&
+      (activeSection.id === '00-introduccion' ||
+        (activeSection.subsections.length === 1 &&
+          (!activeSection.blocks || activeSection.blocks.length === 0))) &&
+      activeSection.subsections[0]
+    ) {
+      navigate(`/docs/${activeSection.id}/${activeSection.subsections[0].id}`, { replace: true })
+    }
+  }, [sectionId, subSectionId, activeSection, navigate])
 
   return (
     <div className={styles.layout}>

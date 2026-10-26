@@ -414,9 +414,14 @@ export default function DocsContent({ section, subSection }: Props) {
         <header className={styles.header}>
           <span className={styles.breadcrumb}>
             {subSection ? (
-              <Link to={`/docs/${section.id}`} className={styles.breadcrumbLink}>
-                {section.title}
-              </Link>
+              section.id === '00-introduccion' ||
+              (section.subsections.length === 1 && (!section.blocks || section.blocks.length === 0)) ? (
+                <span>{section.title}</span>
+              ) : (
+                <Link to={`/docs/${section.id}`} className={styles.breadcrumbLink}>
+                  {section.title}
+                </Link>
+              )
             ) : (
               'Documentation'
             )}

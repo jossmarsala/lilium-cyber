@@ -21,15 +21,21 @@ export function flattenDocs(sections: DocSection[] = defaultDocs): DocNavItem[] 
   for (const section of sections) {
     if (section.hidden) continue
 
-    // Section overview
-    items.push({
-      type: 'section',
-      sectionId: section.id,
-      title: section.title,
-      sectionTitle: section.title,
-      icon: section.icon,
-      path: `/docs/${section.id}`,
-    })
+    // Section overview (skipped if section has no standalone overview content and only 1 sub)
+    const shouldSkipSectionOverview =
+      section.id === '00-introduccion' ||
+      (section.subsections.length === 1 && (!section.blocks || section.blocks.length === 0))
+
+    if (!shouldSkipSectionOverview) {
+      items.push({
+        type: 'section',
+        sectionId: section.id,
+        title: section.title,
+        sectionTitle: section.title,
+        icon: section.icon,
+        path: `/docs/${section.id}`,
+      })
+    }
 
     // Subsections (subindexes)
     for (const sub of section.subsections) {

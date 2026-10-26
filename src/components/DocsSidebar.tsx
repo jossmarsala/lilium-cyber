@@ -40,9 +40,18 @@ function truncateTitle(title: string, limit = SUBSECTION_CHAR_LIMIT): string {
 function toMenuItems(sections: DocSection[]): BranchedMenuItem[] {
   return sections.map((section) => {
     if (section.subsections.length > 0) {
+      const isSingleSub =
+        section.id === '00-introduccion' ||
+        (section.subsections.length === 1 && (!section.blocks || section.blocks.length === 0))
+
+      const redirectTo = isSingleSub
+        ? `${section.id}/${section.subsections[0].id}`
+        : undefined
+
       return {
         label: section.title,
         value: section.id,
+        redirectTo,
         children: section.subsections.map((sub) => {
           const icon = resolveDocIcon(sub.icon, sub.id)
 
@@ -95,6 +104,18 @@ export default function DocsSidebar({ sections, activeSectionId, activeSubSectio
     : (activeSectionId ?? '')
 
   const handleSelect = (value: string) => {
+    // If selecting a section that should redirect to its first subsection directly
+    const section = sections.find((s) => s.id === value)
+    if (
+      section &&
+      (section.id === '00-introduccion' ||
+        (section.subsections.length === 1 && (!section.blocks || section.blocks.length === 0))) &&
+      section.subsections[0]
+    ) {
+      navigate(`/docs/${section.id}/${section.subsections[0].id}`)
+      return
+    }
+
     // value is either "sectionId/subSectionId" or plain "sectionId"
     navigate(`/docs/${value}`)
   }

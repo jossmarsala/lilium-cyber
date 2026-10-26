@@ -19,6 +19,7 @@ import {
   BookOpen01Icon,
   ArrowRight01Icon,
   Layers01Icon,
+  LockKeyIcon,
 } from '@hugeicons/core-free-icons'
 
 import { LABS, type LabItem } from '@/data/labsData'
@@ -157,7 +158,7 @@ export default function LabsPage() {
             {/* Card 2 (Secondary Featured Recommended Lab) */}
             {recommendedLabs[1] && (
               <div
-                className={`${styles.featuredCard} ${styles.featuredCardSecondary}`}
+                className={`${styles.featuredCard} ${styles.featuredCardSecondary} ${recommendedLabs[1].available === false ? styles.featuredCardDisabled : ''}`}
                 onClick={() => handleLabClick(recommendedLabs[1])}
                 role="button"
                 tabIndex={0}
@@ -168,6 +169,13 @@ export default function LabsPage() {
                   <LabThumbnail labId={recommendedLabs[1].id} />
                 </div>
                 <div className={styles.featuredCardBackdropOverlay} />
+
+                {recommendedLabs[1].available === false && (
+                  <div className={styles.deactivatedBadge}>
+                    <HugeiconsIcon icon={LockKeyIcon as IconSvgElement} size={12} strokeWidth={2} />
+                    <span>Próximamente</span>
+                  </div>
+                )}
 
                 <div className={styles.featuredCardContent}>
                   <div className={styles.featuredTopArea}>
@@ -200,18 +208,18 @@ export default function LabsPage() {
                       baseColor="#e0e0e0"
                       intensity={1.2}
                       thickness={1.5}
-                      className={styles.playSpecularBtnLarge}
-                      title="Iniciar laboratorio"
+                      className={`${styles.playSpecularBtnLarge} ${recommendedLabs[1].available === false ? styles.playBtnDisabled : ''}`}
+                      title={recommendedLabs[1].available === false ? 'No disponible' : 'Iniciar laboratorio'}
                       onClick={(e) => {
                         e.stopPropagation()
                         handleLabClick(recommendedLabs[1])
                       }}
                     >
                       <HugeiconsIcon
-                        icon={PlayIcon as IconSvgElement}
+                        icon={(recommendedLabs[1].available === false ? LockKeyIcon : PlayIcon) as IconSvgElement}
                         size={18}
                         strokeWidth={2.4}
-                        className={styles.playIconSvg}
+                        className={recommendedLabs[1].available === false ? undefined : styles.playIconSvg}
                       />
                     </SpecularButton>
                   </div>
@@ -257,81 +265,91 @@ export default function LabsPage() {
                 strokeWidth={1.8}
                 aria-hidden="true"
               />
-              <span>6 módulos disponibles</span>
+              <span>1 activo · 5 en desarrollo</span>
             </div>
           </div>
 
           {/* 6 Cards Grid (3 columns x 2 rows) */}
           <div className={styles.otherLabsGrid}>
-            {filteredLabs.map((lab) => (
-              <div
-                key={lab.id}
-                className={styles.labCard}
-                onClick={() => handleLabClick(lab)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && handleLabClick(lab)}
-                aria-label={`Ver detalles de ${lab.title}`}
-              >
-                {/* Thumbnail Preview Area with FaultyTerminal Cover and Play Button */}
-                <div className={styles.labCardMedia}>
-                  <div className={styles.thumbnailContainer}>
-                    <LabThumbnail labId={lab.id} />
+            {filteredLabs.map((lab) => {
+              const isDeactivated = lab.available === false
+              return (
+                <div
+                  key={lab.id}
+                  className={`${styles.labCard} ${isDeactivated ? styles.labCardDisabled : ''}`}
+                  onClick={() => handleLabClick(lab)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && handleLabClick(lab)}
+                  aria-label={`Ver detalles de ${lab.title}`}
+                >
+                  {/* Thumbnail Preview Area with FaultyTerminal Cover and Play Button */}
+                  <div className={styles.labCardMedia}>
+                    <div className={styles.thumbnailContainer}>
+                      <LabThumbnail labId={lab.id} />
+                    </div>
+
+                    {isDeactivated && (
+                      <div className={styles.deactivatedBadge}>
+                        <HugeiconsIcon icon={LockKeyIcon as IconSvgElement} size={11} strokeWidth={2} />
+                        <span>Próximamente</span>
+                      </div>
+                    )}
+
+                    <div className={styles.mediaPlayBtnContainer}>
+                      <SpecularButton
+                        size="sm"
+                        radius={999}
+                        tint="#ffffff"
+                        tintOpacity={1}
+                        blur={0}
+                        textColor="#111111"
+                        lineColor="#ffffff"
+                        baseColor="#e0e0e0"
+                        intensity={1.2}
+                        thickness={1.5}
+                        className={`${styles.playSpecularBtnSmall} ${isDeactivated ? styles.playBtnDisabled : ''}`}
+                        title={isDeactivated ? 'No disponible' : 'Iniciar'}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleLabClick(lab)
+                        }}
+                      >
+                        <HugeiconsIcon
+                          icon={(isDeactivated ? LockKeyIcon : PlayIcon) as IconSvgElement}
+                          size={14}
+                          strokeWidth={2.4}
+                          className={isDeactivated ? undefined : styles.playIconSvg}
+                        />
+                      </SpecularButton>
+                    </div>
                   </div>
 
-                  <div className={styles.mediaPlayBtnContainer}>
-                    <SpecularButton
-                      size="sm"
-                      radius={999}
-                      tint="#ffffff"
-                      tintOpacity={1}
-                      blur={0}
-                      textColor="#111111"
-                      lineColor="#ffffff"
-                      baseColor="#e0e0e0"
-                      intensity={1.2}
-                      thickness={1.5}
-                      className={styles.playSpecularBtnSmall}
-                      title="Iniciar"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleLabClick(lab)
-                      }}
-                    >
-                      <HugeiconsIcon
-                        icon={PlayIcon as IconSvgElement}
-                        size={14}
-                        strokeWidth={2.4}
-                        className={styles.playIconSvg}
-                      />
-                    </SpecularButton>
+                  {/* Content Area */}
+                  <div className={styles.labCardBody}>
+                    <div className={styles.cardTopInfo}>
+                      <h4 className={styles.cardTitle}>{lab.title}</h4>
+                      <p className={styles.cardDesc}>{lab.description}</p>
+                    </div>
+
+                    <div className={styles.cardFooter}>
+                      <span className={styles.metaItem}>
+                        <HugeiconsIcon
+                          icon={Clock01Icon as IconSvgElement}
+                          size={13}
+                          strokeWidth={1.8}
+                        />
+                        {lab.duration}
+                      </span>
+
+                      <Pill variant="light" size="sm" dot>
+                        {lab.difficulty}
+                      </Pill>
+                    </div>
                   </div>
                 </div>
-
-                {/* Content Area */}
-                <div className={styles.labCardBody}>
-                  <div className={styles.cardTopInfo}>
-                    <h4 className={styles.cardTitle}>{lab.title}</h4>
-                    <p className={styles.cardDesc}>{lab.description}</p>
-                  </div>
-
-                  <div className={styles.cardFooter}>
-                    <span className={styles.metaItem}>
-                      <HugeiconsIcon
-                        icon={Clock01Icon as IconSvgElement}
-                        size={13}
-                        strokeWidth={1.8}
-                      />
-                      {lab.duration}
-                    </span>
-
-                    <Pill variant="light" size="sm" dot>
-                      {lab.difficulty}
-                    </Pill>
-                  </div>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </section>
       </div>
@@ -347,9 +365,16 @@ export default function LabsPage() {
           <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div>
-                <Pill variant="light" size="sm">
-                  {activeModalLab.category}
-                </Pill>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Pill variant="light" size="sm">
+                    {activeModalLab.category}
+                  </Pill>
+                  {activeModalLab.available === false && (
+                    <Pill variant="dark" size="sm" dot>
+                      En desarrollo
+                    </Pill>
+                  )}
+                </div>
                 <h3
                   style={{
                     fontSize: '1.45rem',
@@ -361,8 +386,9 @@ export default function LabsPage() {
                   {activeModalLab.title}
                 </h3>
                 <span style={{ fontSize: '0.85rem', color: '#666' }}>
-                  {activeModalLab.totalSteps} pasos interactivos · Estimado{' '}
-                  {activeModalLab.duration}
+                  {activeModalLab.available === false
+                    ? 'Próximamente disponible'
+                    : `${activeModalLab.totalSteps} pasos interactivos · Estimado ${activeModalLab.duration}`}
                 </span>
               </div>
               <button
@@ -378,36 +404,45 @@ export default function LabsPage() {
               {activeModalLab.description}
             </p>
 
-            {activeModalLab.highlights && (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.5rem',
-                  background: '#f8f8f8',
-                  padding: '1rem',
-                  borderRadius: '12px',
-                }}
-              >
-                <strong style={{ fontSize: '0.825rem', color: '#111' }}>
-                  Temas cubiertos en este laboratorio:
-                </strong>
-                <ul
+            {activeModalLab.available === false ? (
+              <div className={styles.deactivatedNotice}>
+                <HugeiconsIcon icon={LockKeyIcon as IconSvgElement} size={18} strokeWidth={2} />
+                <span>
+                  Este entorno interactivo está en proceso de construcción pedagógica y técnica. Pronto estará disponible en Lilium.
+                </span>
+              </div>
+            ) : (
+              activeModalLab.highlights && (
+                <div
                   style={{
-                    margin: 0,
-                    paddingLeft: '1.25rem',
-                    fontSize: '0.85rem',
-                    color: '#555',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '0.25rem',
+                    gap: '0.5rem',
+                    background: '#f8f8f8',
+                    padding: '1rem',
+                    borderRadius: '12px',
                   }}
                 >
-                  {activeModalLab.highlights.map((h, i) => (
-                    <li key={i}>{h}</li>
-                  ))}
-                </ul>
-              </div>
+                  <strong style={{ fontSize: '0.825rem', color: '#111' }}>
+                    Temas cubiertos en este laboratorio:
+                  </strong>
+                  <ul
+                    style={{
+                      margin: 0,
+                      paddingLeft: '1.25rem',
+                      fontSize: '0.85rem',
+                      color: '#555',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.25rem',
+                    }}
+                  >
+                    {activeModalLab.highlights.map((h, i) => (
+                      <li key={i}>{h}</li>
+                    ))}
+                  </ul>
+                </div>
+              )
             )}
 
             <div
@@ -444,32 +479,58 @@ export default function LabsPage() {
               )}
 
               <div className={styles.modalCtaRow}>
-                <button
-                  type="button"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.45rem',
-                    padding: '0.65rem 1.35rem',
-                    background: '#111111',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '999px',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => {
-                    navigate(`/lab/${activeModalLab.id}`)
-                  }}
-                >
-                  Iniciar Lab
-                  <HugeiconsIcon
-                    icon={ArrowRight01Icon as IconSvgElement}
-                    size={14}
-                    strokeWidth={2}
-                  />
-                </button>
+                {activeModalLab.available === false ? (
+                  <button
+                    type="button"
+                    disabled
+                    className={styles.modalBtnDisabled}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.45rem',
+                      padding: '0.65rem 1.35rem',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '999px',
+                      fontSize: '0.85rem',
+                      fontWeight: 700,
+                    }}
+                  >
+                    <HugeiconsIcon
+                      icon={LockKeyIcon as IconSvgElement}
+                      size={14}
+                      strokeWidth={2}
+                    />
+                    No disponible
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.45rem',
+                      padding: '0.65rem 1.35rem',
+                      background: '#111111',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '999px',
+                      fontSize: '0.85rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      navigate(`/lab/${activeModalLab.id}`)
+                    }}
+                  >
+                    Iniciar Lab
+                    <HugeiconsIcon
+                      icon={ArrowRight01Icon as IconSvgElement}
+                      size={14}
+                      strokeWidth={2}
+                    />
+                  </button>
+                )}
               </div>
             </div>
           </div>

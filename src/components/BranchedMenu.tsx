@@ -22,6 +22,7 @@ export interface BranchedMenuChild {
 export interface BranchedMenuItem {
   label: string
   value?: string
+  redirectTo?: string
   children?: BranchedMenuChild[]
 }
 
@@ -242,8 +243,9 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
               data-active={isHeadActive ? '' : undefined}
               onClick={() => {
                 if (kids) {
-                  if (item.value) {
-                    select(item.value, item)
+                  const target = item.redirectTo ?? item.value
+                  if (target) {
+                    select(target, item)
                   }
                   if (isHeadActive) {
                     toggle(i)
