@@ -988,32 +988,32 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-01-note-0",
         "body": "📋 BITÁCORA DE AUDITORÍA TÉCNICA — NIST CSF / CIS Controls\nEstación Botánica Automatizada N.º 4 — Invernadero Central\nOperario: ___________________   Fecha: ___________________\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 0 — IDENTIFICACIÓN DEL INCIDENTE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n [Orientación metodológica — NO EDITAR ESTA LÍNEA]\n Antes de cualquier acción técnica, el operario debe\n identificar el alcance del incidente y los activos\n en riesgo. Alineado con NIST CSF → Función: IDENTIFICAR\n y CIS Control 1 (Inventario de Activos de Hardware).\n\n  Host objetivo: invernadero-central\n  IP del host:   192.168.1.50 / localhost\n  Fecha inicio:  ___________________\n  Hora inicio:   ___________________\n  Gravedad inicial (crítica/alta/media/baja): ___________\n  Descubierto por (herramienta):  Terminal / ps aux / ss -tulpn\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 1 — FASE: IDENTIFICAR (NIST CSF ID)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n [Guía] Documenta los activos críticos descubiertos.\n Aplica la TRÍADA CIA a cada activo.\n Ref: CIS Control 2, 3 | NIST CSF ID.AM-2\n\n 1.1 INVENTARIO DE ACTIVOS CRÍTICOS\n ─────────────────────────────────────\n Activo 1: ___________________________________\n   Ruta/IP: __________________________________\n   Impacto CIA: [ ] Confidencialidad  [ ] Integridad  [ ] Disponibilidad\n\n Activo 2: ___________________________________\n   Ruta/IP: __________________________________\n   Impacto CIA: [ ] Confidencialidad  [ ] Integridad  [ ] Disponibilidad\n\n 1.2 RESULTADO DEL COMANDO \"ps aux\"\n ─────────────────────────────────────\n [Pega aquí la salida relevante de: ps aux | grep -v grep]\n\n\n 1.3 RESULTADO DE \"ss -tulpn\" (puertos en escucha)\n ─────────────────────────────────────────────────\n\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 2 — FASE: PROTEGER (NIST CSF PR)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 2.1 PERMISOS INSEGUROS DETECTADOS\n ─────────────────────────────────────\n Archivo: /etc/shadow\n   Permisos actuales: ________  Permisos correctos: 640\n   Comando aplicado: sudo chmod _____ /etc/shadow\n   Estado: [ ] Pendiente  [ ] Mitigado\n\n Archivo: /home/cuidador/.ssh/id_ed25519\n   Permisos actuales: ________  Permisos correctos: 600\n   Comando aplicado: chmod _____ ~/.ssh/id_ed25519\n   Estado: [ ] Pendiente  [ ] Mitigado\n\n 2.2 SERVICIOS VULNERABLES IDENTIFICADOS\n ─────────────────────────────────────────\n Servicio: in.telnetd (Puerto 23 — Texto plano)\n   Riesgo CIA: Confidencialidad (credenciales expuestas)\n   Acción: sudo systemctl stop telnet.service\n   Estado: [ ] Pendiente  [ ] Mitigado\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 3 — FASE: DETECTAR (NIST CSF DE)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 3.1 PROCESOS SOSPECHOSOS (ps aux)\n ─────────────────────────────────────\n Proceso 1: polilla_emisora\n   Tipo: [x] Amenaza Real  [ ] Falso Positivo\n   Usuario: www-data  |  Conexión: 198.51.100.44:4444\n   PID: _________\n   Acción: kill -15 <PID>  o  kill -9 <PID>\n   Estado: [ ] Activo  [ ] Terminado\n\n Proceso 2: riego_nocturno.sh\n   Tipo: [ ] Amenaza Real  [x] Falso Positivo\n   Usuario: cuidador  |  Verificado con: cat /opt/sensores/riego_nocturno.sh\n   Decisión: [ ] Mantener en ejecución\n   Razonamiento: _________________________________\n\n 3.2 ANÁLISIS DE LOGS (/var/log/auth.log)\n ─────────────────────────────────────\n NTP activo: [ ] Sí  [ ] No\n Comando: grep -i \"failed\" /var/log/auth.log\n Evento crítico:\n   Timestamp: _____________  IP atacante: _____________\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 4 — FASE: RESPONDER (NIST CSF RS)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 4.1 ACCIONES DE CONTENCIÓN APLICADAS\n ──────────────────────────────────────\n [ ] Proceso malicioso terminado (kill -15 ____  PID: ___)\n [ ] Archivo malicioso eliminado (rm /tmp/catalogo_orquideas.pdf)\n [ ] Permisos restaurados (chmod 600 en shadow y id_ed25519)\n [ ] Telnet detenido y deshabilitado\n [ ] DNS corregido en /etc/resolv.conf\n\n 4.2 VERIFICACIÓN POST-CONTENCIÓN\n ────────────────────────────────────\n Sockets abiertos (ss -tulpn): ____________\n Directorio /tmp limpio: [ ] Sí  [ ] No\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n BLOQUE 5 — FASE: RECUPERAR (NIST CSF RC)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n 5.1 LECCIONES APRENDIDAS\n ─────────────────────────────────────\n a) ¿Por qué el PDF era en realidad un ELF?\n    ___________________________________________________\n\n b) ¿Qué principio viola operar como root?\n    ___________________________________________________\n\n c) ¿Qué relación existe entre NTP y la auditabilidad?\n    ___________________________________________________\n\n 5.2 CONTROLES PREVENTIVOS (CIS IG1)\n ─────────────────────────────────────────────────\n [ ] CIS 3.3  — chmod 600 en claves SSH\n [ ] CIS 4.1  — Eliminar servicios no necesarios (Telnet)\n [ ] CIS 4.8  — Deshabilitar protocolos en texto plano\n [ ] CIS 8.2  — NTP activo para timestamps confiables\n [ ] CIS 10.5 — noexec en /tmp\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n FIRMA Y CIERRE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n Operario: _______________________\n Fecha de cierre: ____________________________\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-        "createdAt": 1792962715278,
-        "updatedAt": 1792962715278
+        "createdAt": 1792970646407,
+        "updatedAt": 1792970646407
       },
       {
         "id": "lab-01-note-1",
         "body": "TICKET LILIUM-ITSM: INC-1049 — Anomalía en Estación 07\n======================================================\nESTADO: Abierto / Prioridad: Alta\nORIGEN: Telemetría de SOC / Alerta automatizada del sistema\n\nDESCRIPCIÓN DEL INCIDENTE:\nSe ha detectado un socket persistente no estándar en el\npuerto TCP 4444 de la Estación 07. Se presume la presencia\nde un script de persistencia ejecutándose en /tmp.\n\nOBJETIVOS DEL ANALISTA DEFENSIVO (NIVEL CIS IG1):\n1. [Inventario] Validar qué activos corren en la máquina\n   → whoami, ip addr, ps aux\n2. [Contención] Terminar el proceso anómalo con kill -15\n   → Preserva la integridad de los logs forenses\n3. [Control de Acceso] Crear usuario nominal con adduser\n   → Evitar cuentas compartidas\n4. [Hardening] Permisos 600 en ~/.ssh/id_ed25519\n   → Blindar /etc/ssh/sshd_config (PermitRootLogin no)",
-        "createdAt": 1792966315278,
-        "updatedAt": 1792966315278
+        "createdAt": 1792974246407,
+        "updatedAt": 1792974246407
       },
       {
         "id": "lab-01-note-2",
         "body": "PLANTILLA: Matriz de Activos, Amenazas y Riesgos\nMódulo 1 — Lab 01 \"La Estación Olvidada\"\n=========================================\n\n1. ACTIVO CRÍTICO:\n   - Activo: Servidor invernadero-central / Clave privada SSH\n   - Pilar CIA comprometido: Confidencialidad e Integridad\n\n2. AMENAZA:\n   - Actor: Proceso no autorizado o actor externo\n   - Vector de entrada: Binario en /tmp y socket TCP :4444\n\n3. VULNERABILIDAD:\n   - Permisos globales laxos (644 en clave privada)\n   - Acceso root directo habilitado en sshd_config\n   - Telnet activo en puerto 23 (texto plano)\n   - DNS desviado a servidor malicioso 10.66.6.6\n\n4. RESPUESTA AL RIESGO (Módulo 1.1):\n   - Estrategia: MITIGAR aplicando controles CIS IG1\n   - Control: chmod 600, kill -15, systemctl stop telnet\n   - Prioridad: Crítica (impacto en toda la Tríada CIA)",
-        "createdAt": 1792969915278,
-        "updatedAt": 1792969915278
+        "createdAt": 1792977846407,
+        "updatedAt": 1792977846407
       },
       {
         "id": "lab-01-note-3",
         "body": "DIARIO: Notas del Antiguo Cuidador\n===================================\n12 de Octubre —\n\n\"El jardín de reliquias no puede quedarse sin telemetría\ndurante el invierno. Las heladas destruyen los bulbos de\nlilium silvestre si la temperatura desciende de los 2°C.\n\nPor eso dejé corriendo esa baliza en /tmp... sé que no\nes la mejor práctica, pero era una emergencia.\n\nTemo que alguien descubra que dejé la clave privada con\npermisos 644 y el servidor Telnet abierto en el puerto 23.\nEl DNS también lo cambié temporalmente a 10.66.6.6 para\npruebas, pero nunca lo revertí. Lo siento.\n\nSi alguien encuentra esto: por favor, asegura la estación\nantes de que caiga la primera nieve.\"",
-        "createdAt": 1792973515278,
-        "updatedAt": 1792973515278
+        "createdAt": 1792981446407,
+        "updatedAt": 1792981446407
       },
       {
         "id": "lab-01-note-4",
         "body": "GUÍA RÁPIDA: Comandos Defensivos Esenciales de Linux\n=====================================================\n\nRECONOCIMIENTO INICIAL\n• whoami              → Cuenta activa en la sesión\n• ip addr / ip a      → Interfaces y direcciones IP\n• uname -a            → Versión del kernel Linux\n\nPROCESOS Y MEMORIA\n• ps aux              → Lista estática de procesos\n• top                 → Monitor dinámico (q para salir)\n• kill -15 <PID>      → Terminación ordenada (SIGTERM)\n• kill -9 <PID>       → Desalojo forzado (SIGKILL)\n\nSISTEMA DE ARCHIVOS\n• ls -la              → Listado con archivos ocultos (.)\n• cat / less / head   → Lectura segura de archivos\n• file <archivo>      → Tipo real por magic numbers\n• sha256sum <archivo> → Huella hash criptográfica\n• find / -name \"*.sh\" → Búsqueda en el sistema\n\nPERMISOS (chmod octal)\n• chmod 600 <archivo> → Solo propietario: leer + escribir\n• chmod 644 <archivo> → Propietario: rw | Grupo/Otros: r\n• chmod 700 <dir>     → Solo propietario: rwx (directorio)\n• chown user:group    → Cambiar propietario y grupo\n\nRED Y SERVICIOS\n• ss -tulpn           → Sockets TCP/UDP en escucha\n• dig <dominio>       → Consulta DNS\n• curl -I <url>       → Cabeceras HTTP\n• ping -c 4 <IP>      → Test de conectividad ICMP\n• systemctl status    → Estado de un servicio systemd\n• systemctl start/stop/restart/disable <servicio>",
-        "createdAt": 1792977115278,
-        "updatedAt": 1792977115278
+        "createdAt": 1792985046407,
+        "updatedAt": 1792985046407
       }
     ]
   },
@@ -1026,14 +1026,14 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-02-note-0",
         "body": "TICKET LILIUM-ITSM: INC-2044 — Campaña de Phishing por Suplantación de Identidad\n=============================================================================\nESTADO: Abierto / Prioridad: Alta\nORIGEN: Reporte de usuario corporativo (Finanzas)\n\nDESCRIPCIÓN:\nMúltiples colaboradores han recibido correos solicitando actualización urgente\nde credenciales bancarias provenientes aparentemente del dominio corporativo.\n\nOBJETIVOS DEFENSIVOS:\n1. Inspeccionar cabeceras Authentication-Results (SPF, DKIM, DMARC).\n2. Extraer dominios y direcciones IP de los servidores de envío (Received: from).\n3. Confirmar si existe spoofing o typosquatting en los remitentes.\n4. Aplicar bloqueo y cuarentena en el MTA corporativo.",
-        "createdAt": 1792973515284,
-        "updatedAt": 1792973515284
+        "createdAt": 1792981446410,
+        "updatedAt": 1792981446410
       },
       {
         "id": "lab-02-note-1",
         "body": "REGISTRO     PROPÓSITO                           COMANDO\n─────────────────────────────────────────────────────────────────────────────\nSPF          Autoriza IPs de envío para el dominio dig TXT <dominio>\nDKIM         Firma criptográfica del cuerpo/cabecera openssl dgst -verify ...\nDMARC        Política de rechazo/cuarentena      dig TXT _dmarc.<dominio>",
-        "createdAt": 1792977115284,
-        "updatedAt": 1792977115284
+        "createdAt": 1792985046410,
+        "updatedAt": 1792985046410
       }
     ]
   },
@@ -1046,8 +1046,8 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-03-note-0",
         "body": "TICKET LILIUM-ITSM: INC-3011 — Vulnerabilidad BOLA reportada en /api/v1/users\n===========================================================================\nESTADO: En Investigación / Prioridad: Crítica\nHALLAZGO: Modificando el parámetro ID en la petición REST se obtienen perfiles de terceros sin validación de rol.\nACCIONES:\n- Implementar validación estricta de propiedad de recursos en el controlador.\n- Validar firma criptográfica del JWT (evitar algoritmo 'none').",
-        "createdAt": 1792977115285,
-        "updatedAt": 1792977115285
+        "createdAt": 1792985046410,
+        "updatedAt": 1792985046410
       }
     ]
   },
@@ -1060,8 +1060,8 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-04-note-0",
         "body": "ZONA ORIGEN       ZONA DESTINO       PUERTO/PROTO    ACCIÓN    JUSTIFICACIÓN\n─────────────────────────────────────────────────────────────────────────────\nInternet (WAN)    Servidor Web       80, 443 / TCP   ALLOW     Acceso público legítimo\nInternet (WAN)    Sensores IoT       Cualquiera      DROP      Aislamiento de dispositivos\nRed Gestión       Servidor Web       22 / TCP        ALLOW     Administración SSH interna\nInternet (WAN)    Servidor Web       22 / TCP        DROP      Mitigación fuerza bruta",
-        "createdAt": 1792977115286,
-        "updatedAt": 1792977115286
+        "createdAt": 1792985046410,
+        "updatedAt": 1792985046410
       }
     ]
   },
@@ -1074,8 +1074,8 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-05-note-0",
         "body": "TICKET LILIUM-ITSM: INC-5099 — Cifrado no autorizado en compartido de archivos\n=============================================================================\nESTADO: Crítico / Prioridad: P1\nALERTA: Extensiones .locked detectadas en /var/share/plantas/.\nDIRECTIVAS:\n1. No reiniciar el equipo para preservar claves de cifrado en memoria volátil.\n2. Desconectar interfaces de red inmediatamente para detener propagación.\n3. Preservar logs de autenticación y rastros del binario malicioso.",
-        "createdAt": 1792977115286,
-        "updatedAt": 1792977115286
+        "createdAt": 1792985046411,
+        "updatedAt": 1792985046411
       }
     ]
   },
@@ -1088,8 +1088,8 @@ export const COMPILED_LABS: CompiledLab[] = [
       {
         "id": "lab-06-note-0",
         "body": "AUDITORÍA CIS BENCHMARK v3.0 — SERVIDOR LINUX\n=============================================\nPUNTUACIÓN INICIAL: 42% (Fallo en 28 controles IG1)\nPUNTUACIÓN OBJETIVO: >= 90%\n\nCONTROLES PRIORITARIOS:\n- 1.1 Filesystem Configuration\n- 2.1 Disable Unused Services\n- 3.1 Network Parameters (sysctl)\n- 5.2 SSH Server Hardening",
-        "createdAt": 1792977115287,
-        "updatedAt": 1792977115287
+        "createdAt": 1792985046411,
+        "updatedAt": 1792985046411
       }
     ]
   }

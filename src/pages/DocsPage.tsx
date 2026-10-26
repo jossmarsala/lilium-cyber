@@ -9,8 +9,10 @@
  *   /docs/:sectionId               → section overview
  *   /docs/:sectionId/:subSectionId → subsection content
  */
-import { useParams, useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
+import { SidebarLeft01Icon } from '@hugeicons/core-free-icons'
 import docs from '@/data/docs'
 import DocsSidebar from '@/components/DocsSidebar'
 import DocsContent from '@/components/DocsContent'
@@ -22,6 +24,8 @@ export default function DocsPage() {
     subSectionId?: string
   }>()
   const navigate = useNavigate()
+  const location = useLocation()
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
   // Support aliases: /docs/components or /docs/component-showcase -> /docs/showcase
   const resolvedSectionId =
@@ -32,6 +36,34 @@ export default function DocsPage() {
   const activeSubSection = subSectionId
     ? activeSection?.subsections.find((ss) => ss.id === subSectionId)
     : undefined
+
+  // Auto-close mobile drawer when route changes
+  useEffect(() => {
+    setIsMobileOpen(false)
+  }, [location.pathname])
+
+  // Close mobile drawer on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMobileOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMobileOpen])
 
   // Default to first section / subsection when arriving at /docs with no params,
   // or when navigating to an index with no standalone content of its own
@@ -59,12 +91,50 @@ export default function DocsPage() {
     }
   }, [sectionId, subSectionId, activeSection, navigate])
 
+  const currentDisplayTitle = activeSubSection
+    ? activeSubSection.title
+    : (activeSection?.title ?? 'Documentación')
+
   return (
     <div className={styles.layout}>
+      {/* Mobile drawer backdrop */}
+      <div
+        className={`${styles.backdrop} ${isMobileOpen ? styles.backdropActive : ''}`}
+        onClick={() => setIsMobileOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Mobile sticky subheader bar with index toggle */}
+      <div className={styles.mobileNav}>
+        <button
+          type="button"
+          className={styles.mobileNavToggle}
+          onClick={() => setIsMobileOpen((prev) => !prev)}
+          aria-expanded={isMobileOpen}
+          aria-label="Abrir índice de la documentación"
+        >
+          <div className={styles.mobileNavIconWrap}>
+            <HugeiconsIcon
+              icon={SidebarLeft01Icon as IconSvgElement}
+              size={16}
+              strokeWidth={2}
+              aria-hidden="true"
+            />
+          </div>
+          <span className={styles.mobileNavLabel}>Índice</span>
+          <span className={styles.mobileNavDivider} aria-hidden="true" />
+          <span className={styles.mobileNavCurrent} title={currentDisplayTitle}>
+            {currentDisplayTitle}
+          </span>
+        </button>
+      </div>
+
       <DocsSidebar
         sections={docs}
         activeSectionId={activeSection?.id}
         activeSubSectionId={activeSubSection?.id}
+        isOpen={isMobileOpen}
+        onClose={() => setIsMobileOpen(false)}
       />
       <DocsContent section={activeSection} subSection={activeSubSection} />
     </div>

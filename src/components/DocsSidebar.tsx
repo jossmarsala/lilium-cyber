@@ -6,9 +6,10 @@
  * Data flows: DocSection[] → BranchedMenuItem[] → BranchedMenu
  * Navigation: BranchedMenu.onSelect → react-router useNavigate
  */
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
-import { ToolsIcon, Book02Icon } from '@hugeicons/core-free-icons'
+import { ToolsIcon, Book02Icon, Cancel01Icon } from '@hugeicons/core-free-icons'
 import type { DocSection } from '@/data/docs'
 import BranchedMenu, { type BranchedMenuItem } from './BranchedMenu'
 import { resolveDocIcon } from '@/utils/docIcons'
@@ -18,9 +19,11 @@ interface Props {
   sections: DocSection[]
   activeSectionId?: string
   activeSubSectionId?: string
+  isOpen?: boolean
+  onClose?: () => void
 }
 
-const SUBSECTION_CHAR_LIMIT = 26
+const SUBSECTION_CHAR_LIMIT = 48
 
 /**
  * Truncates subsection titles that exceed the character limit and appends "..."
@@ -72,8 +75,27 @@ function toMenuItems(sections: DocSection[]): BranchedMenuItem[] {
   })
 }
 
-export default function DocsSidebar({ sections, activeSectionId, activeSubSectionId }: Props) {
+export default function DocsSidebar({
+  sections,
+  activeSectionId,
+  activeSubSectionId,
+  isOpen = false,
+  onClose,
+}: Props) {
   const navigate = useNavigate()
+
+  // Track mobile viewport for responsive row height, font, and drawer width
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= 768 : false
+  )
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    setIsMobile(mq.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   const isShowcaseActive =
     activeSectionId === 'showcase' ||
@@ -104,6 +126,8 @@ export default function DocsSidebar({ sections, activeSectionId, activeSubSectio
     : (activeSectionId ?? '')
 
   const handleSelect = (value: string) => {
+    onClose?.()
+
     // If selecting a section that should redirect to its first subsection directly
     const section = sections.find((s) => s.id === value)
     if (
@@ -120,8 +144,42 @@ export default function DocsSidebar({ sections, activeSectionId, activeSubSectio
     navigate(`/docs/${value}`)
   }
 
+  const handleFooterClick = () => {
+    onClose?.()
+    navigate(isShowcaseActive ? '/docs/layer-1' : '/docs/showcase')
+  }
+
   return (
-    <aside className={styles.sidebar} aria-label="Documentation navigation">
+    <aside
+      className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}
+      aria-label="Documentation navigation"
+    >
+      {/* Mobile drawer header with close button */}
+      <div className={styles.mobileHeader}>
+        <div className={styles.mobileHeaderBrand}>
+          <HugeiconsIcon
+            icon={Book02Icon as IconSvgElement}
+            size={18}
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+          <span className={styles.mobileHeaderTitle}>Documentación</span>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className={styles.closeButton}
+          aria-label="Cerrar índice de documentación"
+        >
+          <HugeiconsIcon
+            icon={Cancel01Icon as IconSvgElement}
+            size={18}
+            strokeWidth={2}
+            aria-hidden="true"
+          />
+        </button>
+      </div>
+
       {/* Up and bottom gradient borders that blend seamlessly */}
       <div className={styles.topBorder} aria-hidden="true" />
       <div className={styles.bottomBorder} aria-hidden="true" />
@@ -141,13 +199,13 @@ export default function DocsSidebar({ sections, activeSectionId, activeSubSectio
           color="#1a1a1a"
           accentColor="#000"
           lineColor="rgba(0, 0, 0, 0.09)"
-          width={280}
-          rowHeight={34}
-          indent={36}
+          width={isMobile ? '100%' : 280}
+          rowHeight={isMobile ? 42 : 34}
+          indent={isMobile ? 38 : 36}
           trunk={12}
           radius={8}
           lineWidth={1.25}
-          fontSize={13}
+          fontSize={isMobile ? 14 : 13}
           drawDuration={400}
           foldDuration={280}
         />
@@ -157,7 +215,7 @@ export default function DocsSidebar({ sections, activeSectionId, activeSubSectio
       <div className={styles.sidebarFooter}>
         <button
           type="button"
-          onClick={() => navigate(isShowcaseActive ? '/docs/layer-1' : '/docs/showcase')}
+          onClick={handleFooterClick}
           className={`${styles.footerButton} ${isShowcaseActive ? styles.footerButtonActive : ''}`}
           title={
             isShowcaseActive

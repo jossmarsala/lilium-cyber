@@ -36,7 +36,7 @@ export interface BranchedMenuProps {
   color?: string
   accentColor?: string
   lineColor?: string
-  width?: number
+  width?: number | string
   rowHeight?: number
   indent?: number
   trunk?: number
@@ -202,7 +202,7 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
       className={`branched-menu${className ? ` ${className}` : ''}`}
       style={
         {
-          '--bm-w': `${width}px`,
+          '--bm-w': typeof width === 'number' ? `${width}px` : (width || '100%'),
           '--bm-ink': color,
           '--bm-accent': accentColor,
           '--bm-line': lineColor,
