@@ -27,6 +27,7 @@ import LabThumbnail from '@/features/labs/LabThumbnail'
 import { Pill } from '@/components/Pill'
 import SpecularButton from '@/components/SpecularButton'
 import Footer from '@/components/Footer'
+import SEO from '@/components/SEO'
 import styles from './LabsPage.module.css'
 
 export default function LabsPage() {
@@ -69,6 +70,12 @@ export default function LabsPage() {
 
   return (
     <div className={styles.page}>
+      <SEO
+        title="Laboratorios Interactivos de Ciberseguridad"
+        description="Aprende ciberseguridad resolviendo escenarios reales en entornos Linux simulados directamente en tu navegador, sin instalaciones previas."
+        keywords="laboratorios ciberseguridad, cyber range interactivo, hacking etico educativo, simulador linux web, lilium labs, defensa en profundidad"
+        ogType="website"
+      />
       <div className={styles.contentWrapper}>
         {/* ── Page Header / Introduction ── */}
         <section className={styles.headerSection} aria-label="Introducción de laboratorios">

@@ -60,6 +60,16 @@ export type DocBlock =
       variant?: 'card' | 'banner' | 'pill' | 'compact'
     }
   | { type: 'subindex'; title?: string }
+  | {
+      type: 'diagram'
+      title?: string
+      badge?: string
+      description?: string
+      variant?: string
+      height?: number | string
+      hover?: boolean
+      noHover?: boolean
+    }
 
 export interface DocSubSection {
   id: string

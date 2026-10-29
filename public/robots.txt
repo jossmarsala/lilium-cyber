@@ -1,0 +1,14 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /docs/
+Allow: /labs/
+Allow: /lab/
+Disallow: /desktop
+Disallow: /os
+
+# Crawl-delay for polite indexing
+Crawl-delay: 1
+
+# Sitemap declaration
+Sitemap: https://lilium-playbook.com/sitemap.xml

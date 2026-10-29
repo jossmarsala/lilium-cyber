@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/compile-labs.ts && vite",
-    "build": "node scripts/compile-labs.ts && tsc -b && vite build",
+    "build": "node scripts/compile-labs.ts && node scripts/generate-seo.mjs && tsc -b && vite build",
     "labs:compile": "node scripts/compile-labs.ts",
+    "seo:generate": "node scripts/generate-seo.mjs && node scripts/generate-og-png.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

@@ -35,6 +35,7 @@ import DocsUIPreview from './DocsUIPreview'
 import DocsNextButton from './DocsNextButton'
 import DocsPagination from './DocsPagination'
 import DocsSubindexCard from './DocsSubindexCard'
+import Diagrama from './Diagrama'
 import Footer from './Footer'
 import { renderInline } from '@/utils/renderInline'
 
@@ -224,12 +225,7 @@ function renderBlock(block: DocBlock, index: number, section?: DocSection): Reac
             }
 
             return (
-              <DocsListItem
-                key={lIdx}
-                index={itemIndex}
-                ordered={block.ordered}
-                level={itemLevel}
-              >
+              <DocsListItem key={lIdx} index={itemIndex} ordered={block.ordered} level={itemLevel}>
                 {renderInline(itemText, lIdx)}
               </DocsListItem>
             )
@@ -284,9 +280,7 @@ function renderBlock(block: DocBlock, index: number, section?: DocSection): Reac
         <div className={styles.subIndex} key={index}>
           <div className={styles.subIndexHeader}>
             <h2 className={styles.subIndexHeading}>{block.title ?? 'Índice del módulo'}</h2>
-            <span className={styles.subIndexCount}>
-              {section.subsections.length} subíndices
-            </span>
+            <span className={styles.subIndexCount}>{section.subsections.length} subíndices</span>
           </div>
           <div className={styles.subIndexListStacked}>
             {section.subsections.map((sub, idx) => (
@@ -301,6 +295,19 @@ function renderBlock(block: DocBlock, index: number, section?: DocSection): Reac
         </div>
       )
     }
+
+    case 'diagram':
+      return (
+        <Diagrama
+          key={index}
+          title={block.title}
+          badge={block.badge}
+          description={block.description}
+          height={block.height}
+          hover={block.hover}
+          noHover={block.noHover}
+        />
+      )
 
     default:
       return null
@@ -415,7 +422,8 @@ export default function DocsContent({ section, subSection }: Props) {
           <span className={styles.breadcrumb}>
             {subSection ? (
               section.id === '00-introduccion' ||
-              (section.subsections.length === 1 && (!section.blocks || section.blocks.length === 0)) ? (
+              (section.subsections.length === 1 &&
+                (!section.blocks || section.blocks.length === 0)) ? (
                 <span>{section.title}</span>
               ) : (
                 <Link to={`/docs/${section.id}`} className={styles.breadcrumbLink}>
@@ -441,26 +449,28 @@ export default function DocsContent({ section, subSection }: Props) {
           )}
 
           {/* Section overview → subsection quick-nav cards (rendered if not already present inline) */}
-          {!subSection && section.subsections.length > 0 && !target.blocks?.some((b) => b.type === 'subindex') && (
-            <div className={styles.subIndex}>
-              <div className={styles.subIndexHeader}>
-                <h2 className={styles.subIndexHeading}>Índice del módulo</h2>
-                <span className={styles.subIndexCount}>
-                  {section.subsections.length} subíndices
-                </span>
+          {!subSection &&
+            section.subsections.length > 0 &&
+            !target.blocks?.some((b) => b.type === 'subindex') && (
+              <div className={styles.subIndex}>
+                <div className={styles.subIndexHeader}>
+                  <h2 className={styles.subIndexHeading}>Índice del módulo</h2>
+                  <span className={styles.subIndexCount}>
+                    {section.subsections.length} subíndices
+                  </span>
+                </div>
+                <div className={styles.subIndexListStacked}>
+                  {section.subsections.map((sub, idx) => (
+                    <DocsSubindexCard
+                      key={sub.id}
+                      sectionId={section.id}
+                      subSection={sub}
+                      index={idx + 1}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className={styles.subIndexListStacked}>
-                {section.subsections.map((sub, idx) => (
-                  <DocsSubindexCard
-                    key={sub.id}
-                    sectionId={section.id}
-                    subSection={sub}
-                    index={idx + 1}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+            )}
 
           {/* Bottom navigation buttons to go into the next / previous subindex */}
           <DocsPagination sectionId={section.id} subSectionId={subSection?.id} />

@@ -31,6 +31,7 @@ import { StartRecents } from "./StartRecents";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { UbuntuQuickSettings } from "./UbuntuQuickSettings";
 import { labVerificationEngine } from "@/services/verification";
+import SEO from "@/components/SEO";
 
 // The apps, per-theme icons, theme builder, and Settings icons all come from
 // the shared @react-ui-os/demo config so the playground and the docs embed
@@ -148,6 +149,11 @@ export default function DesktopPage() {
 
   return (
     <Desktop apps={apps} theme={theme}>
+      <SEO
+        title="Lilium OS — Cyber Range Desktop"
+        description="Entorno interactivo de escritorio y terminal de ciberseguridad para Lilium."
+        noIndex={true}
+      />
       <DesktopInitializer />
       {themeChoice === "ubuntu" && <UbuntuQuickSettings />}
       <StartRecents />

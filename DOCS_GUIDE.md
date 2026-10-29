@@ -351,9 +351,17 @@ export function MyCustomGuide() {
 
 ---
 
-## 6. Writing in Markdown (`docs/docs.md` Compiler)
+## 6. Writing in Markdown (`docs/*.md` Compiler)
 
-Instead of hand-writing JSON, you can author all your documentation in standard Markdown inside [docs/docs.md](file:///Users/jossmarsala/Documents/cyber-range/docs/docs.md) and compile it automatically.
+Instead of hand-writing JSON, you can author all your documentation in standard Markdown inside individual modular files in `docs/`:
+- `docs/00-introduccion.md` (Introduction)
+- `docs/01-comprender.md` (Module 1 — Comprender / Layer 1)
+- `docs/02-descubrir.md` (Module 2 — Descubrir / Layer 2)
+- `docs/03-disenar.md` (Module 3 — Diseñar / Layer 3)
+- `docs/04-proteger.md` (Module 4 — Proteger / Layer 4)
+- `docs/05-detectar.md` (Module 5 — Detectar / Layer 5)
+- `docs/06-responder.md` (Module 6 — Responder y Recuperar / Layer 6)
+- `docs/showcase.md` (Component Showcase)
 
 ### Running the Compiler
 
@@ -361,10 +369,10 @@ Instead of hand-writing JSON, you can author all your documentation in standard 
 npm run docs:build
 ```
 
-You can also specify custom input/output paths:
+You can also specify a custom directory or file path:
 
 ```bash
-node scripts/md-to-docs.mjs path/to/my-doc.md --out src/data/docs.json
+node scripts/md-to-docs.mjs docs/01-comprender.md --out src/data/docs.json
 ```
 
 ### Markdown Syntax Cheatsheet

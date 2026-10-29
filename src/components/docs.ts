@@ -35,3 +35,12 @@ export type { DocsPaginationProps } from './DocsPagination'
 
 export { default as DocsSubindexCard } from './DocsSubindexCard'
 export type { DocsSubindexCardProps } from './DocsSubindexCard'
+
+export { default as Diagrama, DiagramaZone, DiagramaConnector, DiagramaNode } from './Diagrama'
+export type {
+  DiagramaProps,
+  DiagramaZoneProps,
+  DiagramaConnectorProps,
+  DiagramaNodeProps,
+  DiagramaGridType,
+} from './Diagrama'

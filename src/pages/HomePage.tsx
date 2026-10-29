@@ -10,6 +10,7 @@ import SpecularButton from '@/components/SpecularButton'
 import BentoGrid from '@/components/BentoGrid'
 import SecurityFramework from '@/components/SecurityFramework'
 import Footer from '@/components/Footer'
+import SEO from '@/components/SEO'
 import styles from './HomePage.module.css'
 
 interface TiltMagneticBadgeProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -150,6 +151,12 @@ export default function HomePage() {
 
   return (
     <div className={styles.page}>
+      <SEO
+        title="Lilium — Playbook de Ciberseguridad & Cyber Range para PyMEs"
+        description="Lilium es un playbook interactivo de ciberseguridad enfocado en construir una arquitectura digital segura para tu PyME con prácticas interactivas y simulaciones en el navegador."
+        keywords="ciberseguridad, cybersecurity, pyme, cyber range, playbook ciberseguridad, nist csf, cis controls, owasp, terminal linux, arquitectura segura, zero trust"
+        ogType="website"
+      />
       {/* ── Hero section ── */}
       <section className={styles.hero} id="hero">
         {/* Left column — content */}

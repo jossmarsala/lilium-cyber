@@ -26,6 +26,7 @@ import {
 import { LABS } from '@/data/labsData'
 import LabWorkspaceHeader from '@/components/lab-workspace/LabWorkspaceHeader'
 import OSCanvas from '@/components/lab-workspace/OSCanvas'
+import SEO from '@/components/SEO'
 import styles from './LabWorkspacePage.module.css'
 
 export default function LabWorkspacePage() {
@@ -42,8 +43,29 @@ export default function LabWorkspacePage() {
     persistThemeChoice(choice)
   }
 
+  const labJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LearningResource',
+    name: lab.title,
+    description: lab.description,
+    learningResourceType: 'Interactive Simulation',
+    educationalLevel: lab.difficulty,
+    timeRequired: lab.duration,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Lilium Playbook',
+    },
+  }
+
   return (
     <div className={styles.workspace}>
+      <SEO
+        title={`${lab.title} — Laboratorio`}
+        description={lab.description}
+        keywords={`${lab.title}, ${lab.category}, ${lab.tag}, cyber range, simulador ciberseguridad, terminal linux, lilium`}
+        ogType="website"
+        jsonLd={labJsonLd}
+      />
       <LabWorkspaceHeader
         lab={lab}
         onBack={handleBack}

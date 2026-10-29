@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0d12"/>
+      <stop offset="50%" stop-color="#07080a"/>
+      <stop offset="100%" stop-color="#040507"/>
+    </linearGradient>
+
+    <!-- Neon Glow Accents -->
+    <radialGradient id="glowTopRight" cx="80%" cy="20%" r="55%">
+      <stop offset="0%" stop-color="#00ff66" stop-opacity="0.16"/>
+      <stop offset="50%" stop-color="#00bb55" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="glowBottomLeft" cx="15%" cy="85%" r="50%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Grid Pattern -->
+    <pattern id="cyberGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255, 255, 255, 0.035)" stroke-width="1"/>
+    </pattern>
+
+    <!-- Linear Card Gradient -->
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.06)"/>
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.01)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  <rect width="1200" height="630" fill="url(#cyberGrid)"/>
+  <circle cx="950" cy="180" r="450" fill="url(#glowTopRight)"/>
+  <circle cx="200" cy="500" r="380" fill="url(#glowBottomLeft)"/>
+
+  <!-- Subtle Outer Border -->
+  <rect x="20" y="20" width="1160" height="590" rx="24" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" fill="none"/>
+
+  <!-- Left Side: Brand & Value Proposition -->
+  <g transform="translate(80, 90)">
+    <!-- Brand Header -->
+    <g transform="translate(0, 0)">
+      <!-- Lilium Logo SVG path (simplified & sharp) -->
+      <g transform="translate(0, 0) scale(0.18)">
+        <path fill="#00ff66" d="M265.29,35.32l-30.44,91.33c-1.85,5.56,3.44,10.85,9,9l91.33-30.44c2.12-.71,3.79-2.38,4.5-4.5l30.44-91.33c1.85-5.56-3.44-10.85-9-9l-91.33,30.44c-2.12.71-3.79,2.38-4.5,4.5Z"/>
+        <path fill="#ffffff" d="M100.7,30.81L9.38.38C3.82-1.48-1.48,3.82.38,9.38l30.44,91.33c.71,2.12,2.38,3.79,4.5,4.5l91.33,30.44c5.56,1.85,10.85-3.44,9-9l-30.44-91.33c-.71-2.12-2.38-3.79-4.5-4.5Z"/>
+        <path fill="#ffffff" d="M335.18,265.29l-91.33-30.44c-5.56-1.85-10.85,3.44-9,9l30.44,91.33c.71,2.12,2.38,3.79,4.5,4.5l91.33,30.44c5.56,1.85,10.85-3.44,9-9l-30.44-91.33c-.71-2.12-2.38-3.79-4.5-4.5Z"/>
+        <path fill="#00ff66" d="M265.42,196.17c0,3.93,3.19,7.12,7.12,7.12h57.91c3.93,0,7.12-3.19,7.12-7.12v-21.84c0-3.93-3.19-7.12-7.12-7.12h-57.91c-3.93,0-7.12,3.19-7.12,7.12v21.84Z"/>
+        <path fill="#ffffff" d="M232.24,167.21h-21.84c-3.93,0-7.12-3.19-7.12-7.12v-21.84c0-3.93-3.19-7.12-7.12-7.12h-21.84c-3.93,0-7.12,3.19-7.12,7.12v21.84c0,3.93-3.19,7.12-7.12,7.12h-21.84c-3.93,0-7.12,3.19-7.12,7.12v21.84c0,3.93,3.19,7.12,7.12,7.12h21.84c3.93,0,7.12,3.19,7.12,7.12v21.84c0,3.93,3.19,7.12,7.12,7.12h21.84c3.93,0,7.12-3.19,7.12-7.12v-21.84c0-3.93,3.19-7.12,7.12-7.12h21.84c3.93,0,7.12-3.19,7.12-7.12v-21.84c0-3.93-3.19-7.12-7.12-7.12Z"/>
+        <path fill="#00ff66" d="M105.21,335.18l30.44-91.33c1.85-5.56-3.44-10.85-9-9l-91.33,30.44c-2.12.71-3.79,2.38-4.5,4.5L.38,361.12c-1.85,5.56,3.44,10.85,9,9l91.33-30.44c2.12-.71,3.79-2.38,4.5-4.5Z"/>
+        <path fill="#ffffff" d="M167.22,301.48v28.95c0,3.93,3.19,7.12,7.12,7.12h21.84c3.93,0,7.12-3.19,7.12-7.12v-57.91c0-3.93-3.19-7.12-7.12-7.12h-21.84c-3.93,0-7.12,3.19-7.12,7.12v28.95Z"/>
+        <path fill="#ffffff" d="M203.29,69.01v-28.95c0-3.93-3.19-7.12-7.12-7.12h-21.84c-3.93,0-7.12,3.19-7.12,7.12v57.91c0,3.93,3.19,7.12,7.12,7.12h21.84c3.93,0,7.12-3.19,7.12-7.12v-28.95Z"/>
+        <path fill="#00ff66" d="M32.95,196.17c0,3.93,3.19,7.12,7.12,7.12h57.9c3.93,0,7.12-3.19,7.12-7.12v-21.84c0-3.93-3.19-7.12-7.12-7.12h-57.9c-3.93,0-7.12,3.19-7.12,7.12v21.84Z"/>
+      </g>
+
+      <text x="80" y="47" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="44" fill="#ffffff" letter-spacing="-1px">lilium</text>
+      <text x="210" y="47" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="400" font-size="44" fill="#888899" letter-spacing="-0.5px">playbook</text>
+    </g>
+
+    <!-- Main Value Headline -->
+    <text x="0" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="48" fill="#ffffff" letter-spacing="-1.5px">
+      Ciberseguridad práctica
+    </text>
+    <text x="0" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="48" fill="#00ff66" letter-spacing="-1.5px">
+      para tu empresa y PyME
+    </text>
+
+    <!-- Subtitle description -->
+    <text x="0" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="400" font-size="20" fill="#a0a5b5" letter-spacing="-0.2px">
+      Guía prescriptiva por capas con laboratorios interactivos
+    </text>
+    <text x="0" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="400" font-size="20" fill="#a0a5b5" letter-spacing="-0.2px">
+      ejecutados 100% en el navegador (Linux &amp; Redes).
+    </text>
+
+    <!-- Standards & Badges Row -->
+    <g transform="translate(0, 345)">
+      <!-- Badge 1: NIST CSF -->
+      <rect x="0" y="0" width="128" height="36" rx="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+      <text x="18" y="23" font-family="monospace" font-size="13" font-weight="600" fill="#e2e8f0">NIST CSF 2.0</text>
+
+      <!-- Badge 2: CIS Controls -->
+      <rect x="140" y="0" width="140" height="36" rx="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+      <text x="156" y="23" font-family="monospace" font-size="13" font-weight="600" fill="#e2e8f0">CIS Controls v8</text>
+
+      <!-- Badge 3: OWASP -->
+      <rect x="292" y="0" width="94" height="36" rx="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+      <text x="310" y="23" font-family="monospace" font-size="13" font-weight="600" fill="#e2e8f0">OWASP</text>
+
+      <!-- Badge 4: MITRE ATT&CK -->
+      <rect x="398" y="0" width="138" height="36" rx="18" fill="rgba(0, 255, 102, 0.12)" stroke="rgba(0, 255, 102, 0.3)"/>
+      <circle cx="414" cy="18" r="4" fill="#00ff66"/>
+      <text x="426" y="23" font-family="monospace" font-size="13" font-weight="700" fill="#00ff66">MITRE ATT&amp;CK</text>
+    </g>
+  </g>
+
+  <!-- Right Side: Terminal & Cyber Range Mock Card -->
+  <g transform="translate(680, 80)">
+    <!-- Terminal Outer Frame -->
+    <rect width="440" height="470" rx="16" fill="#0d1017" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5"/>
+    <rect width="440" height="470" rx="16" fill="url(#cardGrad)"/>
+
+    <!-- Terminal Titlebar -->
+    <rect width="440" height="42" rx="16" fill="rgba(255, 255, 255, 0.04)"/>
+    <circle cx="24" cy="21" r="6" fill="#ff5f56"/>
+    <circle cx="44" cy="21" r="6" fill="#ffbd2e"/>
+    <circle cx="64" cy="21" r="6" fill="#27c93f"/>
+
+    <text x="220" y="26" text-anchor="middle" font-family="monospace" font-size="12" fill="#8892b0">lilium-cyber-range ~ bash</text>
+
+    <!-- Terminal Content -->
+    <g transform="translate(24, 70)" font-family="Consolas, Monaco, 'Courier New', monospace" font-size="13">
+      <text y="0" fill="#64748b"># Inicializando entorno seguro v2.4...</text>
+      
+      <text y="30" fill="#00ff66">guest@lilium:~$</text>
+      <text x="140" y="30" fill="#ffffff">./run-security-audit.sh</text>
+
+      <text y="64" fill="#38bdf8">[*] Analizando 6 capas de defensa:</text>
+      <text y="92" fill="#94a3b8">  [✓] 01. COMPRENDER   (Lineamientos y Riesgo)</text>
+      <text y="118" fill="#94a3b8">  [✓] 02. DESCUBRIR    (Inventario de Activos)</text>
+      <text y="144" fill="#94a3b8">  [✓] 03. DISENAR      (Arquitectura Zero Trust)</text>
+      <text y="170" fill="#94a3b8">  [✓] 04. PROTEGER     (Hardening y Credenciales)</text>
+      <text y="196" fill="#94a3b8">  [✓] 05. DETECTAR     (Telemetría y Syslog)</text>
+      <text y="222" fill="#94a3b8">  [✓] 06. RESPONDER    (Contención de Incidentes)</text>
+
+      <!-- Simulated Alert Card -->
+      <g transform="translate(0, 246)">
+        <rect width="392" height="66" rx="8" fill="rgba(0, 255, 102, 0.08)" stroke="rgba(0, 255, 102, 0.25)" stroke-width="1"/>
+        <text x="14" y="26" fill="#00ff66" font-weight="700">VERIFICACIÓN COMPLETADA (100%)</text>
+        <text x="14" y="48" fill="#cbd5e1" font-size="12">Infraestructura blindada y playbooks validados.</text>
+      </g>
+
+      <text y="340" fill="#00ff66">guest@lilium:~$</text>
+      <rect x="140" y="328" width="8" height="15" fill="#00ff66">
+        <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+  </g>
+</svg>

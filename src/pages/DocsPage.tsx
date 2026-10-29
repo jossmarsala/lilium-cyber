@@ -16,6 +16,7 @@ import { SidebarLeft01Icon } from '@hugeicons/core-free-icons'
 import docs from '@/data/docs'
 import DocsSidebar from '@/components/DocsSidebar'
 import DocsContent from '@/components/DocsContent'
+import SEO from '@/components/SEO'
 import styles from './DocsPage.module.css'
 
 export default function DocsPage() {
@@ -95,8 +96,90 @@ export default function DocsPage() {
     ? activeSubSection.title
     : (activeSection?.title ?? 'Documentación')
 
+  const docTitle = activeSubSection
+    ? `${activeSubSection.title} — ${activeSection?.title ?? 'Playbook'}`
+    : `${activeSection?.title ?? 'Documentación'} — Playbook`
+
+  const firstParagraph = activeSubSection?.blocks?.find(
+    (b) => b.type === 'paragraph' && 'text' in b
+  ) as { text?: string } | undefined
+
+  const rawDescription =
+    firstParagraph?.text ||
+    activeSubSection?.content ||
+    activeSection?.overview ||
+    'Documentación prescriptiva del playbook de ciberseguridad e infraestructura Lilium.'
+
+  const docDescription = rawDescription
+    .replace(/[*_#`[\]]/g, '')
+    .slice(0, 160)
+    .trim()
+
+  const breadcrumbsList = [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Inicio',
+      item: 'https://lilium-playbook.com/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Playbook',
+      item: 'https://lilium-playbook.com/docs',
+    },
+  ]
+
+  if (activeSection) {
+    breadcrumbsList.push({
+      '@type': 'ListItem',
+      position: 3,
+      name: activeSection.title,
+      item: `https://lilium-playbook.com/docs/${activeSection.id}`,
+    })
+  }
+
+  if (activeSubSection && activeSection) {
+    breadcrumbsList.push({
+      '@type': 'ListItem',
+      position: 4,
+      name: activeSubSection.title,
+      item: `https://lilium-playbook.com/docs/${activeSection.id}/${activeSubSection.id}`,
+    })
+  }
+
+  const docJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbsList,
+      },
+      {
+        '@type': 'TechArticle',
+        headline: currentDisplayTitle,
+        description: docDescription,
+        author: {
+          '@type': 'Organization',
+          name: 'Lilium Playbook',
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Lilium',
+        },
+      },
+    ],
+  }
+
   return (
     <div className={styles.layout}>
+      <SEO
+        title={docTitle}
+        description={docDescription}
+        keywords={`${currentDisplayTitle}, ${activeSection?.title || ''}, playbook ciberseguridad, lilium docs, arquitectura segura`}
+        ogType="article"
+        jsonLd={docJsonLd}
+      />
       {/* Mobile drawer backdrop */}
       <div
         className={`${styles.backdrop} ${isMobileOpen ? styles.backdropActive : ''}`}

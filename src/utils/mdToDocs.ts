@@ -40,10 +40,11 @@ function extractHeadingMetadata(line: string): {
 
 function parseDirectiveAttrs(str: string): Record<string, string> {
   const attrs: Record<string, string> = {}
-  const regex = /(\w+)=(?:"([^"]*)"|'([^']*)'|(\S+))/g
+  const regex = /(\w+)=(?:\{([^}]+)\}|"([^"]*)"|'([^']*)'|(\S+))/g
   let match: RegExpExecArray | null
   while ((match = regex.exec(str)) !== null) {
-    attrs[match[1]] = match[2] ?? match[3] ?? match[4] ?? ''
+    const rawVal = match[2] ?? match[3] ?? match[4] ?? match[5] ?? ''
+    attrs[match[1]] = rawVal.replace(/^["']|["']$/g, '').trim()
   }
   return attrs
 }
@@ -83,7 +84,7 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
         const content = itemTrimmed.replace(/^[-*]\s*/, '').trim()
 
         const badgeMatch = content.match(
-          /^(?:\*\*(.*?)\*\*|(.*?))(?:\s*\[(required|optional|default)\])?\s*:\s*(.*)$/,
+          /^(?:\*\*(.*?)\*\*|(.*?))(?:\s*\[(required|optional|default)\])?\s*:\s*(.*)$/
         )
         if (badgeMatch) {
           const keyLabel = (badgeMatch[1] ?? badgeMatch[2] ?? '').trim()
@@ -195,7 +196,12 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
         }
 
         // Continuation line for a bullet (indented)
-        if (inBullets && (sLine.startsWith('  ') || sLine.startsWith('\t')) && sTrim && currentStep) {
+        if (
+          inBullets &&
+          (sLine.startsWith('  ') || sLine.startsWith('\t')) &&
+          sTrim &&
+          currentStep
+        ) {
           bulletLines[bulletLines.length - 1] += ' ' + sTrim
           sIdx++
           continue
@@ -248,7 +254,8 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
       }
       blocks.push({
         type: 'componentPreview',
-        component: (attrs.component as 'specularButton' | 'pills' | 'rubberSegment' | 'all') || 'all',
+        component:
+          (attrs.component as 'specularButton' | 'pills' | 'rubberSegment' | 'all') || 'all',
       })
       continue
     }
@@ -271,9 +278,54 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
         type: 'nextButton',
         ...(attrs.to ? { to: attrs.to } : {}),
         ...(attrs.title ? { title: attrs.title } : {}),
-        ...(attrs.sectionTitle || attrs.section ? { sectionTitle: attrs.sectionTitle || attrs.section } : {}),
+        ...(attrs.sectionTitle || attrs.section
+          ? { sectionTitle: attrs.sectionTitle || attrs.section }
+          : {}),
         ...(attrs.description ? { description: attrs.description } : {}),
-        ...(attrs.variant ? { variant: attrs.variant as 'card' | 'banner' | 'pill' | 'compact' } : {}),
+        ...(attrs.variant
+          ? { variant: attrs.variant as 'card' | 'banner' | 'pill' | 'compact' }
+          : {}),
+      })
+      continue
+    }
+
+    // ── 3d. Custom container / JSX component: <Diagrama ... /> or :::diagram ──
+    if (trimmed.startsWith('<Diagrama') || trimmed.startsWith(':::diagram')) {
+      let tagStr = ''
+      if (trimmed.startsWith('<Diagrama')) {
+        while (i < lines.length) {
+          tagStr += ' ' + lines[i]
+          if (lines[i].includes('/>') || lines[i].includes('</Diagrama>')) {
+            i++
+            break
+          }
+          i++
+        }
+      } else {
+        const dLine = lines[i]
+        i++
+        while (i < lines.length && !lines[i].trim().startsWith(':::')) {
+          i++
+        }
+        if (i < lines.length && lines[i].trim().startsWith(':::')) {
+          i++
+        }
+        tagStr = dLine
+      }
+
+      const attrs = parseDirectiveAttrs(tagStr)
+      const hasNoHoverAttr =
+        /\bnoHover\b/.test(tagStr) || attrs.noHover === 'true' || attrs.hover === 'false'
+      const hasHoverAttr = /\bhover\b/.test(tagStr) && attrs.hover !== 'false'
+      blocks.push({
+        type: 'diagram',
+        title: attrs.title || 'Arquitectura de Red Segmentada para PyME',
+        ...(attrs.badge ? { badge: attrs.badge } : {}),
+        ...(attrs.description ? { description: attrs.description } : {}),
+        ...(attrs.variant ? { variant: attrs.variant } : {}),
+        ...(attrs.height ? { height: attrs.height } : {}),
+        ...(hasHoverAttr ? { hover: true } : {}),
+        ...(hasNoHoverAttr ? { noHover: true } : {}),
       })
       continue
     }
@@ -290,7 +342,9 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
       let variant: CalloutVariant = 'note'
       let label: string | undefined
 
-      const alertMatch = first.match(/^\[!(NOTE|TIP|WARNING|CRITICAL|IMPORTANT)(?::([^\]]+))?\]\s*(.*)$/i)
+      const alertMatch = first.match(
+        /^\[!(NOTE|TIP|WARNING|CRITICAL|IMPORTANT)(?::([^\]]+))?\]\s*(.*)$/i
+      )
       if (alertMatch) {
         const rawKind = alertMatch[1].toUpperCase()
         if (rawKind === 'IMPORTANT') {
@@ -325,11 +379,7 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
             norm.includes('alerta')
           ) {
             variant = 'warning'
-          } else if (
-            norm.includes('tip') ||
-            norm.includes('consejo') ||
-            norm.includes('truco')
-          ) {
+          } else if (norm.includes('tip') || norm.includes('consejo') || norm.includes('truco')) {
             variant = 'tip'
           } else {
             variant = 'note'
@@ -337,16 +387,12 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
           quoteLines.shift()
         } else {
           const colonMatch = first.match(
-            /^(Note|Tip|Warning|Critical|Nota|Advertencia|Atención|Consejo):\s*(.*)$/i,
+            /^(Note|Tip|Warning|Critical|Nota|Advertencia|Atención|Consejo):\s*(.*)$/i
           )
           if (colonMatch) {
             const norm = colonMatch[1].toLowerCase()
             if (norm === 'tip' || norm === 'consejo') variant = 'tip'
-            else if (
-              norm === 'warning' ||
-              norm === 'advertencia' ||
-              norm === 'atención'
-            )
+            else if (norm === 'warning' || norm === 'advertencia' || norm === 'atención')
               variant = 'warning'
             else if (norm === 'critical') variant = 'critical'
             else variant = 'note'
@@ -548,8 +594,7 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
           const lastRow = rows[rows.length - 1]
           const firstVal = String(lastRow[0] || '').trim()
           const restEmpty = lastRow.slice(1).every((c) => !c || !String(c).trim())
-          const capMatch =
-            firstVal.match(/^(\*|_)(.+)\1$/) || firstVal.match(/^Table:\s*(.+)$/i)
+          const capMatch = firstVal.match(/^(\*|_)(.+)\1$/) || firstVal.match(/^Table:\s*(.+)$/i)
           if (capMatch && restEmpty) {
             caption = (capMatch[2] ?? capMatch[1] ?? firstVal).trim()
             rows.pop()
@@ -565,8 +610,7 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
           if (lookAhead < lines.length && lookAhead <= i + 2) {
             const capCandidate = lines[lookAhead].trim()
             const capMatch =
-              capCandidate.match(/^(\*|_)(.+)\1$/) ||
-              capCandidate.match(/^Table:\s*(.+)$/i)
+              capCandidate.match(/^(\*|_)(.+)\1$/) || capCandidate.match(/^Table:\s*(.+)$/i)
             if (
               capMatch &&
               !capCandidate.startsWith('#') &&
@@ -693,7 +737,7 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
           const indentMatch = rawLine.match(/^(\s*)/)
           const indentLength = indentMatch ? indentMatch[1].replace(/\t/g, '  ').length : 0
           const isLetter = /^[a-zA-Z]\)/.test(match[1])
-          const level = (indentLength >= 2 || isLetter) ? 2 : 1
+          const level = indentLength >= 2 || isLetter ? 2 : 1
 
           let itemText = match[2]
           i++
@@ -802,9 +846,7 @@ export function parseMarkdownToSections(markdown: string): DocSection[] {
 
     const isSectionHeader =
       trimmed.startsWith('# ') &&
-      (trimmed.includes('id:') ||
-        trimmed.match(/^#\s+[0-9]\)/) ||
-        trimmed.match(/^#\s+layer/i))
+      (trimmed.includes('id:') || trimmed.match(/^#\s+[0-9]\)/) || trimmed.match(/^#\s+layer/i))
 
     if (isSectionHeader) {
       commitSection()

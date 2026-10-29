@@ -71,33 +71,19 @@ function getOrderLabel(index: number, level: number): string {
   return `${index}.`
 }
 
-export function DocsListItem({
-  children,
-  index,
-  ordered: itemOrdered,
-  level = 1,
-}: ListItemProps) {
+export function DocsListItem({ children, index, ordered: itemOrdered, level = 1 }: ListItemProps) {
   const ctx = useContext(ListContext)
   const isOrdered = itemOrdered ?? ctx.ordered
 
-  const itemClass = [
-    isOrdered ? styles.orderedItem : styles.item,
-    level === 2 ? styles.level2 : '',
-  ]
+  const itemClass = [isOrdered ? styles.orderedItem : styles.item, level === 2 ? styles.level2 : '']
     .filter(Boolean)
     .join(' ')
 
-  const bulletClass = [
-    styles.bullet,
-    level === 2 ? styles.bulletLevel2 : '',
-  ]
+  const bulletClass = [styles.bullet, level === 2 ? styles.bulletLevel2 : '']
     .filter(Boolean)
     .join(' ')
 
-  const orderClass = [
-    styles.orderNumber,
-    level === 2 ? styles.orderNumberLevel2 : '',
-  ]
+  const orderClass = [styles.orderNumber, level === 2 ? styles.orderNumberLevel2 : '']
     .filter(Boolean)
     .join(' ')
 
@@ -167,9 +153,16 @@ const BADGE_CLASS: Record<BadgeKind, string> = {
 }
 
 export function DocsGroupRow({ keyLabel, badge, children }: GroupRowProps) {
+  const bracketMatch = keyLabel.match(/^(.*?)(?:\s*\[(.*?)\])$/)
+  const titleText = bracketMatch ? bracketMatch[1].trim() : keyLabel
+  const tagText = bracketMatch ? bracketMatch[2].trim() : null
+
   return (
     <div className={styles.row}>
-      <span className={styles.rowKey}>{keyLabel}</span>
+      <span className={styles.rowKey}>
+        <span className={styles.rowKeyTitle}>{titleText}</span>
+        {tagText && <span className={styles.rowKeyTag}>{tagText}</span>}
+      </span>
       <span className={styles.rowVal}>{children}</span>
       {badge && <span className={`${styles.rowBadge} ${BADGE_CLASS[badge]}`}>{badge}</span>}
     </div>

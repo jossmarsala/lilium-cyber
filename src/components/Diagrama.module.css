@@ -1,0 +1,332 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Diagrama.module.css — Estilos base para contenedor de diagramas
+   Estética ultra-minimalista, limpia y moderna (Neutral Design System)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--color-surface-2, #f8f9fa);
+  border: 1px solid var(--color-border-subtle, rgba(0, 0, 0, 0.08));
+  border-radius: var(--radius-xl, 18px);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 4px 16px rgba(0, 0, 0, 0.02);
+  user-select: none;
+  box-sizing: border-box;
+  margin: 36px 0;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.hasHover.container:hover {
+  border-color: var(--color-border, rgba(0, 0, 0, 0.12));
+}
+
+/* ── Canvas principal con espacio superior e inferior amplio ── */
+.canvasWrapper {
+  position: relative;
+  width: 100%;
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 32px 24px 44px 24px;
+  box-sizing: border-box;
+}
+
+.zoomableContent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.isPanning {
+  transition: none !important;
+}
+
+.canvasWrapper.canDrag {
+  cursor: grab;
+}
+
+.canvasWrapper.isDragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.svgCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* ── Patrón de cuadrícula / dot-matrix sutil ── */
+.gridDots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1.1px, transparent 1.1px);
+  background-size: 20px 20px;
+  background-position: center center;
+  mask-image: radial-gradient(circle at center, black 15%, transparent 70%);
+  -webkit-mask-image: radial-gradient(circle at center, black 15%, transparent 70%);
+}
+
+.gridLines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: center center;
+  mask-image: radial-gradient(circle at center, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 70%);
+}
+
+/* ── Cabecera minimalista limpia (solo título simple) ── */
+.header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 28px 0 28px;
+  pointer-events: none;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary, #111827);
+  pointer-events: auto;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+/* ── Controles de Zoom in / Zoom out ── */
+.zoomControls {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 4px;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  pointer-events: auto;
+}
+
+.zoomButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent !important;
+  color: #4b5563;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.zoomButton:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #111827;
+}
+
+.zoomButton:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.zoomButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.zoomLevel {
+  min-width: 38px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: center;
+  font-family: var(--font-mono, monospace);
+  user-select: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+}
+
+.zoomLevel:hover {
+  color: #111827;
+}
+
+.zoomDivider {
+  width: 1px;
+  height: 12px;
+  background-color: rgba(0, 0, 0, 0.08);
+  margin: 0 1px;
+}
+
+/* ── Pie de diagrama / Leyenda ── */
+.footer {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 18px 12px 18px;
+  font-size: 11px;
+  color: var(--color-text-muted, #6b7280);
+}
+
+/* ── Animación flujo de datos (marching ants) ── */
+@keyframes dataFlow {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.marchingAnts {
+  stroke-dasharray: 6 4;
+  animation: dataFlow 1.6s linear infinite;
+}
+
+/* ── Pulso sutil para puntos de estado ── */
+@keyframes pingPulse {
+  75%,
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.statusPing {
+  animation: pingPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ── Animación de paquetes de datos deslizantes (Estilo minimalista de referencia) ── */
+@keyframes packetSlide {
+  from {
+    stroke-dashoffset: 140;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes packetSlideReverse {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 140;
+  }
+}
+
+.packetStream {
+  stroke-dasharray: 8 132;
+  stroke-linecap: round;
+  animation: packetSlide 2.6s linear infinite;
+}
+
+.packetStreamFast {
+  stroke-dasharray: 8 110;
+  stroke-linecap: round;
+  animation: packetSlide 1.8s linear infinite;
+}
+
+.packetStreamReverse {
+  stroke-dasharray: 8 132;
+  stroke-linecap: round;
+  animation: packetSlideReverse 2.8s linear infinite;
+}
+
+/* ── Órbita ambiental muy lenta ── */
+@keyframes slowOrbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ambientOrbit {
+  transform-origin: 540px 185px;
+  animation: slowOrbit 120s linear infinite;
+}
+
+/* ── Levitation suave para nube perimetral ── */
+@keyframes ambientLevitate {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.ambientFloat {
+  animation: ambientLevitate 5s ease-in-out infinite;
+}
+
+/* ── Interacción sutil en tarjetas de nodo (solo si hasHover) ── */
+.nodeCard {
+  cursor: default;
+}
+
+.hasHover .nodeCard {
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.2s ease;
+}
+
+.hasHover .nodeCard:hover {
+  transform: translateY(-1.5px);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08));
+}
+
+.noHover .nodeCard {
+  transition: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.noHover .nodeCard:hover {
+  transform: none !important;
+  filter: none !important;
+}

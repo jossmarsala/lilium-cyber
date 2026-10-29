@@ -51,23 +51,29 @@ function normalizeUrl(url: string): string {
 export function renderInline(text: string, key?: string | number): ReactNode {
   if (!text) return null
 
-  // Fast path: plain text with no markdown characters
+  // Fast path: plain text with no markdown characters or HTML line breaks
   if (
     !text.includes('`') &&
     !text.includes('**') &&
     !text.includes('_') &&
     !text.includes('*') &&
-    !text.includes('[')
+    !text.includes('[') &&
+    !text.toLowerCase().includes('<br')
   ) {
     return key !== undefined ? <span key={key}>{text}</span> : text
   }
 
-  // Split by `code`, **bold**, _italic_, *italic*, or [link](url 'title')
-  const regex = /(`[^`]+`|\*\*[^*]+?\*\*|_[^_]+?_|\*[^*]+?\*|\[[^\]]+\]\([^)]+\))/g
+  // Split by `code`, **bold**, _italic_, *italic*, [link](url 'title'), or <br> / <br/>
+  const regex = /(`[^`]+`|\*\*[^*]+?\*\*|_[^_]+?_|\*[^*]+?\*|\[[^\]]+\]\([^)]+\)|<br\s*\/?>)/gi
   const parts = text.split(regex)
 
   const elements = parts.map((part, i) => {
     if (!part) return null
+
+    // HTML line break: <br> or <br/> or <br />
+    if (/^<br\s*\/?>$/i.test(part)) {
+      return <br key={i} />
+    }
 
     // Inline code: `...`
     if (part.startsWith('`') && part.endsWith('`') && part.length >= 2) {

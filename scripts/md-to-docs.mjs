@@ -6,7 +6,8 @@
  *
  * Usage:
  *   npm run docs:build
- *   node scripts/md-to-docs.mjs docs/docs.md --out src/data/docs.json
+ *   node scripts/md-to-docs.mjs docs/ --out src/data/docs.json
+ *   node scripts/md-to-docs.mjs docs/01-comprender.md --out src/data/docs.json
  */
 
 import fs from 'node:fs'
@@ -48,10 +49,11 @@ function extractHeadingMetadata(line) {
 
 function parseDirectiveAttrs(str) {
   const attrs = {}
-  const regex = /(\w+)=(?:"([^"]*)"|'([^']*)'|(\S+))/g
+  const regex = /(\w+)=(?:\{([^}]+)\}|"([^"]*)"|'([^']*)'|(\S+))/g
   let match
   while ((match = regex.exec(str)) !== null) {
-    attrs[match[1]] = match[2] ?? match[3] ?? match[4] ?? ''
+    const rawVal = match[2] ?? match[3] ?? match[4] ?? match[5] ?? ''
+    attrs[match[1]] = rawVal.replace(/^["']|["']$/g, '').trim()
   }
   return attrs
 }
@@ -91,7 +93,7 @@ export function parseMarkdownToBlocks(markdown) {
         const content = itemTrimmed.replace(/^[-*]\s*/, '').trim()
 
         const badgeMatch = content.match(
-          /^(?:\*\*(.*?)\*\*|(.*?))(?:\s*\[(required|optional|default)\])?\s*:\s*(.*)$/,
+          /^(?:\*\*(.*?)\*\*|(.*?))(?:\s*\[(required|optional|default)\])?\s*:\s*(.*)$/
         )
         if (badgeMatch) {
           const keyLabel = (badgeMatch[1] ?? badgeMatch[2] ?? '').trim()
@@ -203,7 +205,12 @@ export function parseMarkdownToBlocks(markdown) {
         }
 
         // Continuation line for a bullet (indented)
-        if (inBullets && (sLine.startsWith('  ') || sLine.startsWith('\t')) && sTrim && currentStep) {
+        if (
+          inBullets &&
+          (sLine.startsWith('  ') || sLine.startsWith('\t')) &&
+          sTrim &&
+          currentStep
+        ) {
           bulletLines[bulletLines.length - 1] += ' ' + sTrim
           sIdx++
           continue
@@ -279,7 +286,9 @@ export function parseMarkdownToBlocks(markdown) {
         type: 'nextButton',
         ...(attrs.to ? { to: attrs.to } : {}),
         ...(attrs.title ? { title: attrs.title } : {}),
-        ...(attrs.sectionTitle || attrs.section ? { sectionTitle: attrs.sectionTitle || attrs.section } : {}),
+        ...(attrs.sectionTitle || attrs.section
+          ? { sectionTitle: attrs.sectionTitle || attrs.section }
+          : {}),
         ...(attrs.description ? { description: attrs.description } : {}),
         ...(attrs.variant ? { variant: attrs.variant } : {}),
       })
@@ -303,6 +312,47 @@ export function parseMarkdownToBlocks(markdown) {
       continue
     }
 
+    // ── 3e. Custom container / JSX component: <Diagrama ... /> or :::diagram ──
+    if (trimmed.startsWith('<Diagrama') || trimmed.startsWith(':::diagram')) {
+      let tagStr = ''
+      if (trimmed.startsWith('<Diagrama')) {
+        while (i < lines.length) {
+          tagStr += ' ' + lines[i]
+          if (lines[i].includes('/>') || lines[i].includes('</Diagrama>')) {
+            i++
+            break
+          }
+          i++
+        }
+      } else {
+        const dLine = lines[i]
+        i++
+        while (i < lines.length && !lines[i].trim().startsWith(':::')) {
+          i++
+        }
+        if (i < lines.length && lines[i].trim().startsWith(':::')) {
+          i++
+        }
+        tagStr = dLine
+      }
+
+      const attrs = parseDirectiveAttrs(tagStr)
+      const hasNoHoverAttr =
+        /\bnoHover\b/.test(tagStr) || attrs.noHover === 'true' || attrs.hover === 'false'
+      const hasHoverAttr = /\bhover\b/.test(tagStr) && attrs.hover !== 'false'
+      blocks.push({
+        type: 'diagram',
+        title: attrs.title || 'Arquitectura de Red Segmentada para PyME',
+        ...(attrs.badge ? { badge: attrs.badge } : {}),
+        ...(attrs.description ? { description: attrs.description } : {}),
+        ...(attrs.variant ? { variant: attrs.variant } : {}),
+        ...(attrs.height ? { height: attrs.height } : {}),
+        ...(hasHoverAttr ? { hover: true } : {}),
+        ...(hasNoHoverAttr ? { noHover: true } : {}),
+      })
+      continue
+    }
+
     // ── 4. Blockquotes & Callouts: > [!NOTE], > **Riesgo**, > Note: ──
     if (trimmed.startsWith('>')) {
       const quoteLines = []
@@ -315,7 +365,9 @@ export function parseMarkdownToBlocks(markdown) {
       let variant = 'note'
       let label = undefined
 
-      const alertMatch = first.match(/^\[!(NOTE|TIP|WARNING|CRITICAL|IMPORTANT|CAUTION)(?::([^\]]+))?\]\s*(.*)$/i)
+      const alertMatch = first.match(
+        /^\[!(NOTE|TIP|WARNING|CRITICAL|IMPORTANT|CAUTION)(?::([^\]]+))?\]\s*(.*)$/i
+      )
       if (alertMatch) {
         const rawKind = alertMatch[1].toUpperCase()
         if (rawKind === 'IMPORTANT') {
@@ -325,7 +377,13 @@ export function parseMarkdownToBlocks(markdown) {
         } else {
           variant = alertMatch[1].toLowerCase()
         }
-        label = alertMatch[2]?.trim() || (rawKind === 'IMPORTANT' ? 'Importante' : rawKind === 'CAUTION' ? 'Precaución' : undefined)
+        label =
+          alertMatch[2]?.trim() ||
+          (rawKind === 'IMPORTANT'
+            ? 'Importante'
+            : rawKind === 'CAUTION'
+              ? 'Precaución'
+              : undefined)
         const trailing = alertMatch[3]?.trim()
         if (trailing) {
           quoteLines[0] = trailing
@@ -352,11 +410,7 @@ export function parseMarkdownToBlocks(markdown) {
             norm.includes('alerta')
           ) {
             variant = 'warning'
-          } else if (
-            norm.includes('tip') ||
-            norm.includes('consejo') ||
-            norm.includes('truco')
-          ) {
+          } else if (norm.includes('tip') || norm.includes('consejo') || norm.includes('truco')) {
             variant = 'tip'
           } else {
             variant = 'note'
@@ -364,16 +418,12 @@ export function parseMarkdownToBlocks(markdown) {
           quoteLines.shift()
         } else {
           const colonMatch = first.match(
-            /^(Note|Tip|Warning|Critical|Nota|Advertencia|Atención|Consejo):\s*(.*)$/i,
+            /^(Note|Tip|Warning|Critical|Nota|Advertencia|Atención|Consejo):\s*(.*)$/i
           )
           if (colonMatch) {
             const norm = colonMatch[1].toLowerCase()
             if (norm === 'tip' || norm === 'consejo') variant = 'tip'
-            else if (
-              norm === 'warning' ||
-              norm === 'advertencia' ||
-              norm === 'atención'
-            )
+            else if (norm === 'warning' || norm === 'advertencia' || norm === 'atención')
               variant = 'warning'
             else if (norm === 'critical') variant = 'critical'
             else variant = 'note'
@@ -575,8 +625,7 @@ export function parseMarkdownToBlocks(markdown) {
           const lastRow = rows[rows.length - 1]
           const firstVal = String(lastRow[0] || '').trim()
           const restEmpty = lastRow.slice(1).every((c) => !c || !String(c).trim())
-          const capMatch =
-            firstVal.match(/^(\*|_)(.+)\1$/) || firstVal.match(/^Table:\s*(.+)$/i)
+          const capMatch = firstVal.match(/^(\*|_)(.+)\1$/) || firstVal.match(/^Table:\s*(.+)$/i)
           if (capMatch && restEmpty) {
             caption = (capMatch[2] ?? capMatch[1] ?? firstVal).trim()
             rows.pop()
@@ -592,8 +641,7 @@ export function parseMarkdownToBlocks(markdown) {
           if (lookAhead < lines.length && lookAhead <= i + 2) {
             const capCandidate = lines[lookAhead].trim()
             const capMatch =
-              capCandidate.match(/^(\*|_)(.+)\1$/) ||
-              capCandidate.match(/^Table:\s*(.+)$/i)
+              capCandidate.match(/^(\*|_)(.+)\1$/) || capCandidate.match(/^Table:\s*(.+)$/i)
             if (
               capMatch &&
               !capCandidate.startsWith('#') &&
@@ -723,7 +771,7 @@ export function parseMarkdownToBlocks(markdown) {
           const indentMatch = rawLine.match(/^(\s*)/)
           const indentLength = indentMatch ? indentMatch[1].replace(/\t/g, '  ').length : 0
           const isLetter = /^[a-zA-Z]\)/.test(match[1])
-          const level = (indentLength >= 2 || isLetter) ? 2 : 1
+          const level = indentLength >= 2 || isLetter ? 2 : 1
 
           let itemText = match[2]
           i++
@@ -836,9 +884,7 @@ export function parseMarkdownToSections(markdown) {
     // Also matches standard `# 1) Comprender` or any top-level `# Layer`
     const isSectionHeader =
       trimmed.startsWith('# ') &&
-      (trimmed.includes('id:') ||
-        trimmed.match(/^#\s+[0-9]\)/) ||
-        trimmed.match(/^#\s+layer/i))
+      (trimmed.includes('id:') || trimmed.match(/^#\s+[0-9]\)/) || trimmed.match(/^#\s+layer/i))
 
     if (isSectionHeader) {
       commitSection()
@@ -861,8 +907,7 @@ export function parseMarkdownToSections(markdown) {
 
     // Subsection: `## Fundamentos <!-- id: introduction, icon: Book02Icon -->`
     const isSubSectionHeader =
-      trimmed.startsWith('## ') &&
-      (trimmed.includes('id:') || trimmed.includes('icon:'))
+      trimmed.startsWith('## ') && (trimmed.includes('id:') || trimmed.includes('icon:'))
 
     if (isSubSectionHeader && currentSection) {
       commitSubSection()
@@ -897,7 +942,7 @@ export function parseMarkdownToSections(markdown) {
 // ── CLI Execution ──
 function runCLI() {
   const args = process.argv.slice(2)
-  let inputPath = 'docs/docs.md'
+  const inputPaths = []
   let outputPath = 'src/data/docs.json'
 
   for (let i = 0; i < args.length; i++) {
@@ -905,25 +950,75 @@ function runCLI() {
       outputPath = args[i + 1]
       i++
     } else if (!args[i].startsWith('--')) {
-      inputPath = args[i]
+      inputPaths.push(args[i])
     }
   }
 
-  const fullInputPath = path.resolve(ROOT_DIR, inputPath)
-  const fullOutputPath = path.resolve(ROOT_DIR, outputPath)
+  let filesToProcess = []
 
-  if (!fs.existsSync(fullInputPath)) {
-    console.error(`❌ Input markdown file not found: ${fullInputPath}`)
+  if (inputPaths.length === 0) {
+    const docsDir = path.resolve(ROOT_DIR, 'docs')
+    if (fs.existsSync(docsDir)) {
+      const entries = fs.readdirSync(docsDir, { withFileTypes: true })
+      filesToProcess = entries
+        .filter(
+          (entry) =>
+            entry.isFile() &&
+            entry.name.endsWith('.md') &&
+            !entry.name.endsWith('.bak') &&
+            entry.name !== 'docs.md'
+        )
+        .map((entry) => path.join(docsDir, entry.name))
+        .sort((a, b) => path.basename(a).localeCompare(path.basename(b)))
+
+      if (filesToProcess.length === 0 && fs.existsSync(path.join(docsDir, 'docs.md'))) {
+        filesToProcess = [path.join(docsDir, 'docs.md')]
+      }
+    }
+  } else {
+    for (const p of inputPaths) {
+      const fullPath = path.resolve(ROOT_DIR, p)
+      if (!fs.existsSync(fullPath)) {
+        console.error(`❌ Input path not found: ${fullPath}`)
+        process.exit(1)
+      }
+      const stat = fs.statSync(fullPath)
+      if (stat.isDirectory()) {
+        const entries = fs.readdirSync(fullPath, { withFileTypes: true })
+        const dirFiles = entries
+          .filter(
+            (entry) =>
+              entry.isFile() &&
+              entry.name.endsWith('.md') &&
+              !entry.name.endsWith('.bak') &&
+              entry.name !== 'docs.md'
+          )
+          .map((entry) => path.join(fullPath, entry.name))
+          .sort((a, b) => path.basename(a).localeCompare(path.basename(b)))
+        filesToProcess.push(...dirFiles)
+      } else {
+        filesToProcess.push(fullPath)
+      }
+    }
+  }
+
+  if (filesToProcess.length === 0) {
+    console.error(`❌ No markdown files found to process.`)
     process.exit(1)
   }
 
-  const markdown = fs.readFileSync(fullInputPath, 'utf8')
-  const sections = parseMarkdownToSections(markdown)
+  const sections = []
+  for (const filePath of filesToProcess) {
+    const markdown = fs.readFileSync(filePath, 'utf8')
+    const fileSections = parseMarkdownToSections(markdown)
+    sections.push(...fileSections)
+  }
 
+  const fullOutputPath = path.resolve(ROOT_DIR, outputPath)
   fs.mkdirSync(path.dirname(fullOutputPath), { recursive: true })
   fs.writeFileSync(fullOutputPath, JSON.stringify(sections, null, 2), 'utf8')
 
-  console.log(`✅ Successfully compiled ${sections.length} documentation sections:`)
+  console.log(`✅ Successfully compiled ${sections.length} documentation sections from ${filesToProcess.length} file(s):`)
   for (const s of sections) {
     console.log(`   📂 ${s.title} (${s.id}) -> ${s.subsections.length} subsections`)
     for (const sub of s.subsections) {

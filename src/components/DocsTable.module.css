@@ -16,15 +16,49 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   -webkit-overflow-scrolling: touch;
   background: #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+}
+
+.wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wrapper::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.16);
+  border-radius: 999px;
+}
+
+.wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .table {
   width: 100%;
-  min-width: 580px;
+  min-width: 100%;
   border-collapse: collapse;
   font-family: var(--font-family);
   font-size: 0.9375rem;
   background: #ffffff;
+}
+
+/* Allow comfortable horizontal overflow for multi-column tables so expansive texts stay legible */
+.table[data-columns='3'] {
+  min-width: 820px;
+}
+
+.table[data-columns='4'] {
+  min-width: 1040px;
+}
+
+.table[data-columns='5'],
+.table[data-columns='6'],
+.table[data-columns='7'] {
+  min-width: 1220px;
 }
 
 /* ── Head ── */
@@ -34,14 +68,16 @@
 }
 
 .th {
-  padding: 0.8rem 1.15rem;
+  padding: 0.9rem 1.25rem;
   font-size: 0.75rem;
   font-weight: 700;
   color: #111111;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: left;
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.4;
+  vertical-align: middle;
 }
 
 /* ── Body ── */
@@ -59,11 +95,12 @@
 }
 
 .td {
-  padding: 0.8rem 1.15rem;
+  padding: 0.95rem 1.25rem;
   color: var(--color-text-secondary);
   vertical-align: top;
-  line-height: 1.65;
-  word-break: break-word;
+  line-height: 1.6;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .td strong {
@@ -71,17 +108,17 @@
   color: #111111;
 }
 
-/* First column emphasis */
+/* First column subtle emphasis */
 .td:first-child {
   font-weight: 500;
   color: #111111;
-  white-space: nowrap;
 }
 
-/* If first column content has a long definition (like plain prose), allow wrap */
-.td:first-child:has(p),
-.td:first-child:not(:has(strong)):not(:has(code)) {
-  white-space: normal;
+/* Line jumps inside table cells */
+.td br {
+  display: block;
+  content: '';
+  margin-top: 0.35rem;
 }
 
 /* Inline code inside cells */
