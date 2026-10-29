@@ -1,6 +1,46 @@
-import { Renderer, Program, Mesh, Color, Triangle } from 'ogl'
+import { Renderer, Program, Mesh, Color, Triangle, Texture } from 'ogl'
 import { useEffect, useRef, useMemo, useCallback } from 'react'
 import './FaultyTerminal.css'
+
+const LILIUM_PATHS = [
+  'M265.29,35.32l-30.44,91.33c-1.85,5.56,3.44,10.85,9,9l91.33-30.44c2.12-.71,3.79-2.38,4.5-4.5l30.44-91.33c1.85-5.56-3.44-10.85-9-9l-91.33,30.44c-2.12.71-3.79,2.38-4.5,4.5Z',
+  'M100.7,30.81L9.38.38C3.82-1.48-1.48,3.82.38,9.38l30.44,91.33c.71,2.12,2.38,3.79,4.5,4.5l91.33,30.44c5.56,1.85,10.85-3.44,9-9l-30.44-91.33c-.71-2.12-2.38-3.79-4.5-4.5Z',
+  'M335.18,265.29l-91.33-30.44c-5.56-1.85-10.85,3.44-9,9l30.44,91.33c.71,2.12,2.38,3.79,4.5,4.5l91.33,30.44c5.56,1.85,10.85-3.44,9-9l-30.44-91.33c-.71-2.12-2.38-3.79-4.5-4.5Z',
+  'M265.42,196.17c0,3.93,3.19,7.12,7.12,7.12h57.91c3.93,0,7.12-3.19,7.12-7.12v-21.84c0-3.93-3.19-7.12-7.12-7.12h-57.91c-3.93,0-7.12,3.19-7.12,7.12v21.84Z',
+  'M232.24,167.21h-21.84c-3.93,0-7.12-3.19-7.12-7.12v-21.84c0-3.93-3.19-7.12-7.12-7.12h-21.84c-3.93,0-7.12,3.19-7.12,7.12v21.84c0,3.93-3.19,7.12-7.12,7.12h-21.84c-3.93,0-7.12,3.19-7.12,7.12v21.84c0,3.93,3.19,7.12,7.12,7.12h21.84c3.93,0,7.12,3.19,7.12,7.12v21.84c0,3.93,3.19,7.12,7.12,7.12h21.84c3.93,0,7.12-3.19,7.12-7.12v-21.84c0-3.93,3.19-7.12,7.12-7.12h21.84c3.93,0,7.12-3.19,7.12-7.12v-21.84c0-3.93-3.19-7.12-7.12-7.12Z',
+  'M105.21,335.18l30.44-91.33c1.85-5.56-3.44-10.85-9-9l-91.33,30.44c-2.12.71-3.79,2.38-4.5,4.5L.38,361.12c-1.85,5.56,3.44,10.85,9,9l91.33-30.44c2.12-.71,3.79-2.38,4.5-4.5Z',
+  'M167.22,301.48v28.95c0,3.93,3.19,7.12,7.12,7.12h21.84c3.93,0,7.12-3.19,7.12-7.12v-57.91c0-3.93-3.19-7.12-7.12-7.12h-21.84c-3.93,0-7.12,3.19-7.12,7.12v28.95Z',
+  'M203.29,69.01v-28.95c0-3.93-3.19-7.12-7.12-7.12h-21.84c-3.93,0-7.12,3.19-7.12,7.12v57.91c0,3.93,3.19,7.12,7.12,7.12h21.84c3.93,0,7.12-3.19,7.12-7.12v-28.95Z',
+  'M32.95,196.17c0,3.93,3.19,7.12,7.12,7.12h57.9c3.93,0,7.12-3.19,7.12-7.12v-21.84c0-3.93-3.19-7.12-7.12-7.12h-57.9c-3.93,0-7.12,3.19-7.12,7.12v21.84Z',
+]
+
+function createLogoTexture(gl: Renderer['gl']) {
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return null
+
+  ctx.fillStyle = '#000000'
+  ctx.fillRect(0, 0, 512, 512)
+
+  const pad = 20
+  const available = 512 - pad * 2
+  const scale = available / 370.51
+  ctx.save()
+  ctx.translate(pad, pad)
+  ctx.scale(scale, scale)
+  ctx.fillStyle = '#ffffff'
+  for (const d of LILIUM_PATHS) {
+    ctx.fill(new Path2D(d))
+  }
+  ctx.restore()
+
+  return new Texture(gl, {
+    image: canvas,
+    generateMipmaps: false,
+  })
+}
 
 const vertexShader = `
 attribute vec2 position;
@@ -39,6 +79,8 @@ uniform float uPageLoadProgress;
 uniform float uUsePageLoadAnimation;
 uniform float uBrightness;
 uniform float uLightMode;
+uniform sampler2D uLogo;
+uniform float uUseLogo;
 
 float time;
 
@@ -93,13 +135,36 @@ float pattern(vec2 p, out vec2 q, out vec2 r) {
   return fbm(p + r);
 }
 
-/* Returns both the digit brightness and the raw cell intensity via cellIntensity out param */
-float digitWithIntensity(vec2 p, out float cellIntensity){
+/* Returns digit brightness, raw cell intensity, and logo presence mask */
+float digitWithIntensity(vec2 p, out float cellIntensity, out float isLogo){
     vec2 grid = uGridMul * 15.0;
     vec2 s = floor(p * grid) / grid;
+    vec2 cellUv = (s + 0.5 / grid) / uScale;
     p = p * grid;
     vec2 q, r;
-    float intensity = pattern(s * 0.1, q, r) * 1.3 - 0.03;
+    float noiseVal = pattern(s * 0.1, q, r);
+    float baseNoise = noiseVal * 1.3 - 0.03;
+    float intensity = baseNoise;
+    isLogo = 0.0;
+
+    if (uUseLogo > 0.5) {
+        vec2 centered = cellUv - vec2(0.5);
+        float aspect = iResolution.x / iResolution.y;
+        if (aspect > 1.0) {
+            centered.x *= aspect;
+        } else {
+            centered.y /= aspect;
+        }
+        vec2 logoCoords = centered / 0.52 + vec2(0.5);
+        float logoMask = 0.0;
+        if (logoCoords.x >= 0.0 && logoCoords.x <= 1.0 && logoCoords.y >= 0.0 && logoCoords.y <= 1.0) {
+            logoMask = texture2D(uLogo, logoCoords).r;
+        }
+        
+        isLogo = logoMask;
+        float logoIntensity = logoMask * (0.85 + 0.35 * noiseVal);
+        intensity = max(baseNoise * 0.75, logoIntensity);
+    }
     
     if(uUseMouse > 0.5){
         vec2 mouseWorld = uMouse * uScale;
@@ -142,8 +207,9 @@ float digitWithIntensity(vec2 p, out float cellIntensity){
 }
 
 float digit(vec2 p){
-    float dummy;
-    return digitWithIntensity(p, dummy);
+    float dummy1;
+    float dummy2;
+    return digitWithIntensity(p, dummy1, dummy2);
 }
 
 float onOff(float a, float b, float c)
@@ -172,7 +238,8 @@ vec3 getColor(vec2 p){
     }
 
     float cellIntensity;
-    float middle = digitWithIntensity(p, cellIntensity);
+    float isLogo;
+    float middle = digitWithIntensity(p, cellIntensity, isLogo);
     
     const float off = 0.002;
     float sum = digit(p + vec2(-off, -off)) + digit(p + vec2(0.0, -off)) + digit(p + vec2(off, -off)) +
@@ -181,10 +248,11 @@ vec3 getColor(vec2 p){
     
     float luma = 0.9 * middle + sum * 0.1 * bar;
     
-    /* Blend between threat (red) and protect (cyan/green) based on cell intensity.
-       Low intensity → threat color, high intensity → protect color. */
+    /* Blend between threat (red) and protect (cyan/green) based on cell intensity for noise,
+       and assign the reddish pink threat tint directly to the logo cells. */
     float t = smoothstep(0.15, 0.55, cellIntensity);
-    vec3 tintColor = mix(uTintThreat, uTint, t);
+    vec3 noiseColor = mix(uTintThreat, uTint, t);
+    vec3 tintColor = mix(noiseColor, uTintThreat, smoothstep(0.15, 0.5, isLogo));
     
     vec3 baseColor = vec3(luma) * tintColor;
     return baseColor;
@@ -225,10 +293,10 @@ void main() {
       float energy = max(max(col.r, col.g), col.b);
       float coverage = clamp(smoothstep(0.0, 0.72, energy) * 0.9, 0.0, 0.9);
       vec3 ink = clamp(col * 0.42, 0.0, 0.76);
-      col = mix(vec3(1.0), ink, coverage);
+      gl_FragColor = vec4(ink, coverage);
+    } else {
+      gl_FragColor = vec4(col, 1.0);
     }
-
-    gl_FragColor = vec4(col, 1.0);
 }
 `
 
@@ -264,6 +332,7 @@ interface FaultyTerminalProps {
   pageLoadAnimation?: boolean
   brightness?: number
   lightMode?: boolean
+  useLogo?: boolean
   className?: string
   style?: React.CSSProperties
 }
@@ -289,6 +358,7 @@ export default function FaultyTerminal({
   pageLoadAnimation = true,
   brightness = 3,
   lightMode = true,
+  useLogo = true,
   className,
   style,
 }: FaultyTerminalProps) {
@@ -331,7 +401,7 @@ export default function FaultyTerminal({
     let isContextLost = false
 
     try {
-      renderer = new Renderer({ dpr })
+      renderer = new Renderer({ dpr, alpha: true })
       gl = renderer.gl
     } catch {
       // Fallback if WebGL is unavailable
@@ -368,8 +438,12 @@ export default function FaultyTerminal({
         const h = fallbackCanvas.height
         if (w === 0 || h === 0) return
 
-        ctx.fillStyle = lightMode ? '#ffffff' : '#08090d'
-        ctx.fillRect(0, 0, w, h)
+        if (lightMode) {
+          ctx.clearRect(0, 0, w, h)
+        } else {
+          ctx.fillStyle = '#08090d'
+          ctx.fillRect(0, 0, w, h)
+        }
 
         ctx.font = '10px monospace'
         ctx.fillStyle = tint
@@ -380,7 +454,8 @@ export default function FaultyTerminal({
 
         for (let r = 0; r < rows; r++) {
           for (let c = 0; c < cols; c++) {
-            const ch = chars[Math.floor(Math.abs(Math.sin(r * 3 + c * 7 + fbTime) * 16)) % chars.length]
+            const ch =
+              chars[Math.floor(Math.abs(Math.sin(r * 3 + c * 7 + fbTime) * 16)) % chars.length]
             ctx.fillText(ch, c * 18 + 4, r * 14 + 10)
           }
         }
@@ -395,7 +470,7 @@ export default function FaultyTerminal({
       }
     }
 
-    gl.clearColor(lightMode ? 1 : 0, lightMode ? 1 : 0, lightMode ? 1 : 0, 1)
+    gl.clearColor(0, 0, 0, 0)
 
     // Make the canvas fill its parent container
     canvas = gl.canvas as HTMLCanvasElement
@@ -421,6 +496,7 @@ export default function FaultyTerminal({
     canvas.addEventListener('webglcontextrestored', handleContextRestored, false)
 
     const geometry = new Triangle(gl)
+    const logoTexture = createLogoTexture(gl)
 
     const program = new Program(gl, {
       vertex: vertexShader,
@@ -449,6 +525,8 @@ export default function FaultyTerminal({
         uUsePageLoadAnimation: { value: pageLoadAnimation ? 1 : 0 },
         uBrightness: { value: brightness },
         uLightMode: { value: lightMode ? 1 : 0 },
+        uUseLogo: { value: useLogo ? 1 : 0 },
+        uLogo: { value: logoTexture || new Texture(gl) },
       },
     })
 
@@ -527,6 +605,11 @@ export default function FaultyTerminal({
       }
       if (mouseReact) ctn.removeEventListener('mousemove', handleMouseMove)
       if (canvas && canvas.parentElement === ctn) ctn.removeChild(canvas)
+      if (logoTexture?.texture && gl) {
+        try {
+          gl.deleteTexture(logoTexture.texture)
+        } catch {}
+      }
       if (gl) gl.getExtension('WEBGL_lose_context')?.loseContext()
       loadAnimationStartRef.current = 0
       timeOffsetRef.current = Math.random() * 100
@@ -553,6 +636,7 @@ export default function FaultyTerminal({
     brightness,
     pause,
     timeScale,
+    useLogo,
     handleMouseMove,
   ])
 
@@ -560,7 +644,14 @@ export default function FaultyTerminal({
     <div
       ref={containerRef}
       className={`faulty-terminal-container${className ? ` ${className}` : ''}`}
-      style={style}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        backgroundColor: lightMode ? '#ffffff' : '#08090d',
+        ...style,
+      }}
     />
   )
 }

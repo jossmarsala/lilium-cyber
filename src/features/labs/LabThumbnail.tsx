@@ -29,8 +29,8 @@ interface TerminalConfig {
 export const LAB_TERMINAL_CONFIGS: Record<string, TerminalConfig> = {
   // Lab 01: La Estación Olvidada — Triage & Hardening en Linux (Atmósfera Analógica & Misterio Silencioso)
   'lab-01': {
-    tint: '#ec4899',
-    tintThreat: '#8b5cf6',
+    tint: ' #ec5aa3ff',
+    tintThreat: '#4239eeff',
     scale: 1.7,
     gridMul: [2.5, 1.3],
     digitSize: 1.7,
@@ -71,7 +71,7 @@ export const LAB_TERMINAL_CONFIGS: Record<string, TerminalConfig> = {
 
   // Lab 03: OWASP API Defense (Electric Indigo & Vulnerability Crimson)
   'lab-03': {
-    tint: '#f59e0b',
+    tint: '#1bf50bff',
     tintThreat: '#ef4444',
     scale: 1.4,
     gridMul: [1.5, 2.2],
@@ -113,7 +113,7 @@ export const LAB_TERMINAL_CONFIGS: Record<string, TerminalConfig> = {
 
   // Lab 05: SIEM Incident Triage & Correlation (Amber Gold & SOC Alert Red)
   'lab-05': {
-    tint: '#6366f1',
+    tint: '#63bdf1ff',
     tintThreat: '#f43f5e',
     scale: 1.5,
     gridMul: [2.8, 1.1],
