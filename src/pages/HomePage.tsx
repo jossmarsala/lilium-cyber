@@ -259,7 +259,7 @@ export default function HomePage() {
                   chromaticAberration={0}
                   dither={15}
                   curvature={0.25}
-                  tint="#00cc66"
+                  tint="#4cde95ff"
                   tintThreat="#ff3366"
                   mouseReact={true}
                   mouseStrength={0.4}
