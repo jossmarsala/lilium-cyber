@@ -84,11 +84,11 @@ Uno de los mayores riesgos al leer manuales de ciberseguridad es intentar aplica
 
 Para adaptar la arquitectura a la realidad operativa de cada organización, marcos internacionales como los Controles Críticos de `CIS` (_Center for Internet Security_) estructuran sus salvaguardas en tres **Grupos de Implementación (`IG`, _Implementation Groups_)** acumulativos, los cuales se complementan con los **Niveles de Madurez (_Tiers_ 1 a 4)** del Marco de Ciberseguridad del Instituto Nacional de Estándares y Tecnología (`NIST CSF` 2.0). Es importante encontrar el adecuado para cada empresa.
 
-| Nivel de Madurez                                                                                                            | Perfil operativo de la organización                                                                                                                                                                                            | Cómo se traduce al diseño arquitectónico                                                                                                                                                                                                                                                         |
-| :-------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Nivel Base: CIS IG1 _(Higiene Cibernética Esencial)_ / **NIST Tier 1–2                                                    | Pequeñas y medianas empresas con experiencia limitada en `TI` y ciberseguridad. Su prioridad crítica es mantener el negocio operativo y proteger datos de empleados y financieros frente a ataques generales y oportunistas.   | Arquitectura simple, de bajo costo y alta eficacia operativa. Se diseña priorizando visibilidad de activos, copias de seguridad aisladas, autenticación multifactor (`MFA`), parches automatizados y _firewall_ básicos usando herramientas comerciales estándar o nativas del sistema operativo |
-| **Nivel Intermedio: CIS IG2 _(Complejidad Operativa Intermedia)_ / **NIST Tier 2–3                                          | Organizaciones que cuentan con personal dedicado a administrar y proteger la infraestructura de `TI`, múltiples departamentos con distintos perfiles de riesgo, datos sensibles de clientes o cargas regulatorias específicas. | El diseño incorpora segmentación formal de redes (`VLANs`, DMZ), centralización de identidades y registros de auditoría (SIEM), escaneos periódicos de vulnerabilidades y procesos documentados repetibles                                                                                       |
-| **Nivel Avanzado:: CIS IG3 _(Defensa Avanzada)_ / **NIST Tier 3–4                                                           | Empresas con equipos especializados en diversas ramas de seguridad (pruebas de penetración, seguridad de aplicaciones, respuesta a incidentes) y activos críticos sujetos a estricta supervisión regulatoria.                  | Arquitectura adaptativa diseñada para resistir adversarios sofisticados, ataques dirigidos y vulnerabilidades de día cero (`zero-day`), incluyendo microsegmentación, control de acceso en tiempo real, prevención de pérdida de datos (`DLP`) y caza proactiva de amenazas.                     |
+| Nivel de Madurez                                                                                                            | Perfil operativo de la organización                                                                                                                                                                                            | Cómo se traduce al diseño arquitectónico                                                                                                                                                                                                                                                       |
+| :-------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Nivel Base: CIS IG1 _(Higiene Cibernética Esencial)_ / **NIST Tier 1–2                                                    | Pequeñas y medianas empresas con experiencia limitada en `TI` y ciberseguridad. Su prioridad crítica es mantener el negocio operativo y proteger datos de empleados y financieros frente a ataques generales y oportunistas.   | Arquitectura simple, de bajo costo y alta eficacia operativa. Se diseña priorizando visibilidad de activos, copias de seguridad aisladas, autenticación multifactor (MFA), parches automatizados y _firewall_ básicos usando herramientas comerciales estándar o nativas del sistema operativo |
+| **Nivel Intermedio: CIS IG2 _(Complejidad Operativa Intermedia)_ / **NIST Tier 2–3                                          | Organizaciones que cuentan con personal dedicado a administrar y proteger la infraestructura de `TI`, múltiples departamentos con distintos perfiles de riesgo, datos sensibles de clientes o cargas regulatorias específicas. | El diseño incorpora segmentación formal de redes (`VLANs`, DMZ), centralización de identidades y registros de auditoría (SIEM), escaneos periódicos de vulnerabilidades y procesos documentados repetibles                                                                                     |
+| **Nivel Avanzado:: CIS IG3 _(Defensa Avanzada)_ / **NIST Tier 3–4                                                           | Empresas con equipos especializados en diversas ramas de seguridad (pruebas de penetración, seguridad de aplicaciones, respuesta a incidentes) y activos críticos sujetos a estricta supervisión regulatoria.                  | Arquitectura adaptativa diseñada para resistir adversarios sofisticados, ataques dirigidos y vulnerabilidades de día cero (`zero-day`), incluyendo microsegmentación, control de acceso en tiempo real, prevención de pérdida de datos (`DLP`) y caza proactiva de amenazas.                   |
 | _Escalonamiento realista de la arquitectura según los Grupos de Implementación (IG) de CIS y los Niveles del NIST CSF 2.0._ |
 
 ### Diseño estructurado por capas: Los 5 anillos defensivos y el eje transversal
@@ -128,7 +128,7 @@ Arquitectónicamente, esta capa se diseña dividiendo la red en zonas de segurid
 
 En el entorno actual, donde los empleados acceden a sistemas desde sus casas y utilizan aplicaciones en la nube (`SaaS`), la identidad se ha convertido en una barrera defensiva fundamental que atraviesa toda la arquitectura. Esta capa se diseña aplicando la estructura `AAA` (_Authentication, Authorization, Accounting_):
 
-- **Autenticación:** Confirmar quién es realmente el usuario exigiendo más de una prueba de identidad mediante Autenticación Multifactor (`MFA`), combinando algo que sabe (contraseña) con algo que posee (aplicación generadora de códigos o llave física) y algo que es (datos biométricos).
+- **Autenticación:** Confirmar quién es realmente el usuario exigiendo más de una prueba de identidad mediante Autenticación Multifactor (MFA), combinando algo que sabe (contraseña) con algo que posee (aplicación generadora de códigos o llave física) y algo que es (datos biométricos).
 
 - **Autorización:** Aplicar estrictamente el principio de **mínimo privilegio** y la **separación de funciones**, asegurando que cada cuenta humana o de servicio tenga permiso para tocar únicamente los archivos o sistemas indispensables para su rol diario.
 
@@ -148,7 +148,7 @@ En el centro absoluto reside la Capa de Datos, donde se almacena la información
 
 - **Datos en reposo (_Data at rest_):** Es la información guardada de forma pasiva en discos duros, servidores de archivos, bases de datos o memorias extraíbles. Se protege diseñando el cifrado completo de los discos en todos los equipos portátiles y servidores (mediante tecnologías nativas de cada SO) y algoritmos robustos como `AES-256`. Además, las contraseñas almacenadas en bases de datos jamás deben guardarse en texto legible ni cifradas de forma reversible, sino transformadas mediante funciones `hash` unidireccionales robustas (como `SHA-256` o algoritmos derivados específicos) combinadas con cadenas aleatorias únicas (`salting`) para inutilizar ataques de tablas precalculadas (_Rainbow tables_).
 
-- **Datos en tránsito (_Data in transit_):** Es la información que viaja por cables o señales inalámbricas de un equipo a otro o hacia Internet. Se protege obligando por diseño a que toda comunicación utilice canales cifrados modernos (`TLS 1.2/1.3`, `HTTPS`, `SSH`, `SFTP` o túneles `VPN`) y erradicando protocolos antiguos que transmiten contraseñas y datos en texto claro, como `HTTP`, `Telnet` o `FTP`.
+- **Datos en tránsito (_Data in transit_):** Es la información que viaja por cables o señales inalámbricas de un equipo a otro o hacia Internet. Se protege obligando por diseño a que toda comunicación utilice canales cifrados modernos (`TLS 1.2/1.3`, `HTTPS`, `SSH`, `SFTP` o túneles VPN) y erradicando protocolos antiguos que transmiten contraseñas y datos en texto claro, como `HTTP`, `Telnet` o `FTP`.
 
 - **Datos en uso (_Data in use_):** Es la información mientras está cargada temporalmente en la memoria `RAM` o siendo procesada por el procesador (`CPU`). Se protege mediante controles estrictos de permisos de sesión, aislamiento de procesos del sistema operativo y activación de protecciones nativas de memoria contra explotación de código (como la Prevención de Ejecución de Datos o `DEP`).
 
@@ -190,7 +190,7 @@ Al diseñar la protección de un sistema, conviene hacerse tres preguntas cronol
 
 | Momento de acción<br>                                                                                                       | Controles Administrativos y Humanos<br>                                                                                                                                                                                                                                  | Controles Técnicos y Lógicos<br>                                                                                                                                                                                                                                                         | Controles Físicos y de Entorno<br>                                                                                                                                                                                                              |
 | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1. Preventivos**<br>_(Actúan **antes** del incidente para bloquear el ataque o reducir la exposición)_                    | • Políticas de mínimo privilegio y bajas inmediatas de exempleados.<br>• Separación de tareas críticas entre dos personas.<br>• Entrenamiento práctico al personal contra engaños de `phishing` y fraude financiero (`BEC`).<br>• Revisión de contratos con proveedores. | • Reglas de `firewall` que cierran puertos innecesarios.<br>• Exigencia de `MFA`.<br>• Cifrado de discos y de tráfico web (`HTTPS`/`TLS`).<br>• Actualización periódica de parches de seguridad.<br>• Listas que bloquean la ejecución de programas desconocidos.                        | • Llaves o tarjetas de acceso para ingresar a oficinas y cuartos de telecomunicaciones.<br>• Gabinetes cerrados para servidores y _switches_.<br>• Deshabilitación de tomas de red de pared en salas de espera públicas.                        |
+| **1. Preventivos**<br>_(Actúan **antes** del incidente para bloquear el ataque o reducir la exposición)_                    | • Políticas de mínimo privilegio y bajas inmediatas de exempleados.<br>• Separación de tareas críticas entre dos personas.<br>• Entrenamiento práctico al personal contra engaños de `phishing` y fraude financiero (`BEC`).<br>• Revisión de contratos con proveedores. | • Reglas de `firewall` que cierran puertos innecesarios.<br>• Exigencia de MFA.<br>• Cifrado de discos y de tráfico web (`HTTPS`/`TLS`).<br>• Actualización periódica de parches de seguridad.<br>• Listas que bloquean la ejecución de programas desconocidos.                          | • Llaves o tarjetas de acceso para ingresar a oficinas y cuartos de telecomunicaciones.<br>• Gabinetes cerrados para servidores y _switches_.<br>• Deshabilitación de tomas de red de pared en salas de espera públicas.                        |
 | **2. Detectivos**<br>_(Actúan **durante** el incidente para descubrir anomalías y reducir el tiempo de permanencia)_        | • Auditorías periódicas para revisar qué permisos acumulan los usuarios.<br>• Rutinas semanales de revisión de registros de eventos.<br>• Canales claros y sin castigo para que un empleado avise rápido si hizo clic en un enlace sospechoso.                           | • Sensores de detección de intrusiones en la red (`IDS`).<br>• Alertas centralizadas en un SIEM ante inicios de sesión fuera de horario o por fuerza bruta.<br>• Verificación de cambios en archivos críticos mediante funciones `hash` (`SHA-256`).<br>• Uso de señuelos (`honeypots`). | • Cámaras de circuito cerrado (`CCTV`) y sensores de movimiento en accesos.<br>• Libro de registro de visitas y proveedores de mantenimiento.<br>• Sensores de apertura de puertas en racks de servidores o alarmas de humo y temperatura.      |
 | **3. Correctivos y de Recuperación**<br>_(Actúan **después** de detectar el fallo para contener el daño y volver a operar)_ | • Manuales de respuesta a incidentes (`playbooks`) claros y asignados a responsables.<br>• Planes de Continuidad del Negocio (`BCP`) y Recuperación ante Desastres (`DRP`).<br>• Reuniones post-incidente para aprender de los errores y ajustar el diseño.              | • Bloqueo y aislamiento automático de un equipo infectado en la red mediante `EDR` o `IPS`.<br>• Restauración probada de servidores y bases de datos desde copias de seguridad aisladas.<br>• Revocación inmediata de sesiones activas y cambio forzado de contraseñas.                  | • Baterías de respaldo (`UPS`) y grupos electrógenos para mantener servidores vivos o apagarlos ordenadamente.<br>• Extintores aptos para salas técnicas.<br>• Uso de oficinas o servidores de contingencia (sitios fríos, tibios o calientes). |
 | _Clasificación operativa de controles combinando su naturaleza con el momento en que intervienen frente a una amenaza._     |                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                 |
@@ -214,7 +214,7 @@ Como el sistema antiguo es vulnerable por naturaleza, se diseña una subred o `V
 
 ### 2. Interponer un guardián de identidad moderno
 
-Si el programa antiguo tiene contraseñas débiles y no soporta Autenticación Multifactor (`MFA`), no se permite que los usuarios inicien sesión directamente contra él. Se diseña el acceso a través de un escritorio intermedio seguro (conocido como servidor bastión o _jump-box_) o un proxy inverso moderno: el usuario debe autenticarse con `MFA` y permisos estrictos en el bastión, y recién desde allí puede operar el sistema heredado.
+Si el programa antiguo tiene contraseñas débiles y no soporta Autenticación Multifactor (MFA), no se permite que los usuarios inicien sesión directamente contra él. Se diseña el acceso a través de un escritorio intermedio seguro (conocido como servidor bastión o _jump-box_) o un proxy inverso moderno: el usuario debe autenticarse con MFA y permisos estrictos en el bastión, y recién desde allí puede operar el sistema heredado.
 
 ### 3. Multiplicar la vigilancia y la capacidad de clonación
 
@@ -241,9 +241,9 @@ El modelo de Arquitectura de Confianza Cero (definido formalmente en el estánda
 
 Llevar `Zero Trust` a la realidad de una PyME requiere diseñar las próximas secciones de este módulo bajo cuatro reglas lógicas:
 
-1. **Estar en la red local no da derechos automáticos:** Que una conexión provenga de un cable conectado en la oficina o de una `VPN` válida no significa que tenga permiso para ver los servidores. La ubicación de red deja de ser sinónimo de confianza.
+1. **Estar en la red local no da derechos automáticos:** Que una conexión provenga de un cable conectado en la oficina o de una VPN válida no significa que tenga permiso para ver los servidores. La ubicación de red deja de ser sinónimo de confianza.
 
-2. **Verificar identidad, dispositivo y contexto en cada acceso:** Antes de permitir que alguien abra una aplicación o carpeta sensible, la arquitectura debe validar quién es el usuario (`MFA`), si su dispositivo cumple con los requisitos mínimos de seguridad (por ejemplo, estar actualizado y cifrado) y si tiene sentido que acceda a ese recurso en ese momento.
+2. **Verificar identidad, dispositivo y contexto en cada acceso:** Antes de permitir que alguien abra una aplicación o carpeta sensible, la arquitectura debe validar quién es el usuario (MFA), si su dispositivo cumple con los requisitos mínimos de seguridad (por ejemplo, estar actualizado y cifrado) y si tiene sentido que acceda a ese recurso en ese momento.
 
 3. **Conectar al usuario con la aplicación, no con toda la red:** Siempre que sea posible, en lugar de darle a un trabajador remoto o a un proveedor externo acceso abierto a toda la subred de servidores, el diseño debe darle acceso puntual únicamente al servicio o aplicación específica que necesita usar.
 
@@ -265,7 +265,7 @@ A continuación se presenta la estructura del registro de trazabilidad y tres fi
 | **2. Requisito Arquitectónico**                                                       | La regla de diseño que resuelve el problema de raíz sin hablar todavía de marcas de software (por ejemplo, _"Ningún servicio administrativo estará expuesto directamente a Internet"_). |
 | **3. Capas Involucradas**                                                             | En qué anillos de la arquitectura se colocarán las barreras para asegurar que haya defensa en profundidad (por ejemplo, _Perimetral + Identidad + Endpoint_).                           |
 | **4. Combinación de Controles**                                                       | El desglose concreto de qué medida **Preventiva**, qué medida **Detectiva** y qué medida **Correctiva/Recuperación** protegerán el activo.                                              |
-| **5. Familia de Solución**                                                            | Qué categoría de tecnología se utilizará para materializar esos controles (por ejemplo, _*firewall* perimetral + Proveedor de `MFA` + Colector de registros_).                          |
+| **5. Familia de Solución**                                                            | Qué categoría de tecnología se utilizará para materializar esos controles (por ejemplo, _*firewall* perimetral + Proveedor de MFA + Colector de registros_).                            |
 | **6. Verificación Esperada**                                                          | La prueba técnica exacta que ejecutarás en el Módulo 4 (`04. PROTECT`) para demostrar con evidencia que el control quedó funcionando y no solo dibujado en el papel.                    |
 | _Estructura base para construir la Matriz de Trazabilidad del diseño arquitectónico._ |                                                                                                                                                                                         |
 
@@ -279,13 +279,13 @@ A continuación se presentan algunas de ejemplo para consultar a la hora de reda
 
 - Capas que intervienen [defensa]: Capa Perimetral + Capa de Identidad (`IAM`) + Eje Transversal de Visibilidad.
 
-- Controles Preventivos [antes]: Cerrar los puertos administrativos en el perímetro; obligar a entrar mediante un túnel `VPN` o proxy autenticado con `MFA`; asignar a los técnicos una cuenta estándar para usar el correo y otra cuenta dedicada exclusivamente para administrar servidores.
+- Controles Preventivos [antes]: Cerrar los puertos administrativos en el perímetro; obligar a entrar mediante un túnel VPN o proxy autenticado con MFA; asignar a los técnicos una cuenta estándar para usar el correo y otra cuenta dedicada exclusivamente para administrar servidores.
 
-- Controles Detectivos [durante]: Enviar al colector central todos los registros de inicios de sesión exitosos y fallidos en la `VPN` y en las cuentas de administrador, generando una alerta ante múltiples fallos seguidos o accesos en horarios inusuales.
+- Controles Detectivos [durante]: Enviar al colector central todos los registros de inicios de sesión exitosos y fallidos en la VPN y en las cuentas de administrador, generando una alerta ante múltiples fallos seguidos o accesos en horarios inusuales.
 
 - Controles Correctivos [después]: Configurar el bloqueo temporal automático de la cuenta o del dispositivo tras superar un umbral de intentos fallidos y documentar el paso para revocar credenciales comprometidas de inmediato.
 
-- Verificación para Módulo 4 [prueba]: Ejecutar un escaneo externo con `Nmap` contra la `IP` pública comprobando que los puertos administrativos figuren cerrados/filtrados, e intentar iniciar sesión sin el segundo factor `MFA` verificando que el acceso sea denegado.
+- Verificación para Módulo 4 [prueba]: Ejecutar un escaneo externo con `Nmap` contra la `IP` pública comprobando que los puertos administrativos figuren cerrados/filtrados, e intentar iniciar sesión sin el segundo factor MFA verificando que el acceso sea denegado.
   :::
 
 :::group title="Ficha de Trazabilidad R-02: Infección y propagación lateral de Ransomware" description="Prioridad: Crítica | Tácticas ATT&CK: Execution / Lateral Movement / Impact"
@@ -333,7 +333,7 @@ Ambas posturas implican riesgos ocultos si no se evalúa el **Costo Total de Pro
 - **Soluciones Comerciales y Servicios en la Nube (`SaaS`):** Plataformas pagas (como las funciones de seguridad avanzadas incluidas en `Microsoft 365` / `Entra ID`, `Google Workspace`, firewalls comerciales unificados o soluciones `EDR` gestionadas) tienen un costo mensual o anual por usuario que impacta en el presupuesto. **¿Cuál es su ventaja arquitectónica en una PyME?** Ahorran tiempo operativo crítico: el proveedor mantiene los servidores funcionando, actualiza las detecciones automáticamente y ofrece interfaces gráficas más sencillas para equipos pequeños. Su límite es la dependencia de un presupuesto para mantener la licencia activa.
 
 > [!WARNING:Regla para seleccionar tecnologías]
-> Antes de instalar una herramienta nueva (sea gratuita o paga), verifica primero qué capacidades de seguridad **ya tienes pagadas o instaladas** en tus sistemas actuales y no estás usando. Encender el `firewall` nativo que ya viene en `Windows` o Linux, activar el cifrado de disco integrado (`BitLocker`/`FileVault`) o habilitar el `MFA` que ya incluye tu proveedor de correo actual reduce el riesgo de inmediato, tiene costo cero de adquisición y no agrega herramientas nuevas que aprender a manejar.
+> Antes de instalar una herramienta nueva (sea gratuita o paga), verifica primero qué capacidades de seguridad **ya tienes pagadas o instaladas** en tus sistemas actuales y no estás usando. Encender el `firewall` nativo que ya viene en `Windows` o Linux, activar el cifrado de disco integrado (`BitLocker`/`FileVault`) o habilitar el MFA que ya incluye tu proveedor de correo actual reduce el riesgo de inmediato, tiene costo cero de adquisición y no agrega herramientas nuevas que aprender a manejar.
 
 ### Verificación de tu arquitectura antes de avanzar
 
@@ -390,6 +390,54 @@ Al diseñar las subredes que alojarán cada zona de seguridad, el uso de `CIDR` 
 | `/28`                                                                                                        | `255.255.255.240`         | 16                  | 14                                          | Zonas altamente acotadas, como una Zona Desmilitarizada (DMZ), el segmento de servidores críticos o la red exclusiva de administración.    |
 | `/30`                                                                                                        | `255.255.255.252`         | 4                   | 2                                           | Enlaces punto a punto directos entre dos enrutadores o entre el _firewall_ perimetral y un _firewall_ interno.                             |
 | _Dimensionamiento práctico de subredes privadas IPv4 (RFC 1918) para la segmentación de zonas corporativas._ |
+
+#### Identificadores de VLAN (VLAN ID) y esquemas de numeración
+
+Así como las subredes IP estructuran las direcciones lógicas en la Capa 3, en la Capa 2 el estándar `IEEE 802.1Q` utiliza **identificadores numéricos** denominados **VLAN ID** (como la `VLAN 10`, `VLAN 20` o `VLAN 50`) para separar un conmutador físico en múltiples redes lógicas independientes. Cada identificador aísla el tráfico en dominios de difusión (_broadcast_) separados dentro de los mismos _switches_, impidiendo que los paquetes de un segmento sean accesibles por otros sin un enrutador o cortafuegos intermedio.
+
+##### ¿Qué significan estos números?
+
+A nivel de estándar técnico, los números de VLAN **no tienen un significado fijo u obligatorio**:
+
+- **Etiquetas lógicas del 1 al 4094:** El `VLAN ID` es un campo de 12 bits dentro de la cabecera Ethernet que permite valores del `1` al `4094`. El estándar no impone qué función debe cumplir cada número; se trata simplemente de una etiqueta numérica que el administrador de la red elige libremente para diferenciar un grupo de dispositivos o nivel de seguridad de otro.
+
+##### Convenciones comunes y buenas prácticas en empresas
+
+Aunque el administrador puede asignar cualquier número disponible del `1` al `4094`, por orden, mantenibilidad y costumbre operativa en entornos corporativos se suele emplear una **convención estructurada por decenas o centenas**. Esta buena práctica permite asociar de forma mnemotécnica la función o departamento con el número de VLAN, y facilita correlacionar intuitivamente el `VLAN ID` con el direccionamiento IP de la subred (por ejemplo, asociando la `VLAN 10` a la subred `10.10.10.0/28` o la `VLAN 20` a `10.10.20.0/24`):
+
+| Rango / VLAN ID                    | Asignación habitual en empresas                                             | Rol y consideraciones operativas                                                                                                                                                                                                                                                                                             |
+| :--------------------------------- | :-------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VLAN 1`                           | **VLAN predeterminada (_Default_)**                                         | Es la VLAN configurada por defecto de fábrica en todos los puertos de los conmutadores. Por seguridad (`CIS 12.2`), **se desaconseja su uso para tráfico operativo o sensible**, recomendando mover los puertos activos a VLANs dedicadas y reasignar la VLAN nativa para mitigar riesgos de salto de VLAN (_VLAN Hopping_). |
+| `VLAN 10`                          | **Administración y servidores principales (o DMZ)**                         | Generalmente asignada a la gestión técnica de la infraestructura, consolas administrativas seguras, servicios perimetrales o servidores centrales.                                                                                                                                                                           |
+| `VLAN 20`                          | **Finanzas y departamentos sensibles**                                      | Frecuentemente reservada para áreas de contabilidad, tesorería, recursos humanos u otros equipos que procesan pagos y datos confidenciales (`PII`).                                                                                                                                                                          |
+| `VLAN 30` / `VLAN 40`              | **Empleados y usuarios generales**                                          | Segmento asignado a estaciones de trabajo de personal operativo, áreas comerciales, puestos de venta y usuarios corporativos generales.                                                                                                                                                                                      |
+| `VLAN 50` / `VLAN 99` / `VLAN 100` | **Invitados (_Guests_), Wi-Fi pública o gestión de equipos (_Management_)** | Utilizada para aislar visitantes temporales, dispositivos personales (`BYOD`), redes inalámbricas públicas o interfaces de gestión técnica fuera de banda (_Out-of-Band_).                                                                                                                                                   |
+
+_Convenciones comunes y buenas prácticas para la nomenclatura y estructuración de VLAN IDs en redes corporativas._
+
+#### Identificadores de VLAN (VLAN ID) y esquemas de numeración
+
+Así como las subredes IP estructuran las direcciones lógicas en la Capa 3, en la Capa 2 el estándar `IEEE 802.1Q` utiliza **identificadores numéricos** denominados **VLAN ID** (como la `VLAN 10`, `VLAN 20` o `VLAN 50`) para separar un conmutador físico en múltiples redes lógicas independientes. Cada identificador aísla el tráfico en dominios de difusión (_broadcast_) separados dentro de los mismos _switches_, impidiendo que los paquetes de un segmento sean accesibles por otros sin un enrutador o cortafuegos intermedio.
+
+##### ¿Qué significan estos números?
+
+A nivel de estándar técnico, los números de VLAN **no tienen un significado fijo u obligatorio**:
+
+- **Etiquetas lógicas del 1 al 4094:** El `VLAN ID` es un campo de 12 bits dentro de la cabecera Ethernet que permite valores del `1` al `4094`. El estándar no impone qué función debe cumplir cada número; se trata simplemente de una etiqueta numérica que el administrador de la red elige libremente para diferenciar un grupo de dispositivos o nivel de seguridad de otro.
+
+##### Convenciones comunes y buenas prácticas en empresas
+
+Aunque el administrador puede asignar cualquier número disponible del `1` al `4094`, por orden, mantenibilidad y costumbre operativa en entornos corporativos se suele emplear una **convención estructurada por decenas o centenas**. Esta buena práctica permite asociar de forma mnemotécnica la función o departamento con el número de VLAN, y facilita correlacionar intuitivamente el `VLAN ID` con el direccionamiento IP de la subred (por ejemplo, asociando la `VLAN 10` a la subred `10.10.10.0/28` o la `VLAN 20` a `10.10.20.0/24`):
+
+| Rango / VLAN ID                    | Asignación habitual en empresas                                             | Rol y consideraciones operativas                                                                                                                                                                                                                                                                                             |
+| :--------------------------------- | :-------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VLAN 1`                           | **VLAN predeterminada (_Default_)**                                         | Es la VLAN configurada por defecto de fábrica en todos los puertos de los conmutadores. Por seguridad (`CIS 12.2`), **se desaconseja su uso para tráfico operativo o sensible**, recomendando mover los puertos activos a VLANs dedicadas y reasignar la VLAN nativa para mitigar riesgos de salto de VLAN (_VLAN Hopping_). |
+| `VLAN 10`                          | **Administración y servidores principales (o DMZ)**                         | Generalmente asignada a la gestión técnica de la infraestructura, consolas administrativas seguras, servicios perimetrales o servidores centrales.                                                                                                                                                                           |
+| `VLAN 20`                          | **Finanzas y departamentos sensibles**                                      | Frecuentemente reservada para áreas de contabilidad, tesorería, recursos humanos u otros equipos que procesan pagos y datos confidenciales (`PII`).                                                                                                                                                                          |
+| `VLAN 30` / `VLAN 40`              | **Empleados y usuarios generales**                                          | Segmento asignado a estaciones de trabajo de personal operativo, áreas comerciales, puestos de venta y usuarios corporativos generales.                                                                                                                                                                                      |
+| `VLAN 50` / `VLAN 99` / `VLAN 100` | **Invitados (_Guests_), Wi-Fi pública o gestión de equipos (_Management_)** | Utilizada para aislar visitantes temporales, dispositivos personales (`BYOD`), redes inalámbricas públicas o interfaces de gestión técnica fuera de banda (_Out-of-Band_).                                                                                                                                                   |
+
+_Convenciones comunes y buenas prácticas para la nomenclatura y estructuración de VLAN IDs en redes corporativas._
 
 #### Tráfico Norte-Sur frente a Tráfico Este-Oeste
 
@@ -731,7 +779,7 @@ La terminación del vínculo laboral de un empleado o el fin del contrato de una
 
 - **Deshabilitación inmediata, no eliminación:** Las cuentas del usuario en el directorio central, correo y aplicaciones deben deshabilitarse (bloquearse) de inmediato en lugar de borrarse definitivamente en ese instante. Eliminar una cuenta de inmediato puede destruir identificadores únicos (`UID`) o registros asociados que son indispensables para preservar la integridad de los registros de auditoría (`logs`) si semanas después se descubre un incidente o se requiere investigar sus últimas acciones.
 
-- **Revocación de sesiones y tokens activos:** Deshabilitar la contraseña no siempre corta una sesión web ya iniciada en un teléfono móvil o navegador. El procedimiento debe incluir el cierre forzado de todas las sesiones activas, la revocación de tokens de autorización (`OAuth` / claves `API`), la anulación de certificados de Red Privada Virtual (`VPN`) y, si corresponde, el borrado remoto de los datos corporativos en dispositivos portátiles.
+- **Revocación de sesiones y tokens activos:** Deshabilitar la contraseña no siempre corta una sesión web ya iniciada en un teléfono móvil o navegador. El procedimiento debe incluir el cierre forzado de todas las sesiones activas, la revocación de tokens de autorización (`OAuth` / claves `API`), la anulación de certificados de Red Privada Virtual (VPN) y, si corresponde, el borrado remoto de los datos corporativos en dispositivos portátiles.
 
 - **Archivado y baja definitiva:** Transcurrido el período de retención legal y de auditoría definido por la empresa (por ejemplo, entre 30 y 90 días tras haber respaldado sus archivos de trabajo y redirigido su correo institucional), se procede a la eliminación definitiva de la cuenta.
   :::
@@ -778,13 +826,13 @@ El diseño moderno de políticas de contraseñas (alineado con `NIST SP 800-63B`
 
 #### Diseño de Autenticación Multifactor (MFA) según criticidad y resistencia
 
-La Autenticación Multifactor (`MFA`) exige combinar al menos dos factores de distinta naturaleza (por ejemplo, una contraseña que el usuario _sabe_ más un dispositivo criptográfico o aplicación móvil que el usuario _posee_). Incluso si un atacante roba la contraseña mediante un formulario falso de _phishing_, la ausencia del segundo factor bloquea la intrusión.
+La Autenticación Multifactor (MFA) exige combinar al menos dos factores de distinta naturaleza (por ejemplo, una contraseña que el usuario _sabe_ más un dispositivo criptográfico o aplicación móvil que el usuario _posee_). Incluso si un atacante roba la contraseña mediante un formulario falso de _phishing_, la ausencia del segundo factor bloquea la intrusión.
 
-Conforme a las Salvaguardas **CIS 6.3, 6.4 y 6.5**, el diseño arquitectónico debe declarar el uso de `MFA` como **obligatorio e innegociable** en tres perímetros críticos:
+Conforme a las Salvaguardas **CIS 6.3, 6.4 y 6.5**, el diseño arquitectónico debe declarar el uso de MFA como **obligatorio e innegociable** en tres perímetros críticos:
 
 1. **Todas las cuentas con acceso administrativo o privilegiado:** Tanto para gestionar infraestructura local como consolas en la nube o paneles de proveedores.
 
-2. **Todos los accesos remotos a la red:** Cualquier conexión entrante mediante `VPN`, escritorios remotos o servidores bastión desde fuera de la oficina.
+2. **Todos los accesos remotos a la red:** Cualquier conexión entrante mediante VPN, escritorios remotos o servidores bastión desde fuera de la oficina.
 
 3. **Todas las aplicaciones expuestas externamente:** Correo electrónico corporativo, suites de colaboración en la nube (`SaaS`), gestores de proyectos y sistemas de facturación o `CRM` accesibles desde Internet.
 
@@ -808,7 +856,7 @@ No obstante, no todos los métodos de segundo factor ofrecen el mismo nivel de r
 
 | **Alto:** No depende de la señal telefónica ni de mensajes SMS. Sin embargo, puede ser capturado en tiempo real si el usuario lo introduce en un sitio de _phishing_ con proxy inverso (_Adversary-in-the-Middle_).
 
-| **Estándar base recomendado** para toda la fuerza laboral de una PyME en accesos cotidianos, correo y `VPN`.
+| **Estándar base recomendado** para toda la fuerza laboral de una PyME en accesos cotidianos, correo y VPN.
 
 | **Llaves de seguridad criptográficas (`FIDO2` / `WebAuthn` / `Passkeys`)** | Tokens físicos por `USB`/`NFC` (ej. _YubiKey_) o autenticadores biométricos integrados en el chip de seguridad del dispositivo que realizan un desafío-respuesta con criptografía asimétrica vinculado al dominio web real. | **Muy Alto (_Phishing-Resistant_):** Técnicamente inmune a la suplantación de identidad; si el dominio web es falso, la llave criptográfica simplemente no firma la petición aunque el usuario haya sido engañado. | **Altamente recomendado para cuentas de Administrador**, directivos que aprueban transferencias bancarias y custodios de infraestructura crítica. |
 | _Jerarquía técnica de factores de autenticación y criterios de selección arquitectónica._ |
@@ -836,7 +884,7 @@ La centralización de cuentas evita la pesadilla operativa de tener que crear, m
 Requieren conocimientos técnicos para instalar y mantener el servidor, pero no cobran licencias por cantidad de usuarios.
 
 - **Para unificar la red local (Directorios):** `FreeIPA` o `Samba Active Directory`. Sirven para centralizar las cuentas de los empleados y los permisos de las computadoras de la oficina en un solo lugar.
-- **Para unificar aplicaciones web (`SSO` y `MFA`):** `Keycloak` o `Authentik`. Funcionan como la "puerta de entrada principal" de la empresa. Permiten que un usuario inicie sesión una sola vez para acceder a múltiples sistemas internos, soportando códigos temporales y llaves de seguridad físicas.
+- **Para unificar aplicaciones web (SSO y MFA):** `Keycloak` o `Authentik`. Funcionan como la "puerta de entrada principal" de la empresa. Permiten que un usuario inicie sesión una sola vez para acceder a múltiples sistemas internos, soportando códigos temporales y llaves de seguridad físicas.
 - **Para resguardar secretos (Gestores de contraseñas):** `Vaultwarden` o `Passbolt`. Reemplazan los peligrosos archivos de Excel compartidos por cajas fuertes digitales, donde el equipo técnico guarda y audita credenciales sin pagar suscripciones.
 
 **Soluciones Comerciales y en la Nube:**
@@ -846,7 +894,7 @@ El proveedor se encarga del mantenimiento de los servidores a cambio de un pago 
 - **Gestores de contraseñas empresariales:** `Bitwarden Teams/Enterprise` o `1Password Business`. Bóvedas listas para usar en la nube, ideales para equipos que necesitan compartir contraseñas de forma segura desde el primer día.
 
 > [!TIP]
-> **La decisión más eficiente:** Si la PyME ya paga licencias de correo corporativo y ofimática (como Microsoft 365 o Google Workspace), la estrategia arquitectónica más inteligente es utilizar su directorio nativo. Esto permite activar el control de roles (`RBAC`) y el `MFA` de inmediato, sin incurrir en costos adicionales ni administrar plataformas nuevas.
+> **La decisión más eficiente:** Si la PyME ya paga licencias de correo corporativo y ofimática (como Microsoft 365 o Google Workspace), la estrategia arquitectónica más inteligente es utilizar su directorio nativo. Esto permite activar el control de roles (`RBAC`) y el MFA de inmediato, sin incurrir en costos adicionales ni administrar plataformas nuevas.
 
 ### Verificación del diseño de identidad y control de acceso
 
@@ -870,15 +918,291 @@ Revisa el catálogo proyectado de cuentas administrativas y de servicio verifica
 
 - Ningún administrador utiliza su cuenta con privilegios elevados para acceder al correo electrónico o navegar por Internet.
 
-- El 100% de las cuentas con permisos administrativos, de acceso remoto o con visibilidad desde Internet tiene asignado un requisito obligatorio de `MFA` en la matriz.
+- El 100% de las cuentas con permisos administrativos, de acceso remoto o con visibilidad desde Internet tiene asignado un requisito obligatorio de MFA en la matriz.
 
 ### 3. Definición de casos de prueba de autorización para `04. PROTECT`
 
 Deja documentados los casos de prueba que se ejecutarán al configurar el sistema real para confirmar que la matriz se cumple:
 
-- **Prueba Positiva de Rol:** Iniciar sesión con una cuenta de prueba asignada al rol `Atención Comercial` y verificar que puede consultar y editar fichas en el sistema `CRM`, previa solicitud exitosa del segundo factor `MFA`.
+- **Prueba Positiva de Rol:** Iniciar sesión con una cuenta de prueba asignada al rol `Atención Comercial` y verificar que puede consultar y editar fichas en el sistema `CRM`, previa solicitud exitosa del segundo factor MFA.
 
 - **Prueba Negativa de Separación Horizontal:** Con esa misma sesión activa de `Atención Comercial`, intentar acceder a la ruta de red o al módulo del sistema contable (`Finanzas`). El sistema debe devolver un error explícito de `Acceso Denegado` (_Permission Denied_) y generar un evento de auditoría de intento de acceso no autorizado en el registro central.
 
 - **Prueba Negativa de Escalada Vertical:** Desde una sesión de usuario estándar en una estación de trabajo, intentar ejecutar un comando administrativo (`sudo` o instalación de un paquete de software). El sistema debe rechazar la operación e impedir la elevación de privilegios.
+  :::
+
+## 3.4. Entornos Híbridos Seguros <!-- id: entornos-hibridos, icon: ServerIcon -->
+
+Actualmente, en la realidad operativa de cualquier pequeña o mediana empresa, los datos ya no se encuentran confinados detrás del _router_ local: el correo electrónico, las suites de ofimática y los sistemas de gestión suelen operar en plataformas en la nube, los empleados se conectan desde sus hogares utilizando redes domésticas o dispositivos portátiles, y los proveedores externos requieren acceso remoto para dar soporte técnico a los servidores.
+
+Esta transformación disuelve el perímetro físico tradicional, entonces se crea un entorno híbrido donde cada conexión externa y cada servicio contratado amplían la superficie de ataque de la empresa. Cuando las organizaciones habilitan el trabajo remoto o migran hacia la nube de forma apresurada para ganar agilidad operativa, suelen abrir brechas críticas: exponen escritorios remotos directamente a Internet, delegan ciegamente la seguridad en sus proveedores tecnológicos o permiten que computadoras personales sin protección se conecten a los servidores centrales. Esta sección extiende los planos de red e identidad hacia el exterior, estableciendo los patrones arquitectónicos para conectar usuarios remotos, plataformas en la nube y terceros de una forma segura.
+
+### Arquitectura en la nube y el Modelo de Responsabilidad Compartida
+
+En lugar de adquirir, cablear y mantener servidores físicos propios, las empresas alquilan capacidad de cómputo, almacenamiento y aplicaciones a través de Proveedores de Servicios en la Nube (CSP, por sus siglas en inglés: _Cloud Service Providers_). Sin embargo, uno de los errores estratégicos más graves consiste en asumir que, al contratar un servicio en la nube de primera línea, el proveedor se encarga automáticamente de toda la ciberseguridad.
+
+En toda arquitectura en la nube rige el **Modelo de Responsabilidad Compartida**: el proveedor es responsable de la seguridad _de_ la nube (que incluye los centros de datos físicos, el cableado, el hardware y los hipervisores de virtualización), mientras que la organización cliente retiene la responsabilidad intransferible sobre lo que coloca _en_ la nube. La frontera exacta de qué controles debe diseñar cada PyME depende del modelo de servicio contratado:
+
+:::group title="Modelos de servicio en la nube y alcance del diseño" description="Distribución del control arquitectónico entre la PyME y el proveedor"
+
+- Infraestructura como Servicio (IaaS) [máximo control técnico]: La empresa alquila los bloques básicos de infraestructura virtualizada (máquinas virtuales, discos de almacenamiento y redes definidas por software). El proveedor asegura el hardware físico, pero la empresa cliente debe diseñar y mantener la seguridad del sistema operativo invitado, la aplicación de parches, las reglas del _firewall_ virtual, la configuración de las aplicaciones, las identidades y los datos.
+- Plataforma como Servicio (PaaS) [control intermedio]: El proveedor aloja y mantiene tanto el hardware como el sistema operativo y los motores de ejecución o bases de datos subyacentes para que los desarrolladores desplieguen sus propias aplicaciones. La empresa queda liberada de administrar el sistema operativo base, pero es enteramente responsable de diseñar la seguridad del código fuente de su aplicación, actualizar sus bibliotecas de terceros, configurar las interfaces de programación y gestionar quién accede a los datos.
+- Software como Servicio (SaaS) [control de configuración y datos]: El proveedor entrega la aplicación final lista para usar a través de un navegador web (como _Gmail_, sistemas contables en línea o gestores de relaciones con clientes). Aunque el proveedor gestiona toda la infraestructura y el software, las configuraciones predeterminadas suelen priorizar la facilidad de uso por sobre la seguridad. La empresa usuaria es responsable absoluta de configurar el servicio de forma segura, administrar las cuentas de usuario, exigir autenticación multifactor, restringir el uso compartido de archivos y respaldar su propia información.
+  :::
+
+| Capa de la Arquitectura                                                         | Local (On-Premise)   | IaaS (Infraestructura)   | PaaS (Plataforma)        | SaaS (Software)                           |
+| :------------------------------------------------------------------------------ | :------------------- | :----------------------- | :----------------------- | :---------------------------------------- |
+| **Datos, clasificación y respaldos**                                            | Responsabilidad PyME | Responsabilidad PyME     | Responsabilidad PyME     | **Responsabilidad PyME**                  |
+| **Identidades, cuentas, roles y MFA**                                           | Responsabilidad PyME | Responsabilidad PyME     | Responsabilidad PyME     | **Responsabilidad PyME**                  |
+| **Dispositivos finales (Endpoints)**                                            | Responsabilidad PyME | Responsabilidad PyME     | Responsabilidad PyME     | **Responsabilidad PyME**                  |
+| **Configuración y código de aplicación**                                        | Responsabilidad PyME | Responsabilidad PyME     | **Responsabilidad PyME** | Compartida _(Ajustes de seguridad: PyME)_ |
+| **Controles de red y cortafuegos lógicos**                                      | Responsabilidad PyME | **Responsabilidad PyME** | Compartida               | Proveedor CSP                             |
+| **Sistema Operativo y parches de host**                                         | Responsabilidad PyME | **Responsabilidad PyME** | Proveedor CSP            | Proveedor CSP                             |
+| **Virtualización, servidores físicos y edificio**                               | Responsabilidad PyME | Proveedor CSP            | Proveedor CSP            | Proveedor CSP                             |
+| _Matriz de Responsabilidad Compartida según el entorno tecnológico desplegado._ |
+
+> [!WARNING:La trampa de la disponibilidad vs. la recuperación en SaaS]
+> Que un proveedor de correo o almacenamiento en la nube garantice que sus servidores físicos no se caerán no significa que proteja a la PyME contra el borrado masivo de archivos por parte de un empleado descontento o el cifrado de carpetas por un ataque de secuestro de datos (_ransomware_). En la fila superior de la matriz, la protección de los datos y la existencia de copias de seguridad independientes nunca se delegan por completo al proveedor de la aplicación.
+
+#### Aislamiento de recursos e imágenes base en la nube
+
+Cuando la organización despliega servidores en entornos IaaS o PaaS, debe replicar los mismos principios de segmentación diseñados para la red física. Los recursos deben agruparse dentro de Redes Privadas Virtuales aisladas (conocidas como `VPC`, _Virtual Private Cloud_), separando estrictamente los servidores orientados al cliente de las bases de datos internas y aislando los entornos de desarrollo respecto a los de producción. Asimismo, para contrarrestar la velocidad de cambios en la nube y evitar errores manuales al crear nuevos servidores, el diseño exige definir una **imagen de línea base segura**: una plantilla de servidor preconfigurada, endurecida y sin servicios innecesarios que sirva como molde estandarizado para desplegar cualquier nueva instancia y detectar alteraciones no autorizadas.
+
+### Patrones de diseño para el Acceso Remoto Seguro
+
+Cuando el personal necesita trabajar desde fuera de la oficina o un administrador requiere gestionar un servidor a distancia, la tentación más peligrosa consiste en abrir un puerto en el _firewall_ perimetral y redirigirlo directamente hacia el equipo interno.
+
+> [!CRITICAL:Prohibido exponer servicios de administración]
+> Exponer directamente hacia Internet el Protocolo de Escritorio Remoto de Windows (`RDP`, puerto `TCP/UDP 3389`), el Shell Seguro (`SSH`, puerto `TCP 22`), consolas de bases de datos o paneles de administración de infraestructura constituye una vulnerabilidad crítica de diseño. Los actores de amenaza utilizan motores de búsqueda automatizados que escanean todo el espacio de direcciones `IPv4` de Internet en minutos para localizar estos puertos abiertos (técnica catalogada en MITRE ATT&CK como Servicios Remotos Externos — `T1133`) y lanzar ataques masivos de fuerza bruta, explotación de vulnerabilidades de preautenticación o inyección de credenciales robadas (`T1078`). En una arquitectura segura, ningún servicio de administración o recurso interno se publica jamás de forma directa hacia la Zona No Controlada de la red.
+
+Para permitir el trabajo a distancia sin exponer los servicios internos, el arquitecto debe seleccionar entre tres patrones de diseño según el tipo de usuario y el recurso que necesita alcanzar:
+
+```filetree:Patrones_Acceso_Remoto_Hibrido
+Accesos_Externos_Internet/
+├── Patron_01_Tunel_VPN_Corporativo/
+│   ├── Autenticacion: Directorio AAA + MFA Obligatorio
+│   └── Destino: Subred especifica de VPN -> Filtrado Firewall -> Recurso Interno
+├── Patron_02_Proxy_Inverso_Autenticado_ZTNA/
+│   ├── Autenticacion: Proveedor de Identidad (SSO + MFA) en el borde
+│   └── Destino: Acceso exclusivo a la aplicacion web interna (Sin acceso a la red LAN)
+└── Patron_03_Servidor_Bastion_JumpBox/
+    ├── Autenticacion: Conexion previa + MFA estricto + Cuenta Admin dedicada
+    └── Destino: VLAN 50 (Administracion IT) para gestion tecnica de servidores
+```
+
+#### 1. Conectividad mediante Red Privada Virtual (VPN)
+
+Una Red Privada Virtual (VPN, _Virtual Private Network_) establece una extensión lógica segura a través de una red pública no confiable como Internet. Su funcionamiento se basa en dos mecanismos simultáneos: el **cifrado** (que codifica el contenido de los datos mediante claves criptográficas para que ningún intruso en una red Wi-Fi pública o proveedor de Internet pueda leerlos) y el **encapsulamiento** (que oculta el paquete de datos original envolviéndolo dentro de uno nuevo, formando lo que se denomina un **túnel VPN**).
+
+Al diseñar una arquitectura basada en VPN, se deben definir tres decisiones estructurales:
+
+- **Integración con AAA y MFA obligatorio:** El concentrador VPN nunca debe autenticarse únicamente con una contraseña estática o una clave precompartida igual para todos los empleados. Debe conectarse al servicio central de autenticación de la empresa (`AAA`) y exigir obligatoriamente un segundo factor (MFA) en cada inicio de sesión.
+
+- **Túnel Completo (_Full Tunnel_) vs. Túnel Dividido (_Split Tunnel_):**
+  - En un diseño de **Túnel Completo**, el 100% del tráfico de red de la computadora remota (tanto el acceso a los servidores de la empresa como la navegación general hacia sitios de Internet) se envía por el túnel cifrado hacia el firewall de la oficina antes de salir a la web. Esto ofrece máxima visibilidad y protección (ya que el empleado remoto queda protegido por el filtrado `DNS` y el cortafuegos corporativo), pero consume todo el ancho de banda del enlace de Internet de la oficina central.
+
+  - En un diseño de **Túnel Dividido**, solo el tráfico dirigido específicamente a las subredes privadas de la empresa (`10.10.X.X`) viaja por el túnel VPN, mientras que el tráfico general de Internet (como videollamadas o descargas pesadas) sale directamente por la conexión doméstica del empleado. Si se elige túnel dividido por razones de rendimiento, es obligatorio asegurar que el dispositivo remoto cuente con su propio servicio de filtrado `DNS` local y firewall de host activo (`CIS 4.5` y `9.2`).
+
+- **Subred de VPN aislada y filtrada:** Un error clásico de diseño consiste en configurar la VPN para que otorgue al usuario remoto acceso libre a toda la red interna. Si la computadora remota está infectada, el túnel VPN actuará como un puente directo para propagar el malware hacia los servidores. El diseño correcto asigna a los clientes VPN un bloque de subred propio (por ejemplo, `10.10.70.0/24`) y le aplica la Matriz de Flujos Autorizados de la sección `03.2`, permitiendo que cada usuario alcance únicamente los puertos y servidores específicos que su rol requiere.
+
+#### 2. Alternativas modernas: Proxies Autenticados y Acceso de Confianza Cero (ZTNA)
+
+Para muchos empleados administrativos o comerciales que solo necesitan utilizar una aplicación web interna (como el sistema de facturación o la intranet), entregarles un VPN que conecta su equipo a nivel de Capa 3 de red resulta excesivo y riesgoso.
+
+Siguiendo los principios de Confianza Cero (_Zero Trust Network Access_ o `ZTNA`), el diseño puede sustituir la VPN tradicional para aplicaciones web mediante un **Proxy Inverso con Autenticación Previa en el Borde**. En este patrón, el usuario abre su navegador desde casa; antes de que su paquete llegue siquiera al servidor de la aplicación, un proxy o pasarela de identidad interpuesto exige el inicio de sesión con MFA, verifica los permisos del rol del usuario y valida la postura del dispositivo. Si todo es correcto, le permite interactuar exclusivamente con esa aplicación web específica en Capa 7, sin otorgarle jamás una dirección `IP` dentro de la red local ni visibilidad para escanear otros equipos internos.
+
+#### 3. Servidores Bastión (_Jump-boxes_) para administración técnica
+
+Como establecen las recomendaciones del **Control CIS 6**, cuando un administrador de sistemas o un especialista externo necesita conectarse por consola (`SSH` o `RDP`) a los servidores de la Zona Restringida desde una ubicación remota, no debe hacerlo saltando directamente desde su portátil hasta el servidor de base de datos. El diseño seguro interpone un **Servidor Bastión (_Jump-box_)**: un único equipo endurecido, intensamente monitoreado y ubicado en la Zona de Administración, el cual actúa como el único punto de salto autorizado desde donde se pueden abrir sesiones administrativas hacia el resto de la infraestructura.
+
+### Centralización y Federación de Identidad (SSO)
+
+A medida que una PyME adopta múltiples herramientas en la nube (correo, almacenamiento, gestor de tareas, contabilidad, plataforma de diseño), si cada servicio mantiene su propia lista de usuarios independiente, los empleados terminan gestionando decenas de contraseñas distintas. Las consecuencias operativas son predecibles: los usuarios reutilizan la misma contraseña en todos los portales y, cuando un empleado se desvincula de la empresa, el administrador olvida darlo de baja en tres o cuatro plataformas secundarias.
+
+Para resolver esta fragmentación, la arquitectura centraliza el control de accesos mediante el **Inicio de Sesión Único (SSO, _Single Sign-On_)**. Este modelo evita que cada aplicación verifique al usuario de forma independiente; en su lugar, delega esa tarea estableciendo una relación de confianza criptográfica entre dos partes:
+
+1. **El Proveedor de Identidad (IdP, _Identity Provider_):** Es el directorio central donde reside la verdad única sobre los usuarios, sus grupos de rol y sus factores de autenticación MFA.
+
+2. **Los Proveedores de Servicios (SP, _Service Providers_):** Son las distintas aplicaciones en la nube o internas que el usuario desea utilizar. Cuando el empleado intenta entrar a una aplicación, esta no le pide una contraseña propia, sino que lo redirige al Proveedor de Identidad; una vez que el IdP autentica al usuario una sola vez, emite un **token de acceso cifrado y firmado digitalmente** hacia el SP confirmando la identidad y los permisos del empleado.
+
+#### Selección de protocolos de identidad según el entorno
+
+Al diseñar cómo se comunicarán las aplicaciones con el directorio central, es fundamental distinguir qué protocolo estándar corresponde a cada escenario técnico:
+
+| Protocolo / Estándar                                           | Propósito principal                                                  | Entorno de uso | Funcionamiento y consideraciones |
+| -------------------------------------------------------------- | -------------------------------------------------------------------- | -------------- | -------------------------------- |
+| **`LDAP` / `LDAPS`** _(Lightweight Directory Access Protocol)_ | Consulta y autenticación contra servicios de directorio jerárquicos. |
+
+| **Entornos locales (_On-Premise_)** o redes privadas internas (servidores Linux, NAS, cortafuegos, Active Directory).
+
+| No está diseñado para exponerse a Internet. Debe diseñarse siempre sobre su variante cifrada con `TLS` (`LDAPS`, puerto `636`) para evitar que las credenciales viajen en texto claro por la red local.
+
+|
+| **`SAML 2.0`** _(Security Assertion Markup Language)_ | Federación de identidad y autenticación SSO basada en documentos `XML` firmados.
+
+| Entornos en la nube (`SaaS`) y portales web empresariales.
+
+| Permite que el `IdP` transmita afirmaciones de identidad seguras a través del navegador hacia proveedores externos sin compartir jamás la contraseña del usuario.
+
+|
+| **`OIDC` (_OpenID Connect_)** | Capa de **autenticación** de identidad moderna construida sobre el marco `OAuth 2.0` usando tokens `JSON` (`JWT`). | Aplicaciones web modernas, aplicaciones móviles y APIs. | Más ligero que `SAML`; permite verificar quién es el usuario y obtener atributos básicos de su perfil para iniciar sesión (SSO). |
+| **`OAuth 2.0`** | Protocolo abierto de **autorización delegada** (no de autenticación por sí mismo).
+
+| **Integración entre aplicaciones, servicios en la nube y APIs de terceros**.
+
+| Permite que un usuario autorice a una aplicación a acceder a recursos específicos de otra cuenta mediante el intercambio de Tokens API temporales y acotados, sin entregar sus credenciales reales.
+
+| _Mapa de protocolos de identidad y autorización para el diseño de arquitecturas híbridas._
+
+#### El riesgo de centralización en el Proveedor de Identidad
+
+Unificar el acceso mediante SSO simplifica drásticamente el cumplimiento del ciclo de vida de las cuentas (al deshabilitar al usuario en el IdP, pierde acceso instantáneo a todas las aplicaciones conectadas), pero convierte al Proveedor de Identidad en el activo más sensible de toda la arquitectura. Si un atacante logra comprometer una cuenta en un sistema SSO que solo pide contraseña, obtiene acceso automático a todos los servicios de la empresa.
+
+Por ello, el diseño arquitectónico de un entorno SSO exige tres salvaguardas obligatorias:
+
+- **Combinación SSO + MFA:** Ningún sistema de Inicio de Sesión Único debe diseñarse sin exigir Autenticación Multifactor obligatoria en el `IdP`.
+
+- **Gobernanza de consentimiento `OAuth`:** Los atacantes suelen engañar a los empleados mediante campañas de _phishing_ de consentimiento, donde en lugar de robarles la contraseña, les piden que autoricen una aplicación de terceros maliciosa mediante `OAuth` para que esta lea sus correos o archivos en la nube usando un Token API. El diseño del IdP debe restringir la capacidad de los usuarios estándar para autorizar aplicaciones `OAuth` de terceros no verificadas sin aprobación previa del administrador.
+
+- **Contingencia y disponibilidad:** Mantener las cuentas de emergencia (_break-glass_) definidas en la sección `03.3` y auditar los registros de cambios de configuración del propio IdP.
+
+### Diseño de requisitos para el Endpoint Remoto y Dispositivos Personales (BYOD)
+
+Cuando un empleado trabaja desde su casa o en movimiento, su computadora portátil o su teléfono inteligente se convierte en el perímetro físico de la empresa. Si el dispositivo es robado en la vía pública con el disco duro sin cifrar, quien lo obtenga podrá extraer todos los documentos confidenciales sincronizados localmente sin siquiera necesitar conocer la contraseña del sistema operativo. Del mismo modo, si un equipo remoto con el antivirus desactivado se conecta a la VPN, podría introducir amenazas directamente en las zonas internas.
+
+#### Condiciones de postura del dispositivo para el acceso remoto (CIS 13.5)
+
+Siguiendo la Salvaguarda CIS 13.5 y las guías para teletrabajo (NIST SP 800-46 Rev. 2), la arquitectura debe definir una **Política de Postura de Dispositivo**: un conjunto de controles técnicos mínimos que todo activo remoto debe cumplir para estar autorizado a conectarse a los recursos empresariales:
+
+:::group title="Estándar de diseño para Endpoints Remotos" description="Controles obligatorios en equipos portátiles que acceden a datos de la empresa"
+
+- Cifrado de disco completo (FDE) [CIS 3.6 — IG1]: Todo dispositivo portátil o estación remota que almacene o procese datos de la empresa debe tener cifrado su almacenamiento completo mediante herramientas nativas robustas (`Microsoft BitLocker` en Windows, `Apple FileVault` en macOS o `LUKS`/`dm-crypt` en Linux), asegurando que el robo físico del equipo no derive en una brecha de confidencialidad.
+
+- Bloqueo automático por inactividad [CIS 4.3 — IG1]: El sistema operativo debe diseñarse para bloquear automáticamente la sesión y exigir reautenticación tras un máximo de **15 minutos** de inactividad en computadoras de escritorio/portátiles, y tras un máximo de **2 minutos** en teléfonos inteligentes y tabletas.
+
+- Bloqueo por intentos fallidos locales [CIS 4.10 — IG2]: Para mitigar intentos de adivinación física de claves en equipos perdidos o robados, las portátiles deben bloquearse tras un máximo de **20 intentos fallidos** de inicio de sesión local, y los dispositivos móviles tras un máximo de **10 intentos fallidos**.
+
+- Capacidad de borrado remoto [CIS 4.11 — IG2]: La arquitectura debe contemplar el uso de agentes o perfiles de Gestión de Dispositivos Móviles (`MDM`, _Mobile Device Management_) que permitan ejecutar un borrado remoto (_remote wipe_) de los datos empresariales en caso de extravío, robo o desvinculación del trabajador.
+
+- Higiene activa verificada [CIS 13.5 — IG2]: Condicionar el nivel de acceso remoto verificando que el equipo cuente con su cortafuegos local encendido, el servicio de filtrado `DNS` activo, el software antimalware actualizado y los parches de seguridad al día.
+  :::
+
+#### Diferenciación arquitectónica: Equipos corporativos frente a BYOD
+
+En muchas pequeñas empresas no resulta financieramente viable entregar un teléfono móvil corporativo o una computadora portátil de la empresa a cada empleado o colaborador externo, por lo que se permite el uso de dispositivos personales para fines laborales (_Bring Your Own Device_ o `BYOD`).
+
+El error arquitectónico consiste en otorgar al dispositivo personal (`BYOD`) exactamente los mismos permisos de red y descarga de datos que a un equipo propiedad de la empresa y administrado al 100% por el área de sistemas. El diseño debe establecer una frontera clara de capacidades según la propiedad y gestión del dispositivo:
+
+| Criterio Arquitectónico    | Dispositivo Corporativo Gestionado                                                   | Dispositivo Personal (`BYOD`) en Móviles | Computadora Personal (`BYOD`) de Escritorio/Portátil |
+| -------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------- | ---------------------------------------------------- |
+| **Control administrativo** | Total por parte de la empresa (sin permisos de administrador local para el usuario). |
+
+| Parcial, limitado exclusivamente a un contenedor de trabajo aislado.
+
+| Nulo o muy bajo sobre el sistema operativo privado del empleado.
+
+|
+| **Diseño de aislamiento de datos** | Disco completo cifrado y políticas de sistema corporativas.
+
+| **Espacios de trabajo separados:** Uso de _Perfil de Trabajo de Android_ o _Cuentas Administradas / Perfiles de Configuración de Apple_ para aislar las aplicaciones y datos de la empresa respecto a las fotos y aplicaciones personales del usuario.
+
+| Prohibición de sincronizar bases de datos completas o carpetas críticas en el disco local; trabajo a través de aplicaciones en el navegador web o escritorio virtual remoto. |
+| **Conectividad de red permitida** | Elegible para túnel VPN hacia zonas autorizadas o `ZTNA` tras validar postura.
+
+| Solo acceso a aplicaciones en la nube (`SaaS`) o mediante proxy autenticado con MFA; en la oficina se conecta a la `VLAN` aislada (`VLAN 99`).
+
+| **Sin acceso directo a VPN de red interna**; acceso exclusivo a portales web publicados con MFA o mediante una sesión hacia un escritorio/servidor bastión intermedio.
+
+|
+| **Acción ante robo o baja laboral (CIS 4.11)** | Borrado completo del dispositivo o bloqueo total del equipo.
+
+| **Borrado selectivo:** Se elimina remotamente solo el contenedor/perfil de trabajo empresarial sin tocar los datos personales del dueño del teléfono.
+
+| Revocación de credenciales SSO, cierre forzado de sesiones web activas y anulación de tokens.
+
+|
+| _Diseño de controles diferenciados entre activos gestionados por la empresa y dispositivos personales._
+
+### Diseño de Gobernanza y Accesos de Proveedores Externos
+
+Ninguna organización opera en aislamiento: depende de estudios contables externos, agencias de marketing que administran su sitio web, técnicos tercerizados que mantienen su sistema de facturación y proveedores de alojamiento en la nube. Como advierte el Control CIS 15 (_Gestión de Proveedores de Servicios_) y la categoría `GV.SC` (_Gestión de Riesgos de la Cadena de Suministro_) del NIST CSF 2.0, los atacantes suelen infiltrarse primero en un proveedor pequeño o consultor externo para usar sus conexiones de confianza como puente directo hacia las empresas clientes, o bien un ataque de ransomware en un proveedor paraliza indirectamente las operaciones de la PyME.
+
+Para evitar que la cadena de suministro se convierta en una puerta trasera hacia la arquitectura diseñada, el acceso y la relación con terceros deben estructurarse bajo cuatro reglas de diseño:
+
+#### 1. Clasificación de proveedores por impacto y riesgo
+
+A partir del inventario de proveedores levantado en el Módulo 2, el arquitecto debe clasificar a cada tercero en niveles de criticidad evaluando qué tipo de datos toca, el volumen de información que procesa y cuánto afectaría al negocio si ese proveedor sufre una caída o una brecha:
+
+- **Nivel 1 — Crítico (Alto Riesgo):** Proveedores con acceso administrativo a la infraestructura de TI (soporte externo / servicios gestionados), desarrolladores externos con acceso a bases de datos o proveedores SaaS /IaaS que alojan datos financieros y personales.
+
+- **Nivel 2 — Operativo (Riesgo Medio):** Proveedores que interactúan con datos internos no críticos o sistemas aislados (por ejemplo, una agencia que administra únicamente el contenido público del blog institucional en la DMZ o el soporte técnico de las impresoras en la `VLAN 80`).
+- **Nivel 3 — Bajo Impacto (Riesgo Bajo):** Proveedores de insumos o servicios generales que no poseen cuentas de usuario en los sistemas de la empresa ni almacenan datos digitales corporativos.
+
+#### 2. Diseño técnico del acceso para soporte externo
+
+Cuando un proveedor de Nivel 1 o 2 necesita conectarse remotamente a un servidor de la empresa para solucionar un fallo o actualizar un sistema, quedan prohibidas las prácticas inseguras habituales: nunca se instalan herramientas de control remoto desatendido con contraseñas fijas sin supervisión, nunca se le entrega la contraseña de administrador principal de la empresa, y nunca se deja su acceso abierto las 24 horas de los 365 días del año.
+
+El patrón arquitectónico seguro para terceros exige:
+
+- **Cuentas individuales y nominales:** Si tres técnicos de una consultora externa dan soporte a la PyME, se diseñan tres cuentas individuales identificables (`ext_nombre`) sujetas a MFA obligatorio, prohibiendo el uso de una cuenta única compartida por toda la consultora.
+
+- **Acceso Justo a Tiempo (_Just-in-Time_ / Bajo demanda):** Las cuentas o las reglas de acceso remoto para proveedores externos permanecen **deshabilitadas por defecto** en condiciones normales. Solo se habilitan a pedido cuando existe un ticket de mantenimiento programado y se vuelven a deshabilitar automáticamente al concluir la ventana de trabajo.
+- **Confinamiento de red:** La conexión del proveedor externo (ya sea vía VPN o servidor bastión) debe estar restringida en la Matriz de Flujos (`03.2`) para alcanzar exclusivamente la dirección `IP` y el puerto del servidor específico que ese proveedor mantiene, impidiéndole ver o conectarse a cualquier otro activo de la organización.
+
+#### 3. Requisitos contractuales y Desactivación Segura
+
+En el plano administrativo del diseño, los contratos o acuerdos de servicio con proveedores de Nivel 1 y 2 deben incorporar cláusulas mínimas de seguridad: la obligación de notificar de inmediato a la empresa ante cualquier incidente o filtración de seguridad que afecte sus sistemas, el requisito de cifrar los datos compartidos y el compromiso formal sobre cómo devolverán o eliminarán la información al finalizar la relación.
+
+Asimismo, el diseño debe prever el procedimiento de **Desactivación Segura de Proveedores (_Offboarding_)** para el momento en que concluya o se rescinda un contrato:
+
+:::steps
+
+### 1. Corte de identidad y accesos técnicos
+
+Revocar inmediatamente todas las cuentas de usuario asignadas al personal del proveedor, deshabilitar las cuentas de servicio asociadas a sus integraciones, anular los tokens `API` u `OAuth` concedidos y eliminar sus certificados o perfiles de VPN.
+
+### 2. Cierre de flujos de datos y reglas de red
+
+Eliminar de la Matriz de Flujos Autorizados y de la configuración de los cortafuegos cualquier excepción de puerto, túnel sitio a sitio o dirección `IP` autorizada que se hubiera habilitado para comunicarse con la infraestructura de ese proveedor.
+
+### 3. Recuperación y sanitización de datos empresariales
+
+Extraer una copia íntegra y verificada de todos los datos e históricos pertenecientes a la PyME que residan en la plataforma del proveedor, y exigir la confirmación de la eliminación segura de los datos empresariales remanentes en los servidores del tercero.
+:::
+
+### Herramientas representativas para entornos híbridos y remotos
+
+Para materializar estos patrones de diseño cuando avancemos al módulo de implementación (`04. PROTECT`), el ecosistema tecnológico ofrece alternativas tanto de código abierto como gestionadas que se adaptan a distintos presupuestos operativos:
+
+- **Soluciones de Conectividad Remota (`VPN` y `ZTNA`):**
+  - _Código abierto:_ **`WireGuard`** es el protocolo moderno por excelencia: rápido, ligero y muy seguro. **`OpenVPN`** es la opción clásica y robusta, ideal si la PyME necesita integrarse con infraestructuras o directorios más antiguos.
+  - _Acceso Zero Trust (Opciones con planes gratuitos):_ Soluciones como **`Tailscale`** (basado en `WireGuard`) o **`Cloudflare Zero Trust`** permiten a los empleados acceder a las aplicaciones internas de forma segura. Su gran ventaja arquitectónica es que exigen autenticación con MFA antes de conectar al usuario, sin necesidad de abrir ningún puerto en el cortafuegos de la oficina.
+- **Soluciones de Gestión de Dispositivos (`MDM`):**
+  - Para garantizar desde un panel central que los equipos remotos tengan el disco cifrado, se bloqueen por inactividad o puedan borrarse en caso de robo, se utilizan gestores corporativos. Si la empresa ya utiliza ecosistemas comerciales, las opciones naturales son **`Microsoft Intune`**, **`Google Endpoint Management`** o **`Apple Business Manager`**. Para entornos mixtos, existen alternativas como **`Fleet`**, que permite auditar continuamente sistemas Windows, macOS y Linux.
+
+### Verificación del diseño de entornos híbridos y acceso remoto
+
+Antes de someter toda nuestra arquitectura (redes, identidades y accesos híbridos) al modelado de amenazas en la sección `03.5`, debemos validar los entregables de este capítulo mediante tres comprobaciones de diseño:
+
+:::steps
+
+### 1. Verificación de exposición cero de servicios administrativos
+
+Revisa tu Matriz de Flujos Autorizados para confirmar que se cumple la regla de oro de acceso externo:
+
+- Verifica que ningún puerto de gestión técnica (`TCP 22` para `SSH`, `TCP/UDP 3389` para `RDP`, puertos de motores de bases de datos como `3306`, `5432` o `1433`, ni puertos web de consolas de hipervisores o routers) esté expuesto directamente hacia la Zona No Controlada (Internet).
+
+### 2. Auditoría de la Matriz de Responsabilidad Compartida
+
+Toma el inventario de plataformas en la nube (SaaS, PaaS, IaaS) y proveedores externos de la organización y comprueba que ninguna casilla de responsabilidad del cliente haya quedado huérfana:
+
+- Para cada servicio en la nube, debe figurar con nombre y apellido quién dentro de la empresa es responsable de: (a) administrar las altas y bajas de usuarios y verificar que el MFA esté activo, (b) revisar las configuraciones de seguridad y privacidad de la plataforma, y (c) ejecutar y probar las copias de seguridad independientes de los datos alojados allí.
+
+### 3. Validación de controles sobre dispositivos perdidos o proveedores desvinculados
+
+Realiza dos preguntas de simulación operativa sobre tu diseño de acceso remoto:
+
+- _"Si hoy a las 19:00 roban en la calle la computadora portátil o el teléfono móvil de un socio o gerente que tiene acceso a todo el sistema financiero, ¿qué impide en mi diseño que el ladrón lea los archivos del disco duro y qué procedimiento técnico ejecutamos en menos de 15 minutos para revocar sus sesiones y borrar los datos corporativos?"_ (Si la respuesta no incluye cifrado de disco previamente activo y capacidad de revocación/borrado, el diseño de endpoint remoto está incompleto).
+
+- _"¿Qué proveedores externos tienen hoy credenciales válidas para entrar a nuestros servidores y cuál es la fecha exacta en que esas cuentas se bloquean solas si nadie las renueva?"_ (Toda cuenta de tercero en el plano debe ser nominal, requerir MFA y operar bajo activación temporal o caducidad programada).
   :::
