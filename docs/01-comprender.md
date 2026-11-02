@@ -147,28 +147,12 @@ Las amenazas a la seguridad pueden tener orígenes diversos, pero todas persigue
 
 Los incidentes no ocurren en el vacío; son perpetrados por entidades con objetivos, capacidades y recursos específicos. Conocer el perfil del atacante permite a las organizaciones ajustar sus defensas.
 
-| Tipo de actor             | Descripción                                                                                                     | Motivación principal |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------- |
-| **Sindicatos criminales** | Grupos organizados que operan como empresas ilícitas. Utilizan ataques masivos o dirigidos para obtener dinero. |
-
-| Beneficio económico (ej. extorsión mediante _ransomware_ o venta de datos).
-
-|
-| **Amenazas Internas (_Insiders_)** | Empleados, proveedores o excolaboradores que abusan de su acceso autorizado. Pueden actuar con intención o por negligencia.
-
-| Sabotaje, espionaje corporativo, corrupción o error humano accidental.
-
-|
-| **Amenaza Avanzada Persistente (APT)** | Procesos informáticos sigilosos realizados por terceros (frecuentemente actores estatales o patrocinados por Estados) con gran capacidad técnica.
-
-| Espionaje, robo de propiedad intelectual, sabotaje estratégico a infraestructuras críticas.
-
-|
-| **Hacktivistas** | Individuos o grupos que utilizan ataques cibernéticos para promover una agenda ideológica.
-
-| Protesta social, propaganda, búsqueda de notoriedad, difamación de marcas.
-
-|
+| Tipo de actor | Descripción | Motivación principal |
+| :--- | :--- | :--- |
+| **Sindicatos criminales** | Grupos organizados que operan como empresas ilícitas. Utilizan ataques masivos o dirigidos para obtener dinero. | Beneficio económico (ej. extorsión mediante _ransomware_ o venta de datos). |
+| **Amenazas Internas (_Insiders_)** | Empleados, proveedores o excolaboradores que abusan de su acceso autorizado. Pueden actuar con intención o por negligencia. | Sabotaje, espionaje corporativo, corrupción o error humano accidental. |
+| **Amenaza Avanzada Persistente (APT)** | Procesos informáticos sigilosos realizados por terceros (frecuentemente actores estatales o patrocinados por Estados) con gran capacidad técnica. | Espionaje, robo de propiedad intelectual, sabotaje estratégico a infraestructuras críticas. |
+| **Hacktivistas** | Individuos o grupos que utilizan ataques cibernéticos para promover una agenda ideológica. | Protesta social, propaganda, búsqueda de notoriedad, difamación de marcas. |
 | _Clasificación de actores de amenazas y sus objetivos operativos._ | | |
 
 ### Superficie de ataque y vectores de entrada
@@ -298,29 +282,13 @@ Construir la seguridad de una organización desde cero mediante prueba y error e
 
 A menudo, los términos asociados a la regulación y gestión de la seguridad se utilizan indistintamente, pero cumplen roles operativos muy distintos dentro de una organización:
 
-| Concepto                         | Definición técnica                                                                                               | Propósito práctico |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------ |
-| **Framework (Marco de trabajo)** | Pautas utilizadas para crear planes que ayuden a mitigar el riesgo y organizar el ciclo de vida de la seguridad. |
-
-| Proporcionar una estructura organizativa y un enfoque sistemático para gestionar qué proteger y cómo hacerlo.
-
-|
-| **Control de seguridad** | Medidas de protección (administrativas, técnicas o físicas) diseñadas para reducir ciertos riesgos específicos.
-
-| Reducir la probabilidad o el impacto de una amenaza concreta (ej. exigir autenticación multifactor).
-
-|
-| **Playbook (Manual de estrategias)** | Guías que proporcionan detalles sobre cualquier acción operativa de forma prescrita, independientemente de quién trabaje en el caso.
-
-| Traducir las políticas y los controles en pasos ejecutables para manejar incidentes antes, durante y después de que ocurran.
-
-|
+| Concepto | Definición técnica | Propósito práctico |
+| :--- | :--- | :--- |
+| **Framework (Marco de trabajo)** | Pautas utilizadas para crear planes que ayuden a mitigar el riesgo y organizar el ciclo de vida de la seguridad. | Proporcionar una estructura organizativa y un enfoque sistemático para gestionar qué proteger y cómo hacerlo. |
+| **Control de seguridad** | Medidas de protección (administrativas, técnicas o físicas) diseñadas para reducir ciertos riesgos específicos. | Reducir la probabilidad o el impacto de una amenaza concreta (ej. exigir autenticación multifactor). |
+| **Playbook (Manual de estrategias)** | Guías que proporcionan detalles sobre cualquier acción operativa de forma prescrita, independientemente de quién trabaje en el caso. | Traducir las políticas y los controles en pasos ejecutables para manejar incidentes antes, durante y después de que ocurran. |
 | **Estándar** | Conjunto de reglas, criterios y metodologías técnicas reconocidas por la industria. | Unificar la forma en que se implementan configuraciones o procesos para garantizar interoperabilidad y seguridad comprobada. |
-| **Normativa / Regulación** | Reglamentos internos y regulaciones externas de cumplimiento obligatorio (compliance).
-
-| Imponer obligaciones legales (con posibles multas o auditorías) sobre el procesamiento y protección de datos, como el RGPD.
-
-|
+| **Normativa / Regulación** | Reglamentos internos y regulaciones externas de cumplimiento obligatorio (_compliance_). | Imponer obligaciones legales (con posibles multas o auditorías) sobre el procesamiento y protección de datos, como el RGPD. |
 | _Diferencias estructurales entre las herramientas de gobernanza y protección._ | | |
 
 > [!NOTE]
@@ -573,9 +541,7 @@ Una herramienta comercial costosa no sustituye un buen control. Alternativas _op
 Asegurarse de que las herramientas seleccionadas (por ejemplo, el EDR y el firewall) puedan compartir información o integrarse a través de un SIEM/SOAR para evitar silos de información que retrasen la detección de incidentes.
 :::
 
-## 1.5. Fundamentos de Redes <!-- id: networks-operating-systems-networks, icon: ServerIcon, displayTitle: 01.5.A — Fundamentos de Redes, description: Fundamentos técnicos indispensables para comprender los entornos y protocolos que deben protegerse. -->
-
-## Fundamentos de Redes
+## 1.5. Fundamentos de Redes <!-- id: networks-operating-systems-networks, icon: ServerIcon, displayTitle: 01.5 — Fundamentos de Redes, description: Fundamentos técnicos indispensables para comprender los entornos y protocolos que deben protegerse. -->
 
 Una red informática es el conjunto de dispositivos, medios de transmisión y protocolos que permite a los sistemas de una organización intercambiar información, compartir recursos y acceder a servicios internos o externos. La red constituye una parte importante de la superficie de ataque de una organización: los servicios expuestos, las comunicaciones mal configuradas y los protocolos vulnerables pueden permitir accesos no autorizados, interceptación de información o desplazamientos laterales después de comprometer un dispositivo. Por eso, conocer la arquitectura de red permite comprender tanto cómo circulan los datos, como también dónde aplicar controles de seguridad para evitar posibles incidentes.
 
@@ -647,43 +613,15 @@ El modelo de Interconexión de Sistemas Abiertos (**OSI**, por sus siglas en ing
 
 La encapsulación, explicada anteriormente, es la que permite a estas capas trabajar en conjunto sin interferir entre sí. Cuando un usuario envía un dato, este desciende por las capas del modelo y cada capa añade su propia cabecera o control con instrucciones específicas. Luego el proceso se invierte.
 
-| Capa Modelo OSI | Capa Modelo TCP/IP | Función Principal e Información de Control                                                        | Ejemplos de Protocolos y Dispositivos | Ejemplos de Fallos Comunes |
-| --------------- | ------------------ | ------------------------------------------------------------------------------------------------- | ------------------------------------- | -------------------------- |
-| 7. Aplicación   | Aplicación         | Permite la interacción del usuario y proporciona servicios de red a las aplicaciones de software. |
-
-| HTTP, HTTPS, DNS, SMTP. Navegadores web.
-
-| Un certificado TLS inválido o caducado que bloquea la conexión segura. |
-| 6. Presentación | Aplicación | Traduce, formatea, comprime y cifra los datos para que sean comprensibles por la aplicación.
-
-| SSL/TLS, formatos como JPEG, ASCII.
-
-| Errores de codificación de caracteres o problemas al descifrar un paquete. |
-| 5. Sesión | Aplicación | Establece, mantiene, sincroniza y finaliza los diálogos de comunicación entre los dispositivos.
-
-| NetBIOS, RPC, PPTP.
-
-| Desconexión abrupta o tiempo de espera de sesión agotado (_timeout_). |
-| 4. Transporte | Transporte | Divide los datos en segmentos, controla el flujo y garantiza (o no) la entrega ordenada mediante puertos.
-
-| TCP (confiable), UDP (rápido).
-
-| Un puerto de comunicación cerrado en el firewall del servidor. |
-| 3. Red | Internet | Enruta los paquetes entre redes distintas basándose en direcciones lógicas (Direcciones IP).
-
-| IPv4, IPv6, ICMP. Routers.
-
-| Una dirección IP incorrecta o una ruta no configurada hacia el destino. |
-| 2. Enlace de Datos | Acceso a la Red | Organiza los bits en tramas y controla el acceso al medio local usando direcciones físicas (MAC).
-
-| Ethernet, Wi-Fi (802.11). Switches, Tarjetas de red (NIC).
-
-| Conflicto o suplantación de direcciones MAC en la red local. |
-| 1. Física | Acceso a la Red | Transmite los bits en forma de señales eléctricas, ópticas o de radio a través del medio físico.
-
-| Cables de cobre, fibra óptica, ondas de radio. Hubs, Módems.
-
-| Un cable de red desenchufado, cortado o un puerto de red dañado. |
+| Capa Modelo OSI | Capa Modelo TCP/IP | Función Principal e Información de Control | Ejemplos de Protocolos y Dispositivos | Ejemplos de Fallos Comunes |
+| :--- | :--- | :--- | :--- | :--- |
+| 7. Aplicación | Aplicación | Permite la interacción del usuario y proporciona servicios de red a las aplicaciones de software. | HTTP, HTTPS, DNS, SMTP. Navegadores web. | Un certificado TLS inválido o caducado que bloquea la conexión segura. |
+| 6. Presentación | Aplicación | Traduce, formatea, comprime y cifra los datos para que sean comprensibles por la aplicación receptora. | SSL/TLS, formatos como JPEG, ASCII. | Errores de codificación de caracteres o problemas en la negociación de algoritmos de cifrado. |
+| 5. Sesión | Aplicación | Establece, administra, sincroniza y finaliza las sesiones de comunicación entre aplicaciones. | NetBIOS, RPC, PPTP. | Desconexión abrupta o tiempo de espera de sesión agotado sin reconexión automática. |
+| 4. Transporte | Transporte | Segmenta los datos, controla el flujo y garantiza o no la entrega entre extremos mediante puertos lógicos. | TCP (confiable), UDP (rápido). | Un puerto de comunicación cerrado en el firewall del servidor. |
+| 3. Red | Internet | Enruta los paquetes entre redes distintas basándose en direcciones lógicas (Direcciones IP). | IPv4, IPv6, ICMP. Routers. | Una dirección IP incorrecta o una ruta no configurada hacia el destino. |
+| 2. Enlace de Datos | Acceso a la Red | Organiza los bits en tramas y controla el acceso al medio local usando direcciones físicas (MAC). | Ethernet, Wi-Fi (802.11). Switches, Tarjetas de red (NIC). | Conflicto o suplantación de direcciones MAC en la red local. |
+| 1. Física | Acceso a la Red | Transmite los bits en forma de señales eléctricas, ópticas o de radio a través del medio físico. | Cables de cobre, fibra óptica, ondas de radio. Hubs, Módems. | Un cable de red desenchufado, cortado o un puerto de red dañado. |
 | _Comparativa entre el modelo OSI, el modelo TCP/IP y sus características principales en la arquitectura de red._ | | | | |
 
 ### Tipos de redes, topologías y componentes
@@ -902,18 +840,10 @@ Comprender los protocolos de aplicación permite identificar cómo interactúan 
 
 ### Navegación web y comunicación con aplicaciones
 
-| Protocolo | Función                                                                                                                          | Puertos | Consideraciones de Seguridad |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------- | ------- | ---------------------------- |
-| **HTTP**  | Permite la comunicación entre navegadores web y servidores mediante solicitudes (GET, POST) y códigos de estado (200, 404, 500). |
-
-| TCP 80 | Transmite toda la información en texto plano sin cifras. Considerado inherentemente inseguro para datos sensibles como contraseñas.
-
-|
-| **HTTPS** | Protege los datos para evitar que sean interceptados por terceros durante la transmisión. Es la versión segura de HTTP, transportado sobre una conexión protegida mediante TLS.
-
-| TCP 443 | Protege la comunicación mediante cifrado y mecanismos de integridad, y permite autenticar el servidor mediante certificados. Aunque no garantiza que la aplicación sea segura ni que el usuario esté autenticado.
-
-|
+| Protocolo | Función | Puertos | Consideraciones de Seguridad |
+| :--- | :--- | :--- | :--- |
+| **HTTP** | Permite la comunicación entre navegadores web y servidores mediante solicitudes (GET, POST) y códigos de estado (200, 404, 500). | TCP 80 | Transmite toda la información en texto plano sin cifrar. Considerado inherentemente inseguro para datos sensibles como contraseñas. |
+| **HTTPS** | Protege los datos para evitar que sean interceptados por terceros durante la transmisión. Es la versión segura de HTTP, transportado sobre una conexión protegida mediante TLS. | TCP 443 | Protege la comunicación mediante cifrado y mecanismos de integridad, y permite autenticar el servidor mediante certificados. Aunque no garantiza que la aplicación sea segura ni que el usuario esté autenticado. |
 
 **TLS** (_Transport Layer Security_) es el estándar actual de cifrado para proteger la integridad y confidencialidad en tránsito. SSL es su predecesor histórico yus versiones están obsoletas y contienen vulnerabilidades; Su uso debe estar prohibido en configuraciones modernas.
 
@@ -1009,7 +939,7 @@ Para controlar estos flujos, se emplean **Listas de Control de Acceso (ACL)** y 
 
 La segmentación es, entonces, tanto una decisión de arquitectura como un control defensivo. Su eficacia debe verificarse comprobando que las comunicaciones permitidas funcionan y que las no autorizadas quedan efectivamente bloqueadas (disponibilidad y confidencialidad).
 
-## 1.6. Fundamentos de Sistemas Operativos <!-- id: networks-operating-systems-os, icon: CpuIcon, displayTitle: 01.5.B — Fundamentos de Sistemas Operativos, description: Arquitectura y comportamiento del SO, procesos, usuarios, permisos y servicios esenciales en Linux. -->
+## 1.6. Fundamentos de Sistemas Operativos <!-- id: networks-operating-systems-os, icon: CpuIcon, displayTitle: 01.6 — Fundamentos de Sistemas Operativos, description: Arquitectura y comportamiento del SO, procesos, usuarios, permisos y servicios esenciales en Linux. -->
 
 ### Fundamentos de sistemas operativos
 
@@ -1939,7 +1869,7 @@ En la práctica, la gran mayoría de incidentes y brechas no derivan de técnica
 - **Desactualización del software y parches pendientes:** Servidores y dependencias operando con vulnerabilidades públicas conocidas (CVE) que cuentan con exploits automatizados fácilmente accesibles.
 - **Asignación de permisos excesivos:** Cuentas con privilegios administrativos universales, permisos `777` en el sistema de archivos o roles IAM en la nube con facultades irrestrictas que amplifican exponencialmente el impacto de cualquier falla.
 
-## 1.7. Mentalidad de Seguridad <!-- id: security-mentality, icon: BrainIcon, displayTitle: 01.6 — Principios de seguridad, description: Criterios fundamentales para diseñar sistemas más seguros y tomar mejores decisiones técnicas. -->
+## 1.7. Mentalidad de Seguridad <!-- id: security-mentality, icon: BrainIcon, displayTitle: 01.7 — Principios de seguridad, description: Criterios fundamentales para diseñar sistemas más seguros y tomar mejores decisiones técnicas. -->
 
 La ciberseguridad efectiva no se logra simplemente adquiriendo herramientas tecnológicas aisladas o memorizando la teoría técnica de redes y sistemas operativos. Todo el conocimiento estructurado a lo largo de este primer módulo, incluyendo la tríada CIA y la gestión del riesgo, pasando por los actores de amenazas y los marcos normativos, hasta la mecánica de paquetes, protocolos, procesos y permisos— converge en un elemento determinante: el desarrollo de una **mentalidad de seguridad** (_security mindset_).
 

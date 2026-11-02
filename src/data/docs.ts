@@ -66,6 +66,7 @@ export type DocBlock =
       badge?: string
       description?: string
       variant?: string
+      caption?: string
       height?: number | string
       hover?: boolean
       noHover?: boolean

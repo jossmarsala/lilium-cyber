@@ -145,6 +145,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://lilium-playbook.com/docs/layer-3/modelado-amenazas</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://lilium-playbook.com/docs/layer-4</loc>
     <lastmod>2026-11-02</lastmod>
     <changefreq>monthly</changefreq>

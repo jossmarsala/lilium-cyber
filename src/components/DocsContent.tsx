@@ -303,6 +303,8 @@ function renderBlock(block: DocBlock, index: number, section?: DocSection): Reac
           title={block.title}
           badge={block.badge}
           description={block.description}
+          variant={block.variant}
+          caption={block.caption}
           height={block.height}
           hover={block.hover}
           noHover={block.noHover}

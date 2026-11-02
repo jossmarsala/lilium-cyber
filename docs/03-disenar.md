@@ -379,6 +379,19 @@ Para diseñar una topología de red segura sin adquirir equipamiento innecesario
 - Límite de confianza (Trust Boundary) [frontera]: Es el punto exacto de la arquitectura donde el tráfico cruza desde una zona con un nivel de confianza determinado hacia otra con un nivel distinto (por ejemplo, desde la red de oficinas hacia el segmento de servidores). Todo límite de confianza exige un punto de inspección y filtrado obligatorio.
   :::
 
+### Identificadores de VLAN (`VLAN ID`) y Buenas Prácticas
+
+En la Capa 2 de la red, el estándar `IEEE 802.1Q` utiliza etiquetas numéricas llamadas **`VLAN ID`** (del 1 al 4094) para dividir un mismo _switch_ físico en redes lógicas totalmente independientes. Cada etiqueta aísla el tráfico en su propio dominio, impidiendo que los equipos de un segmento se comuniquen con otros sin la intervención de un _router_ o _firewall_.
+
+Los números de VLAN no tienen un significado obligatorio por defecto, pero las empresas adoptan esquemas ordenados (por decenas o centenas) que permiten asociar intuitivamente el número de la VLAN con el de su subred (por ejemplo, asignar la `VLAN 10` a la subred `10.10.10.0`). Suele considerarse buena práctica dividirlas de esta forma y en manuales o documentación técnica pueden mencionarse directamente.
+
+- **Prohibido usar la `VLAN 1` (Predeterminada):** Es la red que viene configurada de fábrica en todos los _switches_. Por seguridad, **nunca debe usarse para tráfico operativo o sensible**, ya que dejar los puertos activos allí expone a la red a ataques de salto de VLAN (_VLAN Hopping_).
+- **Estructura recomendada por rangos:**
+  - **`VLAN 10`:** Zona Desmilitarizada (DMZ) y servicios públicos o servidores principales.
+  - **`VLAN 20`:** Áreas sensibles que manejan datos financieros o confidenciales (PII).
+  - **`VLAN 30` / `VLAN 40`:** Estaciones de trabajo para empleados y usuarios generales.
+  - **`VLAN 50` a `VLAN 99`:** Redes de invitados, Wi-Fi pública, dispositivos `IoT` y gestión de infraestructura.
+
 #### Notación `CIDR` aplicada al dimensionamiento en PyMEs
 
 Al diseñar las subredes que alojarán cada zona de seguridad, el uso de `CIDR` permite ajustar el tamaño del segmento a la cantidad real de dispositivos que necesita la empresa, evitando desperdiciar direcciones y facilitando la lectura de las reglas del _firewall_. El número que sigue a la barra diagonal (`/`) indica cuántos de los 32 bits de una dirección `IPv4` están fijos para identificar a la red, dejando los bits restantes para asignar a los dispositivos (_hosts_):
@@ -390,54 +403,6 @@ Al diseñar las subredes que alojarán cada zona de seguridad, el uso de `CIDR` 
 | `/28`                                                                                                        | `255.255.255.240`         | 16                  | 14                                          | Zonas altamente acotadas, como una Zona Desmilitarizada (DMZ), el segmento de servidores críticos o la red exclusiva de administración.    |
 | `/30`                                                                                                        | `255.255.255.252`         | 4                   | 2                                           | Enlaces punto a punto directos entre dos enrutadores o entre el _firewall_ perimetral y un _firewall_ interno.                             |
 | _Dimensionamiento práctico de subredes privadas IPv4 (RFC 1918) para la segmentación de zonas corporativas._ |
-
-#### Identificadores de VLAN (VLAN ID) y esquemas de numeración
-
-Así como las subredes IP estructuran las direcciones lógicas en la Capa 3, en la Capa 2 el estándar `IEEE 802.1Q` utiliza **identificadores numéricos** denominados **VLAN ID** (como la `VLAN 10`, `VLAN 20` o `VLAN 50`) para separar un conmutador físico en múltiples redes lógicas independientes. Cada identificador aísla el tráfico en dominios de difusión (_broadcast_) separados dentro de los mismos _switches_, impidiendo que los paquetes de un segmento sean accesibles por otros sin un enrutador o cortafuegos intermedio.
-
-##### ¿Qué significan estos números?
-
-A nivel de estándar técnico, los números de VLAN **no tienen un significado fijo u obligatorio**:
-
-- **Etiquetas lógicas del 1 al 4094:** El `VLAN ID` es un campo de 12 bits dentro de la cabecera Ethernet que permite valores del `1` al `4094`. El estándar no impone qué función debe cumplir cada número; se trata simplemente de una etiqueta numérica que el administrador de la red elige libremente para diferenciar un grupo de dispositivos o nivel de seguridad de otro.
-
-##### Convenciones comunes y buenas prácticas en empresas
-
-Aunque el administrador puede asignar cualquier número disponible del `1` al `4094`, por orden, mantenibilidad y costumbre operativa en entornos corporativos se suele emplear una **convención estructurada por decenas o centenas**. Esta buena práctica permite asociar de forma mnemotécnica la función o departamento con el número de VLAN, y facilita correlacionar intuitivamente el `VLAN ID` con el direccionamiento IP de la subred (por ejemplo, asociando la `VLAN 10` a la subred `10.10.10.0/28` o la `VLAN 20` a `10.10.20.0/24`):
-
-| Rango / VLAN ID                    | Asignación habitual en empresas                                             | Rol y consideraciones operativas                                                                                                                                                                                                                                                                                             |
-| :--------------------------------- | :-------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VLAN 1`                           | **VLAN predeterminada (_Default_)**                                         | Es la VLAN configurada por defecto de fábrica en todos los puertos de los conmutadores. Por seguridad (`CIS 12.2`), **se desaconseja su uso para tráfico operativo o sensible**, recomendando mover los puertos activos a VLANs dedicadas y reasignar la VLAN nativa para mitigar riesgos de salto de VLAN (_VLAN Hopping_). |
-| `VLAN 10`                          | **Administración y servidores principales (o DMZ)**                         | Generalmente asignada a la gestión técnica de la infraestructura, consolas administrativas seguras, servicios perimetrales o servidores centrales.                                                                                                                                                                           |
-| `VLAN 20`                          | **Finanzas y departamentos sensibles**                                      | Frecuentemente reservada para áreas de contabilidad, tesorería, recursos humanos u otros equipos que procesan pagos y datos confidenciales (`PII`).                                                                                                                                                                          |
-| `VLAN 30` / `VLAN 40`              | **Empleados y usuarios generales**                                          | Segmento asignado a estaciones de trabajo de personal operativo, áreas comerciales, puestos de venta y usuarios corporativos generales.                                                                                                                                                                                      |
-| `VLAN 50` / `VLAN 99` / `VLAN 100` | **Invitados (_Guests_), Wi-Fi pública o gestión de equipos (_Management_)** | Utilizada para aislar visitantes temporales, dispositivos personales (`BYOD`), redes inalámbricas públicas o interfaces de gestión técnica fuera de banda (_Out-of-Band_).                                                                                                                                                   |
-
-_Convenciones comunes y buenas prácticas para la nomenclatura y estructuración de VLAN IDs en redes corporativas._
-
-#### Identificadores de VLAN (VLAN ID) y esquemas de numeración
-
-Así como las subredes IP estructuran las direcciones lógicas en la Capa 3, en la Capa 2 el estándar `IEEE 802.1Q` utiliza **identificadores numéricos** denominados **VLAN ID** (como la `VLAN 10`, `VLAN 20` o `VLAN 50`) para separar un conmutador físico en múltiples redes lógicas independientes. Cada identificador aísla el tráfico en dominios de difusión (_broadcast_) separados dentro de los mismos _switches_, impidiendo que los paquetes de un segmento sean accesibles por otros sin un enrutador o cortafuegos intermedio.
-
-##### ¿Qué significan estos números?
-
-A nivel de estándar técnico, los números de VLAN **no tienen un significado fijo u obligatorio**:
-
-- **Etiquetas lógicas del 1 al 4094:** El `VLAN ID` es un campo de 12 bits dentro de la cabecera Ethernet que permite valores del `1` al `4094`. El estándar no impone qué función debe cumplir cada número; se trata simplemente de una etiqueta numérica que el administrador de la red elige libremente para diferenciar un grupo de dispositivos o nivel de seguridad de otro.
-
-##### Convenciones comunes y buenas prácticas en empresas
-
-Aunque el administrador puede asignar cualquier número disponible del `1` al `4094`, por orden, mantenibilidad y costumbre operativa en entornos corporativos se suele emplear una **convención estructurada por decenas o centenas**. Esta buena práctica permite asociar de forma mnemotécnica la función o departamento con el número de VLAN, y facilita correlacionar intuitivamente el `VLAN ID` con el direccionamiento IP de la subred (por ejemplo, asociando la `VLAN 10` a la subred `10.10.10.0/28` o la `VLAN 20` a `10.10.20.0/24`):
-
-| Rango / VLAN ID                    | Asignación habitual en empresas                                             | Rol y consideraciones operativas                                                                                                                                                                                                                                                                                             |
-| :--------------------------------- | :-------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VLAN 1`                           | **VLAN predeterminada (_Default_)**                                         | Es la VLAN configurada por defecto de fábrica en todos los puertos de los conmutadores. Por seguridad (`CIS 12.2`), **se desaconseja su uso para tráfico operativo o sensible**, recomendando mover los puertos activos a VLANs dedicadas y reasignar la VLAN nativa para mitigar riesgos de salto de VLAN (_VLAN Hopping_). |
-| `VLAN 10`                          | **Administración y servidores principales (o DMZ)**                         | Generalmente asignada a la gestión técnica de la infraestructura, consolas administrativas seguras, servicios perimetrales o servidores centrales.                                                                                                                                                                           |
-| `VLAN 20`                          | **Finanzas y departamentos sensibles**                                      | Frecuentemente reservada para áreas de contabilidad, tesorería, recursos humanos u otros equipos que procesan pagos y datos confidenciales (`PII`).                                                                                                                                                                          |
-| `VLAN 30` / `VLAN 40`              | **Empleados y usuarios generales**                                          | Segmento asignado a estaciones de trabajo de personal operativo, áreas comerciales, puestos de venta y usuarios corporativos generales.                                                                                                                                                                                      |
-| `VLAN 50` / `VLAN 99` / `VLAN 100` | **Invitados (_Guests_), Wi-Fi pública o gestión de equipos (_Management_)** | Utilizada para aislar visitantes temporales, dispositivos personales (`BYOD`), redes inalámbricas públicas o interfaces de gestión técnica fuera de banda (_Out-of-Band_).                                                                                                                                                   |
-
-_Convenciones comunes y buenas prácticas para la nomenclatura y estructuración de VLAN IDs en redes corporativas._
 
 #### Tráfico Norte-Sur frente a Tráfico Este-Oeste
 
@@ -1206,3 +1171,283 @@ Realiza dos preguntas de simulación operativa sobre tu diseño de acceso remoto
 
 - _"¿Qué proveedores externos tienen hoy credenciales válidas para entrar a nuestros servidores y cuál es la fecha exacta en que esas cuentas se bloquean solas si nadie las renueva?"_ (Toda cuenta de tercero en el plano debe ser nominal, requerir MFA y operar bajo activación temporal o caducidad programada).
   :::
+
+## 3.5. Modelado de Amenazas <!-- id: modelado-amenazas, icon: ShieldAlertIcon -->
+
+Un buen diseño en papel organiza la infraestructura: define subredes claras, establece zonas de confianza y estructura tablas de permisos coherentes. Sin embargo, el verdadero valor de una arquitectura se demuestra cuando la ponemos a prueba frente a la creatividad de un adversario real. Quienes buscan vulnerar un sistema no siguen el camino previsto en el diagrama. Exploran las intersecciones entre una zona y otra, aprovechan la confianza legítima entre servidores o combinan el factor humano con sutiles brechas lógicas que un escáner automatizado no está diseñado para detectar.
+
+Por eso, antes de invertir presupuesto, adquirir licencias o dedicar semanas de trabajo técnico a la implementación en el Módulo 4, tenemos la oportunidad estratégica de validar nuestros planos mediante una simulación analítica. Esta disciplina es el **Modelado de Amenazas** (o _Threat Modeling_): un ejercicio de ingeniería que adopta la mirada del atacante para anticipar escenarios y descubrir puntos ciegos en la estructura. Su ventaja estratégica reside en que permite perfeccionar los controles preventivos, detectivos y correctivos en el momento exacto en que modificar el diseño resulta más ágil, inteligente y económico.
+
+### Fundamentos y propósito del Modelado de Amenazas
+
+> [!TIP]
+> **Navegación rápida:** Esta sección cubre fundamentos, el Diagrama de Flujo de Datos (DFD), el proceso de 7 pasos, la metodología STRIDE, árboles de ataque con MITRE ATT&CK y un caso práctico completo. Si ya conoces los fundamentos de DFD y STRIDE, puedes saltar directamente al [caso práctico](#caso-práctico-modelado-stride-sobre-la-arquitectura-diseñada).
+
+> [!IMPORTANT]
+> **Entregable de esta sección — Informe de Modelado de Amenazas:** Al completar esta sección, deberás haber producido cuatro artefactos verificables: (1) un **DFD anotado** con Límites de Confianza marcados, (2) una **tabla de análisis STRIDE** sobre cada cruce de frontera crítico, (3) al menos un **Árbol de Ataque** para el escenario de mayor impacto, y (4) un **Registro de Riesgo Residual** con las amenazas aceptadas formalmente por la dirección.
+
+En la gestión operativa de una pequeña o mediana empresa, suele confundirse la ejecución de un escaneo de vulnerabilidades con el modelado de amenazas. Aunque ambas actividades buscan reducir el riesgo, operan en momentos distintos y detectan problemas de naturaleza completamente diferente:
+
+- **Escaneo de vulnerabilidades (Diagnóstico de implementación):** Como se abordó al cierre del Módulo 2, un escáner automatizado inspecciona sistemas que ya están instalados y funcionando para compararlos contra bases de datos de errores conocidos (como un servidor al que le falta un parche de seguridad o tiene una contraseña de fábrica). Un escáner puede confirmar si un programa está actualizado, pero es incapaz de comprender la lógica de negocio de la empresa.
+- **Modelado de amenazas (Diagnóstico de arquitectura y diseño):** Es un análisis proactivo que evalúa cómo están conectados los componentes, cómo fluye la información y dónde se deposita la confianza antes de escribir código o configurar equipos. Por ejemplo, si una empresa diseña un portal web que consulta directamente la base de datos de nóminas sin exigir validación de permisos por rol, ningún escáner de parches marcará un error de versión; se trata de una **vulnerabilidad de diseño**, la cual suele ser mucho más grave y costosa de corregir si se descubre una vez que el sistema ya está en producción.
+
+Para guiar este análisis sin perderse en teorías abstractas, la industria estructuró el proceso en torno a las **Cuatro Preguntas Centrales del Modelado de Amenazas** (formuladas originalmente por Adam Shostack y adoptadas por el Proyecto Abierto de Seguridad de Aplicaciones Web, OWASP):
+
+:::group title="Las 4 preguntas fundamentales del Modelado de Amenazas"
+
+- 1. ¿Qué estamos construyendo o diseñando? [alcance y topología]: Implica delimitar el sistema a evaluar, identificar los activos críticos involucrados y trazar cómo viajan los datos entre usuarios, aplicaciones, redes y proveedores externos.
+- 2. ¿Qué puede salir mal? [identificación de amenazas]: Consiste en analizar el diagrama con mentalidad de atacante utilizando metodologías estructuradas y árboles de ataque para descubrir cómo podrían suplantar identidades, alterar datos o interrumpir la operación.
+- 3. ¿Qué vamos a hacer al respecto? [tratamiento y controles]: Define qué medidas de seguridad concretas (preventivas, detectivas o correctivas) se agregarán al diseño para bloquear o mitigar cada amenaza identificada, o qué riesgos residuales serán aceptados formalmente.
+- 4. ¿Hicimos un buen trabajo? [verificación y retroalimentación]: Valida que el modelo sea coherente, que no hayan quedado límites de confianza sin proteger y que los hallazgos hayan modificado efectivamente los planos arquitectónicos antes de pasar a la implementación.
+:::
+
+### Diagrama de Flujo de Datos (DFD) como lienzo del modelado
+
+El lienzo sobre el que se aplican las cuatro preguntas no es un diagrama de red convencional. Un diagrama de red muestra _dónde_ están los equipos; un **Diagrama de Flujo de Datos (DFD, _Data Flow Diagram_)** muestra _qué información viaja_, _entre quiénes_ y _en qué dirección_. Esta distinción es fundamental: el modelado de amenazas analiza la circulación de los datos, no la topología de los cables.
+
+Un DFD orientado al modelado de amenazas se compone de cuatro elementos estándar:
+
+| Elemento                                                                                  |       Símbolo convencional        | Qué representa en la arquitectura                                                                                                                                                                              |
+| :---------------------------------------------------------------------------------------- | :-------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Proceso (_Process_)**                                                                   |          Círculo u óvalo          | Un componente activo que recibe, transforma o envía datos: una aplicación web, un servidor de autenticación, un módulo de facturación o una tarea automatizada programada.                                     |
+| **Almacén de datos (_Data Store_)**                                                       | Dos líneas paralelas horizontales | Cualquier repositorio donde la información persiste en reposo: una base de datos relacional, un servidor de archivos, una tabla de configuración o un repositorio de registros (`logs`).                       |
+| **Entidad externa (_External Entity_)**                                                   |            Rectángulo             | Actores fuera del control directo de la organización que interactúan con el sistema: un usuario final desde su navegador, un sistema de pago de terceros, una `API` de un proveedor o un administrador remoto. |
+| **Flujo de datos (_Data Flow_)**                                                          |  Flecha direccional con etiqueta  | El canal de comunicación entre dos elementos, indicando qué tipo de dato viaja (por ejemplo: `Credenciales de acceso`, `Registros de auditoría` o `Datos de factura`) y en qué dirección.                      |
+
+_Elementos estándar de notación para construir un DFD orientado al Modelado de Amenazas._
+
+<Diagrama title="Ejemplo de Diagrama de Flujo de Datos (DFD)" variant="dfd" caption="DFD genérico con los cuatro elementos estándar y dos Límites de Confianza diferenciados por nivel de privilegio: Límite 1 (Azul · Nivel Estándar) y Límite 2 (Rojo · Alto Privilegio)." />
+
+Para construir el DFD de un proceso crítico de la organización de forma sistemática, sigue esta secuencia de cuatro etapas:
+
+:::steps
+
+### 1. Definir las Entidades Externas y el alcance del sistema
+
+Coloca un rectángulo en los bordes del lienzo por cada actor que interactúa con el proceso pero está fuera del control directo de la empresa: el cliente web que envía un pedido, el proveedor de pasarela de pago, el técnico externo que da soporte remoto o el sistema de sincronización con la nube. Dibuja una caja punteada grande que encuadre todo lo que _sí_ controla la organización; esta caja exterior ya representa tu primer Límite de Confianza implícito.
+
+### 2. Mapear los Procesos y Almacenes de datos internos
+
+Dentro de la caja de alcance, coloca un óvalo por cada componente activo del flujo: el proxy inverso, el servidor de aplicaciones, el motor de autenticación, el módulo de facturación. Agrega las barras dobles de los almacenes de datos donde la información descansa: la base de datos de clientes, el repositorio de copias de seguridad y el colector central de registros.
+
+### 3. Trazar los Flujos de Datos con etiquetas precisas
+
+Conecta los elementos con flechas y etiqueta cada flecha describiendo _qué tipo de dato_ circula, no solo _entre qué componentes_. Escribir `«Consulta SQL»` o `«Token JWT de sesión»` en lugar de una flecha anónima es lo que le da al análisis su valor: una flecha sin etiqueta no puede clasificarse bajo STRIDE.
+
+### 4. Superponer los Límites de Confianza
+
+Una vez colocados todos los elementos y flujos, traza líneas punteadas (en color rojo en herramientas digitales) sobre el lienzo, rodeando los grupos de componentes que comparten el mismo nivel de privilegio o el mismo entorno de red. Cada flecha que cruce una de estas líneas punteadas es un punto que deberás analizar sistemáticamente con la metodología STRIDE (que se detalla más adelante en esta sección).
+
+:::
+
+> [!TIP]
+> En lugar de intentar modelar toda la infraestructura de una sola vez, construye el DFD comenzando por el proceso de mayor riesgo identificado en el Módulo 2. Un único diagrama bien delimitado —por ejemplo, el flujo de facturación desde el portal web hasta la base de datos— produce hallazgos mucho más accionables que un mapa general y complejo donde ningún componente se analiza en profundidad.
+
+### El proceso práctico en 7 pasos aplicado a una PyME
+
+Realizar un modelado de amenazas no requiere semanas de burocracia ni el estudio de toda la empresa en simultáneo. Para que resulte accionable en el contexto de una organización pequeña, el ejercicio se enfoca sobre los procesos o flujos más sensibles del negocio siguiendo una secuencia ordenada de siete etapas:
+
+:::steps
+
+### 1. Definición del alcance y selección de activos críticos
+
+En lugar de intentar modelar toda la infraestructura de una sola vez, selecciona un proceso comercial crítico o un segmento de alto riesgo diseñado en las secciones anteriores. Por ejemplo: el flujo de acceso remoto de los administradores hacia los servidores internos, el proceso de facturación y cobro en el portal web de clientes, o el flujo de extracción de copias de seguridad hacia la zona de resiliencia. Identifica qué activos y qué tipos de datos clasificados (restringidos o confidenciales) intervienen en ese alcance específico.
+
+### 2. Identificación de los agentes de amenaza plausibles
+
+Cataloga qué perfiles de atacantes o fuentes de fallo tienen motivación o capacidad real para afectar ese proceso. En una PyME, esto abarca cuatro frentes concretos:
+
+- **Atacantes externos oportunistas o criminales organizados:** Grupos que escanean direcciones IP públicas de forma automatizada buscando desplegar programas de secuestro de datos (_ransomware_) o robar información personal identificable para extorsionar a la empresa.
+- **Amenazas internas maliciosas o negligentes:** Empleados actuales, personal descontento en proceso de desvinculación o usuarios que cometen errores operativos involuntarios (como compartir una carpeta sensible o caer en un engaño de ingeniería social).
+- **Proveedores externos y cadena de suministro:** Consultoras de soporte técnico, servicios de alojamiento o bibliotecas de software de terceros cuyas credenciales o conexiones con nuestra empresa puedan verse comprometidas.
+- **Competencia desleal o actores dirigidos:** Terceros interesados en interrumpir la disponibilidad del servicio comercial o sustraer propiedad intelectual y carteras de clientes.
+
+### 3. Caracterización del entorno y trazado de Límites de Confianza (_Trust Boundaries_)
+
+Toma el DFD construido en la sección anterior e incorpora sobre él todas las entidades que interactúan con el alcance seleccionado. Dibuja líneas punteadas (habitualmente en color rojo) en cada punto donde los datos cambian de nivel de privilegio o cruzan de un entorno a otro: estos son los **Límites de Confianza** (_Trust Boundaries_). Existe un límite de confianza en cada uno de estos cruces típicos:
+
+- Cuando el tráfico pasa de **Internet** a la **Zona Desmilitarizada (DMZ)**.
+- Cuando el proxy inverso en la DMZ consulta al **servidor de base de datos** en la **Zona Restringida**.
+- Cuando un **empleado remoto** ingresa a la red a través del concentrador de **Red Privada Virtual (VPN)**.
+- Cuando una **aplicación local** envía datos hacia la interfaz de un **proveedor en la nube**.
+
+### 4. Creación de Árboles de Ataque (_Attack Trees_)
+
+Para comprender cómo un adversario intentaría vulnerar el activo principal de nuestro alcance, construye un **Árbol de Ataque**. Se trata de un diagrama jerárquico invertido donde el nodo superior (la raíz) representa la meta final del atacante (por ejemplo: _Cifrar o robar la base de datos de clientes y paralizar los respaldos_), y las ramas inferiores desglosan las distintas combinaciones de sub-tareas técnicas o humanas necesarias para lograrlo.
+
+### 5. Identificación sistemática de amenazas en cada frontera
+
+Recorre cada flecha de flujo de datos que atraviesa un Límite de Confianza en tu diagrama y aplica una metodología estructurada de preguntas (como el modelo **STRIDE**, que se detallará a continuación) para listar qué fallas de autenticación, integridad, trazabilidad, confidencialidad, disponibilidad o autorización podrían ocurrir en ese cruce exacto.
+
+### 6. Análisis de brechas y tratamiento del riesgo
+
+Contrasta cada amenaza descubierta en el árbol y en el análisis sistemático contra los controles que habías proyectado en las secciones anteriores. Si descubres una ruta de ataque donde no existe ningún control preventivo que la detenga ni ningún control detectivo que emita una alerta, has encontrado una **brecha arquitectónica**. En ese punto debes elegir una de las cuatro estrategias de tratamiento del riesgo:
+
+- **Mitigar:** Rediseñar el flujo o agregar un control específico que reduzca la probabilidad o el impacto de la amenaza.
+- **Evitar:** Eliminar la funcionalidad o cerrar el servicio expuesto que genera la amenaza.
+- **Transferir:** Delegar el procesamiento crítico a un tercero especializado o cubrir el impacto financiero mediante seguros.
+- **Aceptar:** Documentar el riesgo residual con aprobación expresa de la dirección cuando el costo del control supera el daño potencial.
+
+### 7. Documentación y retroalimentación del diseño
+
+El modelado de amenazas solo tiene valor si modifica la realidad de la arquitectura. Toda corrección decidida en el paso anterior debe trasladarse de inmediato a los entregables maestros del módulo: agregar la regla faltante en la Matriz de Flujos de Red (sección `3.2`), restringir el permiso excesivo en la Matriz de Control de Acceso Basado en Roles (sección `3.3`) o sumar el requisito de dispositivo en el diseño de acceso remoto (sección `3.4`).
+:::
+
+### Metodologías estándar: STRIDE y marcos complementarios
+
+Cuando un equipo técnico observa un diagrama de red y se pregunta de forma abierta _"¿cómo nos podrían atacar?"_, suele bloquearse o pensar únicamente en el tipo de ataque que el equipo leyó recientemente en las noticias. Las metodologías de modelado existen para evitar esa ceguera, proporcionando una lista de verificación sistemática que garantiza cubrir todas las dimensiones de seguridad.
+
+#### Aplicación profunda del modelo STRIDE
+
+Desarrollada originalmente en Microsoft y ampliamente adoptada por OWASP por su claridad didáctica y rigor técnico, la metodología **STRIDE** clasifica las amenazas en seis categorías cuyas iniciales en inglés forman el acrónimo. Su gran fortaleza arquitectónica reside en que cada amenaza representa exactamente la violación de una propiedad específica de seguridad de la información, indicando de inmediato qué familia de control se necesita para contrarrestarla:
+
+| Categoría STRIDE                                                                                                          | Significado en Español     | Propiedad violada             | Qué pregunta hacer frente al diagrama                                                                                                                                                                                          | Controles arquitectónicos de mitigación típicos                                                                                                                                                                                                    |
+| :------------------------------------------------------------------------------------------------------------------------ | :------------------------- | :---------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **S — Spoofing**                                                                                                          | Suplantación de identidad  | **Autenticación**             | ¿Puede un atacante, un equipo no autorizado o un sitio falso fingir ser un usuario legítimo, un servidor interno o un proveedor de confianza en este flujo?                                                                    | Autenticación Multifactor (MFA) resistente a phishing, certificados digitales (TLS mutuo o infraestructura de clave pública), validación de correo (SPF, DKIM, DMARC) y prohibición de protocolos sin validación.                                  |
+| **T — Tampering**                                                                                                         | Manipulación de datos      | **Integridad**                | ¿Puede alguien interceptar y modificar los paquetes que viajan por este enlace, alterar registros de la base de datos, inyectar código o modificar archivos de configuración o respaldos sin permiso?                          | Cifrado y verificación de integridad en tránsito (TLS, IPsec, SSH), funciones hash criptográficas (`sha256sum`), firmas digitales en código y scripts, listas de control de acceso estrictas, consultas SQL parametrizadas y respaldos inmutables. |
+| **R — Repudiation**                                                                                                       | Repudio                    | **No repudio y Trazabilidad** | Si un usuario, administrador o proceso realiza una acción fraudulenta o destructiva en este punto, ¿podría negar haberlo hecho porque no queda evidencia confiable o porque puede borrar sus huellas?                          | Eliminación total de cuentas compartidas, registro detallado de eventos de auditoría con marcas de tiempo sincronizadas (NTP) y envío inmediato a un servidor colector centralizado fuera del alcance del usuario.                                 |
+| **I — Information Disclosure**                                                                                            | Divulgación de información | **Confidencialidad**          | ¿Puede una persona no autorizada leer datos sensibles mientras viajan por la red (rastreo de paquetes), acceder a carpetas o tablas de otros sectores, o extraer secretos desde mensajes de error detallados o discos robados? | Cifrado de datos en tránsito y en reposo (AES-256 en discos y bases de datos), segmentación de red, principio de privilegio mínimo en la matriz de roles y desactivación de mensajes de depuración en producción.                                  |
+| **D — Denial of Service**                                                                                                 | Denegación de servicio     | **Disponibilidad**            | ¿Puede un atacante externo o un fallo interno agotar el ancho de banda, la memoria, el procesador o el espacio en disco de este componente para dejar inoperativa a la empresa?                                                | Cortafuegos perimetrales con limitación de tasa de conexiones (_rate limiting_), proxies inversos o redes de distribución de contenido, cuotas de almacenamiento para registros, redundancia eléctrica y copias de seguridad probadas.             |
+| **E — Elevation of Privilege**                                                                                            | Elevación de privilegios   | **Autorización**              | ¿Puede un usuario con una cuenta estándar o un atacante que comprometió un servicio web básico saltar las restricciones para ejecutar comandos como administrador (`root` o `SYSTEM`) o acceder a la red de gestión?           | Separación de cuentas cotidianas y administrativas, validación y saneamiento estricto de entradas de usuario en aplicaciones, ejecución de servicios con cuentas de mínimo privilegio y segmentación de la red administrativa.                     |
+
+_Matriz de análisis STRIDE vinculando cada categoría de amenaza con la propiedad afectada y su respuesta arquitectónica._
+
+Aunque `STRIDE` es el punto de partida más directo y efectivo para evaluar la arquitectura técnica de una organización, existen otros marcos reconocidos en la industria que resultan útiles en escenarios específicos donde el enfoque debe ser distinto:
+
+- **PASTA (_Process for Attack Simulation and Threat Analysis_):** Es un marco de 7 etapas centrado explícitamente en el riesgo comercial y el impacto en el negocio. A diferencia de STRIDE, que parte de los componentes técnicos, PASTA comienza definiendo los objetivos estratégicos de la empresa e integra inteligencia de amenazas activas para simular ataques viables en función del contexto real de la organización.
+  - _Cuándo aporta a la empresa:_ Útil si necesitas justificar cada inversión de seguridad directamente ante la junta directiva en términos de pérdidas financieras e impacto en la misión comercial. A menudo la gerencia de una organización no llega a comprender el riesgo técnico si no es explicado en términos de dinero. (Más información en la [guía de PASTA en OWASP](https://owasp.org/www-community/Threat_Modeling_Process)).
+
+- **Trike:** Es una metodología de código abierto enfocada en la auditoría de seguridad desde una perspectiva defensiva centrada en la gestión de permisos y control de acceso.
+  - _Cuándo aporta a la empresa:_ Resulta valiosa si el núcleo del problema de la PyME es un sistema con matrices complejas de privilegios y operaciones críticas de bases de datos donde se necesita asegurar estrictamente el acceso a la información. (Repositorio y recursos en la [documentación de Trike](https://owasp.org/www-community/Threat_Modeling)).
+- **VAST (_Visual, Agile, and Simple Threat modeling_):** Está diseñado para organizaciones con múltiples equipos de desarrollo ágil (_DevOps_), separa el modelado en dos vistas: aplicaciones (para desarrolladores) y operaciones (para infraestructura).
+  - _Cuándo aporta a la PyME:_ No suele ser necesario para empresas tradicionales, pero es altamente aplicable si la empresa desarrolla su propio software y necesita integrar el modelado de amenazas de forma automatizada en sus ciclos de entrega continua. (Detalles en el sitio oficial de [ThreatModeler / VAST](https://threatmodeler.com/)).
+
+- **LINDDUN:** Marco especializado en privacidad y protección de datos personales (_Linkability, Identifiability, Non-repudiation, Detectability, Disclosure of information, Unawareness, Non-compliance_).
+  - _Cuándo aporta a la empresa:_ Esencial si la PyME recopila datos personales regulados (como clientes de la Unión Europea bajo RGPD o normativas locales de datos) y necesita modelar riesgos de filtración, perfilado no autorizado o incumplimiento de privacidad más allá de los ataques puramente técnicos. (Detalles en el sitio oficial de [LINDDUN](https://linddun.org/)).
+
+> [!NOTE: No acumular metodologías innecesarias]
+> En una PyME no se obtiene mayor seguridad aplicando cuatro marcos distintos sobre el mismo diagrama. La combinación de un **Árbol de Ataque** (para pensar el recorrido completo de un adversario) junto con una tabla **STRIDE** en los límites de confianza críticos cubre con creces las necesidades de validación arquitectónica sin generar parálisis por análisis. Los marcos extra propuestos en este índice son opcionales y utilizables en casos puntuales.
+
+### Uso práctico de MITRE ATT&CK para armar un Árbol de Ataque
+
+La metodología STRIDE responde a la pregunta _«¿qué tipo de amenaza puede ocurrir aquí?»_, pero no detalla _cómo_ la ejecutaría un adversario en la práctica. Para cerrar esa brecha y evitar imaginar escenarios poco realistas o de ciencia ficción, podemos estructurar un árbol de ataque apoyándonos en la base de conocimientos pública de [MITRE ATT&CK](https://attack.mitre.org/). Este marco internacional cataloga las Tácticas, Técnicas y Procedimientos (TTP) observadas en miles de incidentes documentados alrededor del mundo. Combinando ambos marcos, STRIDE identifica **dónde buscar** y ATT&CK muestra **qué encontrar**: juntos transforman la teoría en un mapa de acciones verificables.
+
+Un árbol de ataque es simplemente un mapa paso a paso que conecta una meta maliciosa con las acciones necesarias para alcanzarla. Su propósito es comprobar si las capas diseñadas en las secciones anteriores cortan el camino del atacante antes de que logre su objetivo.
+
+:::steps
+
+### 1. Define el objetivo final (La Raíz)
+
+Establece el peor escenario realista para las operaciones de tu empresa. Por ejemplo: _"Paralizar las operaciones mediante ransomware y destruir las copias de seguridad"_ o _"Exfiltración masiva de datos personales de clientes y propiedad intelectual"_.
+
+### 2. Desglosa los pasos encadenados del atacante
+
+Divide el recorrido del adversario en tres fases lógicas sencillas y asígnale los códigos de referencia de MITRE ATT&CK:
+
+- **Acceso Inicial:** ¿Cómo ingresaría el atacante? (Ej. mediante un correo de _phishing_ con un enlace o archivo malicioso, técnica [Phishing - T1566](https://attack.mitre.org/techniques/T1566/)).
+- **Movimiento Lateral:** ¿Cómo se propagaría hacia los servidores internos? (Ej. utilizando cuentas válidas o protocolos de acceso remoto, técnica [Remote Services - T1021](https://attack.mitre.org/techniques/T1021/)).
+- **Impacto Final:** ¿Cómo buscaría asegurar el daño económico? (Ej. inhibiendo la recuperación del sistema al borrar o cifrar los respaldos, técnica [Inhibit System Recovery - T1490](https://attack.mitre.org/techniques/T1490/)).
+
+### 3. Contrasta cada paso contra tus capas de diseño
+
+Revisa tus planos arquitectónicos para verificar qué barrera frena cada eslabón de la cadena:
+
+- Si el paso de acceso inicial se enfrenta a una política que exige Autenticación Multifactor, el robo de credenciales pierde su efecto.
+- Si la segmentación de red diseñada en la sección `3.2` impide que las computadoras de los usuarios se conecten libremente con la zona de servidores, el movimiento lateral se detiene.
+- Si las copias de seguridad de la sección `3.1` están aisladas en un modelo unidireccional, el intento de destruir los respaldos fracasa por completo.
+:::
+
+Al visualizarlo de esta forma, el valor del diseño en capas se vuelve evidente: para que un ataque triunfe, el adversario necesita superar **todos** los eslabones de la cadena; para detenerlo, a la arquitectura le basta con bloquear con éxito al menos uno de ellos **en cada cadena de ataque plausible**. Esto no garantiza invulnerabilidad —siempre pueden existir cadenas que no se han mapeado—, pero reduce drásticamente la superficie de ataque real.
+
+### Caso práctico: Modelado STRIDE sobre la arquitectura diseñada
+
+Para ilustrar cómo se documenta el entregable de esta sección en una empresa real, tomemos el flujo más sensible de la arquitectura proyectada: **la interacción entre Clientes Externos, Empleados Remotos, la aplicación comercial e infraestructura de datos y respaldos**.
+
+Al examinar los cruces de frontera en nuestro diagrama preliminar, realizamos el análisis STRIDE y descubrimos **cuatro brechas de diseño** que habían pasado desapercibidas al redactar las secciones anteriores:
+
+:::group title="TM-01 — Suplantación de sesión en acceso al ERP"
+
+- **Cruce evaluado:** Zona Usuarios (`VLAN 20`) → Zona Restringida (`VLAN 30` — Servidor ERP)
+- **Categoría STRIDE:** **S** (_Spoofing_) / **E** (_Elevation of Privilege_) · Táctica ATT&CK: _Valid Accounts_ (`T1078`)
+- **Escenario detectado:** Un atacante compromete la sesión activa de un empleado comercial mediante un robo de cookies en su navegador (_session hijacking_) y accede al sistema interno sin conocer la contraseña ni el segundo factor.
+- **¿Cubierto en diseño inicial?** **Parcialmente** — Se había diseñado MFA al inicio, pero sin políticas de sesión.
+- **Corrección obligatoria (Actualizar `03.3` y `03.4`):** Incorporar expiración corta de tokens de sesión, reautenticación obligatoria para acciones sensibles (exportación masiva de datos) y vinculación de la sesión a la dirección IP interna o túnel VPN.
+:::
+
+:::group title="TM-02 — Inyección SQL desde la DMZ hacia la base de datos"
+
+- **Cruce evaluado:** `DMZ` (`VLAN 10` — Proxy Inverso) → Zona Restringida (`VLAN 30` — Base de Datos)
+- **Categoría STRIDE:** **T** (_Tampering_) / **I** (_Information Disclosure_) · Táctica ATT&CK: _Exploit Public-Facing App_ (`T1190`)
+- **Escenario detectado:** En la Matriz de Flujos `03.2` (Flujo `F-02`), el servidor web consultaba a la base de datos en el puerto `5432`. Si el aplicativo usa una única cuenta de servicio con permisos de administrador sobre toda la base de datos, una inyección SQL permitiría borrar todas las tablas o leer datos de otros módulos.
+- **¿Cubierto en diseño inicial?** **No (Brecha detectada).**
+- **Corrección obligatoria (Actualizar `03.1` y `03.3`):** Diseñar dos cuentas de servicio separadas en la base de datos: la cuenta del portal público solo tendrá permisos `SELECT`/`INSERT` sobre las tablas de pedidos web, prohibiendo comandos `DROP`/`ALTER` y bloqueando la lectura de tablas financieras o de recursos humanos.
+:::
+
+:::group title="TM-03 — Inundación del colector de registros"
+
+- **Cruce evaluado:** Todos los segmentos (`VLAN 10/20/30`) → Zona Resiliencia (`VLAN 40` — Colector de Logs)
+- **Categoría STRIDE:** **R** (_Repudiation_) / **D** (_Denial of Service_) · Táctica ATT&CK: _Impair Defenses_ (`T1562`)
+- **Escenario detectado:** Si un servidor en la `DMZ` es comprometido, el atacante podría enviar millones de eventos falsos por segundo hacia el puerto `6514` del colector de registros (Flujo `F-09`) hasta llenar su disco duro, dejando a la empresa ciega ante el resto del ataque.
+- **¿Cubierto en diseño inicial?** **No (Brecha detectada).**
+- **Corrección obligatoria (Actualizar `03.1` y `03.2`):** Agregar en el diseño del colector de registros cuotas máximas de ingesta por host de origen (_rate limiting_ de logs), rotación con alerta al llegar al 80% de disco (`CIS 8.3`) y autenticación mutua por certificado para que solo hosts registrados puedan escribir eventos.
+:::
+
+:::group title="TM-04 — Acceso lateral del proveedor externo vía VPN"
+
+- **Cruce evaluado:** Proveedor Externo de Soporte → Túnel VPN → Zona Restringida (`VLAN 30`)
+- **Categoría STRIDE:** **E** (_Elevation of Privilege_) / **T** (_Tampering_) · Táctica ATT&CK: _External Remote Services_ (`T1133`)
+- **Escenario detectado:** Cuando el proveedor contable externo se conecta por VPN para diagnosticar un fallo, si el túnel le asigna una dirección IP dentro del mismo grupo que los administradores de TI (`VLAN 50`), podría conectarse por el puerto `22` a otros servidores que no le corresponden.
+- **¿Cubierto en diseño inicial?** **No (Brecha detectada).**
+- **Corrección obligatoria (Actualizar `03.2` y `03.4`):** Crear un grupo de direcciones de VPN exclusivo para proveedores externos cuyas reglas de cortafuegos solo permitan alcanzar la dirección IP y puerto exactos del servidor contable asignado, y únicamente cuando su cuenta temporal sea habilitada bajo demanda.
+:::
+
+_Modelado de Amenazas aplicando STRIDE y MITRE ATT&CK para descubrir y corregir brechas en el diseño previo._
+
+> [!WARNING: Documentación transparente del Riesgo Residual]
+> Ninguna arquitectura reduce el riesgo a cero. Por ejemplo, tras aplicar todas las correcciones de la tabla anterior, aún existe el **riesgo residual** de que un administrador de TI con acceso legítimo a la consola física del hipervisor decida sabotear intencionalmente los servidores locales. Si la PyME no cuenta con presupuesto ni personal para exigir que dos administradores distintos introduzcan sus llaves físicas al mismo tiempo para abrir el gabinete (control de doble custodia), ese riesgo residual no se oculta: se registra explícitamente en la tabla indicando que se mitiga parcialmente mediante alertas de inicio de sesión enviadas a la gerencia y copias de seguridad en la nube bajo una cuenta custodiada por el director de la empresa.
+
+### Herramientas representativas para el Modelado de Amenazas
+
+El valor del modelado reside en el razonamiento crítico del equipo sobre el diagrama, no en la sofisticación del software utilizado. Según la preferencia operativa de la organización, existen dos caminos prácticos para generar y mantener estos artefactos:
+
+1. **Enfoque ligero integrado en la documentación (Recomendado para PyMEs en nivel `IG1`/`IG2`):**
+
+- En lugar de aprender a usar un programa nuevo desde cero, se reutiliza el mismo diagrama topológico y de flujos de datos creado en `Draw.io` (`diagrams.net`) o `Excalidraw` durante las secciones `03.2` y `03.4`. Ambas herramientas soportan la notación estándar de DFD: los óvalos y rectángulos para procesos y entidades, las barras dobles para almacenes de datos y las flechas etiquetadas para flujos, tal como se describió en la etapa 3 de la construcción del DFD (_Trazar los Flujos de Datos con etiquetas precisas_).
+
+- Sobre una copia o capa adicional de ese diagrama, se trazan las cajas o líneas punteadas rojas numeradas (`TB-01`, `TB-02`, `TB-03`) para representar cada **Límite de Confianza**, y se mantiene la tabla de análisis STRIDE y el árbol de ataque en un archivo Markdown o planilla de cálculo versionada junto a la documentación de la red.
+
+2. **Herramientas específicas y gratuitas de Modelado de Amenazas:**
+
+- **`OWASP Threat Dragon`:** Es una herramienta gratuita y de código abierto (disponible como aplicación web o de escritorio para Linux, macOS y Windows). Incorpora de forma nativa los cuatro elementos del DFD —Procesos, Almacenes de Datos, Entidades Externas y Flujos— junto con una paleta dedicada para marcar los Límites de Confianza. Una vez dibujado el DFD, la herramienta analiza automáticamente cada componente y sugiere amenazas organizadas bajo el marco STRIDE, guardando todo el modelo en archivos de texto estructurado (`JSON`) que pueden versionarse en un repositorio `Git`.
+
+- **`Microsoft Threat Modeling Tool`:** Aplicación gratuita para sistemas Windows que permite diagramar arquitecturas locales o en la nube usando plantillas predefinidas para entornos `Azure` o servidores genéricos. Genera automáticamente una lista de amenazas potenciales basadas en STRIDE a partir de los elementos y conectores dibujados en el lienzo, reduciendo el tiempo necesario para completar el análisis por primera vez.
+
+### Verificación del Modelado de Amenazas
+
+Antes de dar por cerrado el diseño técnico, el modelo de amenazas debe superar tres comprobaciones de calidad documental, trazabilidad y ciclo de vida:
+
+:::steps
+
+### 1. Auditoría de cobertura de Límites de Confianza (Cruces de frontera)
+
+Observa tu Diagrama de Flujo de Datos con los Límites de Confianza marcados y verifica cada flecha que cruza una línea roja punteada:
+
+- **Validación de extremo a extremo:** Ningún flujo que transporte datos clasificados como _Restringidos_ o _Confidenciales_ puede cruzar un límite de confianza desde o hacia una zona de menor seguridad sin tener documentado en la tabla cómo se resuelve su autenticación (**S**), cómo se protege su integridad y confidencialidad en tránsito (**T** / **I**) y dónde se registra el evento (**R**).
+- **Verificación del camino de respaldos y registros:** Confirma que el límite de confianza que rodea a la Zona de Resiliencia (`VLAN 40`) haya sido evaluado específicamente contra las amenazas de Manipulación (**T**), Denegación de Servicio (**D**) y Elevación de Privilegios (**E**), garantizando que el árbol de ataque de _ransomware_ quede truncado antes de alcanzar las copias de recuperación.
+
+### 2. Verificación de retroalimentación efectiva (Cierre del circuito de diseño)
+
+Un informe de modelado de amenazas que encuentra brechas pero deja los planos anteriores intactos es un ejercicio inútil. Revisa cada entrada de tu análisis STRIDE donde el estado de cobertura inicial haya sido registrado como **"No"** o **"Parcialmente"**:
+
+- Comprueba que por cada una de esas filas exista una modificación real y verificable aplicada en la versión final de tu **Matriz de Flujos Autorizados (`03.2`)**, en tu **Matriz RBAC (`03.3`)** o en tu **Arquitectura de Acceso Remoto (`03.4`)**.
+- Verifica que todo riesgo que se haya decidido no mitigar técnicamente por limitaciones presupuestarias u operativas cuente con su entrada correspondiente en el **Registro de Riesgo Residual**, especificando qué control compensatorio o detectivo amortiguará su impacto y quién dentro de la dirección de la PyME aprueba esa condición.
+
+### 3. Definición de disparadores de actualización del modelo (Ciclo de vida)
+
+El modelado de amenazas no es una foto estática ni un trámite de una sola vez. Establece formalmente en la gobernanza de TI qué eventos obligan a reabrir y actualizar este artefacto:
+
+- **Cambios arquitectónicos mayores:** Incorporación de un nuevo proveedor en la nube (SaaS/IaaS), migración de base de datos o apertura de nuevos puertos/servicios hacia Internet.
+- **Modificación en el flujo de datos sensibles:** Tratamiento de nuevos tipos de datos regulados, bancarios o de nómina.
+- **Incidentes o cuasi-incidentes de seguridad:** Tras cualquier intento de intrusión o anomalía, se debe contrastar el evento contra el modelo para determinar qué límite de confianza o hipótesis falló.
+- **Revisión periódica anual:** Como mínimo una revalidación formal al año, coordinada con la actualización del inventario del Módulo 2.
+:::

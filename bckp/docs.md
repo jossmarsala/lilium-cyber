@@ -214,28 +214,12 @@ Las amenazas a la seguridad pueden tener orígenes diversos, pero todas persigue
 
 Los incidentes no ocurren en el vacío; son perpetrados por entidades con objetivos, capacidades y recursos específicos. Conocer el perfil del atacante permite a las organizaciones ajustar sus defensas.
 
-| Tipo de actor             | Descripción                                                                                                     | Motivación principal |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------- |
-| **Sindicatos criminales** | Grupos organizados que operan como empresas ilícitas. Utilizan ataques masivos o dirigidos para obtener dinero. |
-
-| Beneficio económico (ej. extorsión mediante _ransomware_ o venta de datos).
-
-|
-| **Amenazas Internas (_Insiders_)** | Empleados, proveedores o excolaboradores que abusan de su acceso autorizado. Pueden actuar con intención o por negligencia.
-
-| Sabotaje, espionaje corporativo, corrupción o error humano accidental.
-
-|
-| **Amenaza Avanzada Persistente (APT)** | Procesos informáticos sigilosos realizados por terceros (frecuentemente actores estatales o patrocinados por Estados) con gran capacidad técnica.
-
-| Espionaje, robo de propiedad intelectual, sabotaje estratégico a infraestructuras críticas.
-
-|
-| **Hacktivistas** | Individuos o grupos que utilizan ataques cibernéticos para promover una agenda ideológica.
-
-| Protesta social, propaganda, búsqueda de notoriedad, difamación de marcas.
-
-|
+| Tipo de actor | Descripción | Motivación principal |
+| :--- | :--- | :--- |
+| **Sindicatos criminales** | Grupos organizados que operan como empresas ilícitas. Utilizan ataques masivos o dirigidos para obtener dinero. | Beneficio económico (ej. extorsión mediante _ransomware_ o venta de datos). |
+| **Amenazas Internas (_Insiders_)** | Empleados, proveedores o excolaboradores que abusan de su acceso autorizado. Pueden actuar con intención o por negligencia. | Sabotaje, espionaje corporativo, corrupción o error humano accidental. |
+| **Amenaza Avanzada Persistente (APT)** | Procesos informáticos sigilosos realizados por terceros (frecuentemente actores estatales o patrocinados por Estados) con gran capacidad técnica. | Espionaje, robo de propiedad intelectual, sabotaje estratégico a infraestructuras críticas. |
+| **Hacktivistas** | Individuos o grupos que utilizan ataques cibernéticos para promover una agenda ideológica. | Protesta social, propaganda, búsqueda de notoriedad, difamación de marcas. |
 | _Clasificación de actores de amenazas y sus objetivos operativos._ | | |
 
 ### Superficie de ataque y vectores de entrada
@@ -365,29 +349,13 @@ Construir la seguridad de una organización desde cero mediante prueba y error e
 
 A menudo, los términos asociados a la regulación y gestión de la seguridad se utilizan indistintamente, pero cumplen roles operativos muy distintos dentro de una organización:
 
-| Concepto                         | Definición técnica                                                                                               | Propósito práctico |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------ |
-| **Framework (Marco de trabajo)** | Pautas utilizadas para crear planes que ayuden a mitigar el riesgo y organizar el ciclo de vida de la seguridad. |
-
-| Proporcionar una estructura organizativa y un enfoque sistemático para gestionar qué proteger y cómo hacerlo.
-
-|
-| **Control de seguridad** | Medidas de protección (administrativas, técnicas o físicas) diseñadas para reducir ciertos riesgos específicos.
-
-| Reducir la probabilidad o el impacto de una amenaza concreta (ej. exigir autenticación multifactor).
-
-|
-| **Playbook (Manual de estrategias)** | Guías que proporcionan detalles sobre cualquier acción operativa de forma prescrita, independientemente de quién trabaje en el caso.
-
-| Traducir las políticas y los controles en pasos ejecutables para manejar incidentes antes, durante y después de que ocurran.
-
-|
+| Concepto | Definición técnica | Propósito práctico |
+| :--- | :--- | :--- |
+| **Framework (Marco de trabajo)** | Pautas utilizadas para crear planes que ayuden a mitigar el riesgo y organizar el ciclo de vida de la seguridad. | Proporcionar una estructura organizativa y un enfoque sistemático para gestionar qué proteger y cómo hacerlo. |
+| **Control de seguridad** | Medidas de protección (administrativas, técnicas o físicas) diseñadas para reducir ciertos riesgos específicos. | Reducir la probabilidad o el impacto de una amenaza concreta (ej. exigir autenticación multifactor). |
+| **Playbook (Manual de estrategias)** | Guías que proporcionan detalles sobre cualquier acción operativa de forma prescrita, independientemente de quién trabaje en el caso. | Traducir las políticas y los controles en pasos ejecutables para manejar incidentes antes, durante y después de que ocurran. |
 | **Estándar** | Conjunto de reglas, criterios y metodologías técnicas reconocidas por la industria. | Unificar la forma en que se implementan configuraciones o procesos para garantizar interoperabilidad y seguridad comprobada. |
-| **Normativa / Regulación** | Reglamentos internos y regulaciones externas de cumplimiento obligatorio (compliance).
-
-| Imponer obligaciones legales (con posibles multas o auditorías) sobre el procesamiento y protección de datos, como el RGPD.
-
-|
+| **Normativa / Regulación** | Reglamentos internos y regulaciones externas de cumplimiento obligatorio (_compliance_). | Imponer obligaciones legales (con posibles multas o auditorías) sobre el procesamiento y protección de datos, como el RGPD. |
 | _Diferencias estructurales entre las herramientas de gobernanza y protección._ | | |
 
 > [!NOTE]
@@ -640,9 +608,7 @@ Una herramienta comercial costosa no sustituye un buen control. Alternativas _op
 Asegurarse de que las herramientas seleccionadas (por ejemplo, el EDR y el firewall) puedan compartir información o integrarse a través de un SIEM/SOAR para evitar silos de información que retrasen la detección de incidentes.
 :::
 
-## 1.5. Fundamentos de Redes <!-- id: networks-operating-systems-networks, icon: ServerIcon, displayTitle: 01.5.A — Fundamentos de Redes, description: Fundamentos técnicos indispensables para comprender los entornos y protocolos que deben protegerse. -->
-
-## Fundamentos de Redes
+## 1.5. Fundamentos de Redes <!-- id: networks-operating-systems-networks, icon: ServerIcon, displayTitle: 01.5 — Fundamentos de Redes, description: Fundamentos técnicos indispensables para comprender los entornos y protocolos que deben protegerse. -->
 
 Una red informática es el conjunto de dispositivos, medios de transmisión y protocolos que permite a los sistemas de una organización intercambiar información, compartir recursos y acceder a servicios internos o externos. La red constituye una parte importante de la superficie de ataque de una organización: los servicios expuestos, las comunicaciones mal configuradas y los protocolos vulnerables pueden permitir accesos no autorizados, interceptación de información o desplazamientos laterales después de comprometer un dispositivo. Por eso, conocer la arquitectura de red permite comprender tanto cómo circulan los datos, como también dónde aplicar controles de seguridad para evitar posibles incidentes.
 
@@ -714,43 +680,15 @@ El modelo de Interconexión de Sistemas Abiertos (**OSI**, por sus siglas en ing
 
 La encapsulación, explicada anteriormente, es la que permite a estas capas trabajar en conjunto sin interferir entre sí. Cuando un usuario envía un dato, este desciende por las capas del modelo y cada capa añade su propia cabecera o control con instrucciones específicas. Luego el proceso se invierte.
 
-| Capa Modelo OSI | Capa Modelo TCP/IP | Función Principal e Información de Control                                                        | Ejemplos de Protocolos y Dispositivos | Ejemplos de Fallos Comunes |
-| --------------- | ------------------ | ------------------------------------------------------------------------------------------------- | ------------------------------------- | -------------------------- |
-| 7. Aplicación   | Aplicación         | Permite la interacción del usuario y proporciona servicios de red a las aplicaciones de software. |
-
-| HTTP, HTTPS, DNS, SMTP. Navegadores web.
-
-| Un certificado TLS inválido o caducado que bloquea la conexión segura. |
-| 6. Presentación | Aplicación | Traduce, formatea, comprime y cifra los datos para que sean comprensibles por la aplicación.
-
-| SSL/TLS, formatos como JPEG, ASCII.
-
-| Errores de codificación de caracteres o problemas al descifrar un paquete. |
-| 5. Sesión | Aplicación | Establece, mantiene, sincroniza y finaliza los diálogos de comunicación entre los dispositivos.
-
-| NetBIOS, RPC, PPTP.
-
-| Desconexión abrupta o tiempo de espera de sesión agotado (_timeout_). |
-| 4. Transporte | Transporte | Divide los datos en segmentos, controla el flujo y garantiza (o no) la entrega ordenada mediante puertos.
-
-| TCP (confiable), UDP (rápido).
-
-| Un puerto de comunicación cerrado en el firewall del servidor. |
-| 3. Red | Internet | Enruta los paquetes entre redes distintas basándose en direcciones lógicas (Direcciones IP).
-
-| IPv4, IPv6, ICMP. Routers.
-
-| Una dirección IP incorrecta o una ruta no configurada hacia el destino. |
-| 2. Enlace de Datos | Acceso a la Red | Organiza los bits en tramas y controla el acceso al medio local usando direcciones físicas (MAC).
-
-| Ethernet, Wi-Fi (802.11). Switches, Tarjetas de red (NIC).
-
-| Conflicto o suplantación de direcciones MAC en la red local. |
-| 1. Física | Acceso a la Red | Transmite los bits en forma de señales eléctricas, ópticas o de radio a través del medio físico.
-
-| Cables de cobre, fibra óptica, ondas de radio. Hubs, Módems.
-
-| Un cable de red desenchufado, cortado o un puerto de red dañado. |
+| Capa Modelo OSI | Capa Modelo TCP/IP | Función Principal e Información de Control | Ejemplos de Protocolos y Dispositivos | Ejemplos de Fallos Comunes |
+| :--- | :--- | :--- | :--- | :--- |
+| 7. Aplicación | Aplicación | Permite la interacción del usuario y proporciona servicios de red a las aplicaciones de software. | HTTP, HTTPS, DNS, SMTP. Navegadores web. | Un certificado TLS inválido o caducado que bloquea la conexión segura. |
+| 6. Presentación | Aplicación | Traduce, formatea, comprime y cifra los datos para que sean comprensibles por la aplicación receptora. | SSL/TLS, formatos como JPEG, ASCII. | Errores de codificación de caracteres o problemas en la negociación de algoritmos de cifrado. |
+| 5. Sesión | Aplicación | Establece, administra, sincroniza y finaliza las sesiones de comunicación entre aplicaciones. | NetBIOS, RPC, PPTP. | Desconexión abrupta o tiempo de espera de sesión agotado sin reconexión automática. |
+| 4. Transporte | Transporte | Segmenta los datos, controla el flujo y garantiza o no la entrega entre extremos mediante puertos lógicos. | TCP (confiable), UDP (rápido). | Un puerto de comunicación cerrado en el firewall del servidor. |
+| 3. Red | Internet | Enruta los paquetes entre redes distintas basándose en direcciones lógicas (Direcciones IP). | IPv4, IPv6, ICMP. Routers. | Una dirección IP incorrecta o una ruta no configurada hacia el destino. |
+| 2. Enlace de Datos | Acceso a la Red | Organiza los bits en tramas y controla el acceso al medio local usando direcciones físicas (MAC). | Ethernet, Wi-Fi (802.11). Switches, Tarjetas de red (NIC). | Conflicto o suplantación de direcciones MAC en la red local. |
+| 1. Física | Acceso a la Red | Transmite los bits en forma de señales eléctricas, ópticas o de radio a través del medio físico. | Cables de cobre, fibra óptica, ondas de radio. Hubs, Módems. | Un cable de red desenchufado, cortado o un puerto de red dañado. |
 | _Comparativa entre el modelo OSI, el modelo TCP/IP y sus características principales en la arquitectura de red._ | | | | |
 
 ### Tipos de redes, topologías y componentes
@@ -969,18 +907,10 @@ Comprender los protocolos de aplicación permite identificar cómo interactúan 
 
 ### Navegación web y comunicación con aplicaciones
 
-| Protocolo | Función                                                                                                                          | Puertos | Consideraciones de Seguridad |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------- | ------- | ---------------------------- |
-| **HTTP**  | Permite la comunicación entre navegadores web y servidores mediante solicitudes (GET, POST) y códigos de estado (200, 404, 500). |
-
-| TCP 80 | Transmite toda la información en texto plano sin cifras. Considerado inherentemente inseguro para datos sensibles como contraseñas.
-
-|
-| **HTTPS** | Protege los datos para evitar que sean interceptados por terceros durante la transmisión. Es la versión segura de HTTP, transportado sobre una conexión protegida mediante TLS.
-
-| TCP 443 | Protege la comunicación mediante cifrado y mecanismos de integridad, y permite autenticar el servidor mediante certificados. Aunque no garantiza que la aplicación sea segura ni que el usuario esté autenticado.
-
-|
+| Protocolo | Función | Puertos | Consideraciones de Seguridad |
+| :--- | :--- | :--- | :--- |
+| **HTTP** | Permite la comunicación entre navegadores web y servidores mediante solicitudes (GET, POST) y códigos de estado (200, 404, 500). | TCP 80 | Transmite toda la información en texto plano sin cifrar. Considerado inherentemente inseguro para datos sensibles como contraseñas. |
+| **HTTPS** | Protege los datos para evitar que sean interceptados por terceros durante la transmisión. Es la versión segura de HTTP, transportado sobre una conexión protegida mediante TLS. | TCP 443 | Protege la comunicación mediante cifrado y mecanismos de integridad, y permite autenticar el servidor mediante certificados. Aunque no garantiza que la aplicación sea segura ni que el usuario esté autenticado. |
 
 **TLS** (_Transport Layer Security_) es el estándar actual de cifrado para proteger la integridad y confidencialidad en tránsito. SSL es su predecesor histórico yus versiones están obsoletas y contienen vulnerabilidades; Su uso debe estar prohibido en configuraciones modernas.
 
@@ -1076,7 +1006,7 @@ Para controlar estos flujos, se emplean **Listas de Control de Acceso (ACL)** y 
 
 La segmentación es, entonces, tanto una decisión de arquitectura como un control defensivo. Su eficacia debe verificarse comprobando que las comunicaciones permitidas funcionan y que las no autorizadas quedan efectivamente bloqueadas (disponibilidad y confidencialidad).
 
-## 1.6. Fundamentos de Sistemas Operativos <!-- id: networks-operating-systems-os, icon: CpuIcon, displayTitle: 01.5.B — Fundamentos de Sistemas Operativos, description: Arquitectura y comportamiento del SO, procesos, usuarios, permisos y servicios esenciales en Linux. -->
+## 1.6. Fundamentos de Sistemas Operativos <!-- id: networks-operating-systems-os, icon: CpuIcon, displayTitle: 01.6 — Fundamentos de Sistemas Operativos, description: Arquitectura y comportamiento del SO, procesos, usuarios, permisos y servicios esenciales en Linux. -->
 
 ### Fundamentos de sistemas operativos
 
@@ -2006,7 +1936,7 @@ En la práctica, la gran mayoría de incidentes y brechas no derivan de técnica
 - **Desactualización del software y parches pendientes:** Servidores y dependencias operando con vulnerabilidades públicas conocidas (CVE) que cuentan con exploits automatizados fácilmente accesibles.
 - **Asignación de permisos excesivos:** Cuentas con privilegios administrativos universales, permisos `777` en el sistema de archivos o roles IAM en la nube con facultades irrestrictas que amplifican exponencialmente el impacto de cualquier falla.
 
-## 1.7. Mentalidad de Seguridad <!-- id: security-mentality, icon: BrainIcon, displayTitle: 01.6 — Principios de seguridad, description: Criterios fundamentales para diseñar sistemas más seguros y tomar mejores decisiones técnicas. -->
+## 1.7. Mentalidad de Seguridad <!-- id: security-mentality, icon: BrainIcon, displayTitle: 01.7 — Principios de seguridad, description: Criterios fundamentales para diseñar sistemas más seguros y tomar mejores decisiones técnicas. -->
 
 La ciberseguridad efectiva no se logra simplemente adquiriendo herramientas tecnológicas aisladas o memorizando la teoría técnica de redes y sistemas operativos. Todo el conocimiento estructurado a lo largo de este primer módulo, incluyendo la tríada CIA y la gestión del riesgo, pasando por los actores de amenazas y los marcos normativos, hasta la mecánica de paquetes, protocolos, procesos y permisos— converge en un elemento determinante: el desarrollo de una **mentalidad de seguridad** (_security mindset_).
 
@@ -3273,6 +3203,213 @@ Realiza dos preguntas de simulación operativa sobre tu diseño de acceso remoto
 
 - _"¿Qué proveedores externos tienen hoy credenciales válidas para entrar a nuestros servidores y cuál es la fecha exacta en que esas cuentas se bloquean solas si nadie las renueva?"_ (Toda cuenta de tercero en el plano debe ser nominal, requerir MFA y operar bajo activación temporal o caducidad programada).
   :::
+
+## 3.5. Modelado de Amenazas <!-- id: modelado-amenazas, icon: ShieldAlertIcon -->
+
+Un buen diseño en papel organiza la infraestructura: define subredes claras, establece zonas de confianza y estructura tablas de permisos coherentes. Sin embargo, el verdadero valor de una arquitectura se demuestra cuando la ponemos a prueba frente a la creatividad de un adversario real. Quienes buscan vulnerar un sistema no siguen el camino previsto en el diagrama; exploran las intersecciones entre una zona y otra, aprovechan la confianza legítima entre servidores o combinan el factor humano con sutiles brechas lógicas que ningún escáner automatizado puede detectar por sí solo.
+
+Por eso, antes de invertir presupuesto, adquirir licencias o dedicar semanas de trabajo técnico a la implementación en el Módulo 4, tenemos la oportunidad estratégica de validar nuestros planos mediante una simulación analítica. Esta disciplina es el **Modelado de Amenazas** (o _Threat Modeling_): un ejercicio de ingeniería que adopta la mirada del atacante para anticipar escenarios, descubrir puntos ciegos en la estructura y perfeccionar los controles preventivos, detectivos y correctivos en el momento exacto en que modificar el diseño resulta más ágil, inteligente y económico.
+
+### Fundamentos y propósito del Modelado de Amenazas
+
+En la gestión operativa de una pequeña o mediana empresa, suele confundirse la ejecución de un escaneo de vulnerabilidades con el modelado de amenazas. Aunque ambas actividades buscan reducir el riesgo, operan en momentos distintos y detectan problemas de naturaleza completamente diferente[cite: 119, 128, 237]:
+
+- **Escaneo de vulnerabilidades (Diagnóstico de implementación):** Como se abordó al cierre del Módulo 2, un escáner automatizado inspecciona sistemas que ya están instalados y funcionando para compararlos contra bases de datos de errores conocidos (como un servidor al que le falta un parche de seguridad o tiene una contraseña de fábrica)[cite: 119, 186, 200]. Un escáner puede confirmar si un programa está actualizado, pero es incapaz de comprender la lógica de negocio de la empresa[cite: 236, 242].
+- **Modelado de amenazas (Diagnóstico de arquitectura y diseño):** Es un análisis proactivo que evalúa cómo están conectados los componentes, cómo fluye la información y dónde se deposita la confianza antes de escribir código o configurar equipos[cite: 128, 237, 242]. Por ejemplo, si una empresa diseña un portal web que consulta directamente la base de datos de nóminas sin exigir validación de permisos por rol, ningún escáner de parches marcará un error de versión; se trata de una **vulnerabilidad de diseño**, la cual suele ser mucho más grave y costosa de corregir si se descubre recién cuando el sistema ya está en producción[cite: 117, 237].
+
+Para guiar este análisis sin perderse en teorías abstractas, la industria estructuró el proceso en torno a las **Cuatro Preguntas Centrales del Modelado de Amenazas** (formuladas originalmente por Adam Shostack y adoptadas por el Proyecto Abierto de Seguridad de Aplicaciones Web, OWASP):
+
+:::group title="Las 4 preguntas fundamentales del Modelado de Amenazas" description="Marco analítico de diseño seguro"
+
+- 1. ¿Qué estamos construyendo o diseñando? [alcance y topología]: Implica delimitar el sistema a evaluar, identificar los activos críticos involucrados y trazar cómo viajan los datos entre usuarios, aplicaciones, redes y proveedores externos[cite: 128, 242].
+- 2. ¿Qué puede salir mal? [identificación de amenazas]: Consiste en analizar el diagrama con mentalidad de atacante utilizando metodologías estructuradas y árboles de ataque para descubrir cómo podrían suplantar identidades, alterar datos o interrumpir la operación[cite: 121, 128, 129].
+- 3. ¿Qué vamos a hacer al respecto? [tratamiento y controles]: Define qué medidas de seguridad concretas (preventivas, detectivas o correctivas) se agregarán al diseño para bloquear o mitigar cada amenaza identificada, o qué riesgos residuales serán aceptados formalmente[cite: 30, 128, 129].
+- 4. ¿Hicimos un buen trabajo? [verificación y retroalimentación]: Valida que el modelo sea coherente, que no hayan quedado límites de confianza sin proteger y que los hallazgos hayan modificado efectivamente los planos arquitectónicos antes de pasar a la implementación[cite: 128, 129].
+     :::
+
+### El proceso práctico en 7 pasos aplicado a una PyME
+
+Realizar un modelado de amenazas no requiere semanas de burocracia ni el estudio de toda la empresa en simultáneo[cite: 33]. Para que resulte accionable en el contexto de una PyME, el ejercicio se enfoca sobre los procesos o flujos más sensibles del negocio siguiendo una secuencia ordenada de siete etapas[cite: 128, 129]:
+
+:::steps
+
+### 1. Definición del alcance y selección de activos críticos
+
+En lugar de intentar modelar toda la infraestructura de una sola vez, selecciona un proceso comercial crítico o un segmento de alto riesgo diseñado en las secciones anteriores[cite: 128, 275]. Por ejemplo: el flujo de acceso remoto de los administradores hacia los servidores internos, el proceso de facturación y cobro en el portal web de clientes, o el flujo de extracción de copias de seguridad hacia la zona de resiliencia[cite: 54, 128, 215]. Identifica qué activos y qué tipos de datos clasificados (restringidos o confidenciales) intervienen en ese alcance específico[cite: 97, 128].
+
+### 2. Identificación de los agentes de amenaza plausibles
+
+Cataloga qué perfiles de atacantes o fuentes de fallo tienen motivación o capacidad real para afectar ese proceso[cite: 9, 121, 128]. En una PyME, esto abarca cuatro frentes concretos:
+
+- **Atacantes externos oportunistas o criminales organizados:** Grupos que escanean direcciones IP públicas de forma automatizada buscando desplegar programas de secuestro de datos (_ransomware_) o robar información personal identificable para extorsionar a la empresa[cite: 3, 28, 121, 173, 214].
+- **Amenazas internas maliciosas o negligentes:** Empleados actuales, personal descontento en proceso de desvinculación o usuarios que cometen errores operativos involuntarios (como compartir una carpeta sensible o caer en un engaño de ingeniería social)[cite: 6, 9, 121, 122, 128].
+- **Proveedores externos y cadena de suministro:** Consultoras de soporte técnico, servicios de alojamiento o bibliotecas de software de terceros cuyas credenciales o conexiones con nuestra empresa puedan verse comprometidas[cite: 9, 27, 128, 231, 239].
+- **Competencia desleal o actores dirigidos:** Terceros interesados en interrumpir la disponibilidad del servicio comercial o sustraer propiedad intelectual y carteras de clientes[cite: 25, 121, 128].
+
+### 3. Caracterización del entorno y trazado de Límites de Confianza (Trust Boundaries)
+
+Toma el diagrama de arquitectura y flujos de datos diseñado en las secciones 03.2 a 03.4 e incorpora todas las entidades que interactúan con él[cite: 128, 184]. Sobre ese lienzo, dibuja líneas punteadas (habitualmente en color rojo) en cada punto donde los datos cambian de nivel de privilegio o cruzan de un entorno a otro: estos son los **Límites de Confianza** (_Trust Boundaries_)[cite: 53, 54, 242].
+Existe un límite de confianza cada vez que el tráfico pasa de Internet a la Zona Desmilitarizada (DMZ), cada vez que el proxy inverso en la DMZ consulta al servidor de base de datos en la Zona Restringida, cada vez que un empleado remoto entra por el concentrador de Red Privada Virtual (VPN) y cada vez que una aplicación local envía datos hacia la interfaz de un proveedor en la nube[cite: 53, 54, 56, 69, 184].
+
+### 4. Creación de Árboles de Ataque (Attack Trees)
+
+Para comprender cómo un adversario intentaría vulnerar el activo principal de nuestro alcance, construye un **Árbol de Ataque**[cite: 128, 129]. Se trata de un diagrama jerárquico invertido donde el nodo superior (la raíz) representa la meta final del atacante (por ejemplo: _Cifrar o robar la base de datos de clientes y paralizar los respaldos_), y las ramas inferiores desglosan las distintas combinaciones de sub-tareas técnicas o humanas necesarias para lograrlo[cite: 128, 129].
+
+### 5. Identificación sistemática de amenazas en cada frontera
+
+Recorre cada flecha de flujo de datos que atraviesa un Límite de Confianza en tu diagrama y aplica una metodología estructurada de preguntas (como el modelo **STRIDE**, que detallaremos a continuación) para listar qué fallas de autenticación, integridad, trazabilidad, confidencialidad, disponibilidad o autorización podrían ocurrir en ese cruce exacto[cite: 129, 242].
+
+### 6. Análisis de brechas y tratamiento del riesgo
+
+Contrasta cada amenaza descubierta en el árbol y en el análisis sistemático contra los controles que habías proyectado en las secciones 03.1 a 03.4[cite: 128]. Si descubres una ruta de ataque donde no existe ningún control preventivo que la detenga ni ningún control detectivo que emita una alerta, has encontrado una **brecha arquitectónica**[cite: 128]. En ese punto debes elegir una de las cuatro estrategias de tratamiento del riesgo: **Mitigar** (rediseñar el flujo o agregar un control específico), **Evitar** (eliminar la funcionalidad o cerrar el servicio expuesto), **Transferir** (delegar el procesamiento crítico o cubrir el impacto financiero mediante seguros) o **Aceptar** (documentar el riesgo residual con aprobación expresa de la dirección cuando el costo del control supera el daño potencial)[cite: 30, 128, 129].
+
+### 7. Documentación y retroalimentación del diseño
+
+El modelado de amenazas solo tiene valor si modifica la realidad de la arquitectura[cite: 128, 129]. Toda corrección decidida en el paso anterior debe trasladarse de inmediato a los entregables maestros del módulo: agregar la regla faltante en la Matriz de Flujos de Red (sección 03.2), restringir el permiso excesivo en la Matriz de Control de Acceso Basado en Roles (sección 03.3) o sumar el requisito de dispositivo en el diseño de acceso remoto (sección 03.4)[cite: 129].
+:::
+
+### Metodologías estándar: STRIDE y marcos complementarios
+
+Cuando un equipo técnico observa un diagrama de red y se pregunta de forma abierta "¿cómo nos podrían atacar?", suele bloquearse o pensar únicamente en el tipo de ataque que leyó recientemente en las noticias. Las metodologías de modelado existen para evitar esa ceguera, proporcionando una lista de verificación sistemática que garantiza cubrir todas las dimensiones de seguridad.
+
+#### Aplicación profunda del modelo STRIDE
+
+Desarrollada originalmente en Microsoft y ampliamente adoptada por OWASP por su claridad didáctica y rigor técnico, la metodología **STRIDE** clasifica las amenazas en seis categorías cuyas iniciales en inglés forman el acrónimo[cite: 129]. Su gran fortaleza arquitectónica reside en que cada amenaza representa exactamente la violación de una propiedad específica de seguridad de la información, indicando de inmediato qué familia de control se necesita para contrarrestarla[cite: 13, 109, 129]:
+
+| Categoría STRIDE                                                                                                                                   | Significado en Español                   | Propiedad violada                             | Qué pregunta hacer frente al diagrama                                                                                                                                                                                                                  | Controles arquitectónicos de mitigación típicos                                                                                                                                                                                                                                                    |
+| :------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------- | :-------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **S — Spoofing**                                                                                                                                   | Suplantación de identidad[cite: 129]     | **Autenticación**[cite: 109]                  | ¿Puede un atacante, un equipo no autorizado o un sitio falso fingir ser un usuario legítimo, un servidor interno o un proveedor de confianza en este flujo?[cite: 6, 60, 109]                                                                          | Autenticación Multifactor (MFA) resistente a phishing, certificados digitales (TLS mutuo o infraestructura de clave pública), validación de correo (SPF, DKIM, DMARC) y prohibición de protocolos sin validación[cite: 61, 104, 105, 111, 209].                                                    |
+| **T — Tampering**                                                                                                                                  | Manipulación de datos[cite: 129]         | **Integridad**[cite: 13, 32]                  | ¿Puede alguien interceptar y modificar los paquetes que viajan por este enlace, alterar registros de la base de datos, inyectar código o modificar archivos de configuración o respaldos sin permiso?[cite: 60, 107, 126, 214]                         | Cifrado y verificación de integridad en tránsito (TLS, IPsec, SSH), funciones hash criptográficas (`sha256sum`), firmas digitales en código y scripts, listas de control de acceso estrictas, consultas SQL parametrizadas y respaldos inmutables[cite: 50, 51, 61, 107, 108, 128, 180, 183, 215]. |
+| **R — Repudiation**                                                                                                                                | Repudio[cite: 107, 129]                  | **No repudio y Trazabilidad**[cite: 107, 112] | Si un usuario, administrador o proceso realiza una acción fraudulenta o destructiva en este punto, ¿podría negar haberlo hecho porque no queda evidencia confiable o porque puede borrar sus huellas?[cite: 107, 112, 203]                             | Eliminación total de cuentas compartidas, registro detallado de eventos de auditoría con marcas de tiempo sincronizadas (NTP) y envío inmediato a un servidor colector centralizado fuera del alcance del usuario[cite: 112, 169, 192, 204, 205, 206].                                             |
+| **I — Information Disclosure**                                                                                                                     | Divulgación de información[cite: 129]    | **Confidencialidad**[cite: 13, 32]            | ¿Puede una persona no autorizada leer datos sensibles mientras viajan por la red (rastreo de paquetes), acceder a carpetas o tablas de otros sectores, o extraer secretos desde mensajes de error detallados o discos robados?[cite: 59, 60, 181, 195] | Cifrado de datos en tránsito y en reposo (AES-256 en discos y bases de datos), segmentación de red, principio de privilegio mínimo en la matriz de roles y desactivación de mensajes de depuración en producción[cite: 54, 105, 111, 184, 185].                                                    |
+| **D — Denial of Service**                                                                                                                          | Denegación de servicio[cite: 129]        | **Disponibilidad**[cite: 13, 32]              | ¿Puede un atacante externo o un fallo interno agotar el ancho de banda, la memoria, el procesador o el espacio en disco de este componente para dejar inoperativa a la empresa?[cite: 57, 204]                                                         | Cortafuegos perimetrales con limitación de tasa de conexiones (_rate limiting_), proxies inversos o redes de distribución de contenido, cuotas de almacenamiento para registros, redundancia eléctrica y copias de seguridad probadas[cite: 56, 57, 204, 215, 289].                                |
+| **E — Elevation of Privilege**                                                                                                                     | Elevación de privilegios[cite: 129, 258] | **Autorización**[cite: 21, 111]               | ¿Puede un usuario con una cuenta estándar o un atacante que comprometió un servicio web básico saltar las restricciones para ejecutar comandos como administrador (`root` o `SYSTEM`) o acceder a la red de gestión?[cite: 86, 127, 195, 258]          | Separación de cuentas cotidianas y administrativas, validación y saneamiento estricto de entradas de usuario en aplicaciones, ejecución de servicios con cuentas de mínimo privilegio y segmentación de la red administrativa[cite: 86, 126, 193, 195, 219, 241].                                  |
+| _Matriz de análisis STRIDE vinculando cada categoría de amenaza con la propiedad afectada y su respuesta arquitectónica[cite: 13, 109, 112, 129]._ |
+
+#### Otros marcos de modelado en la industria
+
+Aunque STRIDE es el punto de partida más directo y efectivo para evaluar la arquitectura técnica de una PyME, conviene conocer la existencia de otras tres metodologías reconocidas para saber cuándo pueden resultar útiles[cite: 129]:
+
+- **PASTA (_Process for Attack Simulation and Threat Analysis_):** Es un marco de siete etapas centrado explícitamente en el riesgo comercial y el impacto en el negocio[cite: 129]. A diferencia de STRIDE (que parte de los componentes técnicos), PASTA comienza definiendo los objetivos estratégicos de la empresa e integra inteligencia de amenazas e informes reales de vulnerabilidades para simular ataques viables[cite: 129]. Nuestro proceso de 7 pasos en **lilium** toma prestada esta filosofía de alinear el análisis técnico con el impacto empresarial[cite: 128, 129].
+- **Trike:** Es una metodología de código abierto enfocada en la auditoría de seguridad desde una perspectiva defensiva de gestión de permisos[cite: 129]. Resulta especialmente útil cuando el objetivo principal es modelar matrices complejas de privilegios y operaciones de creación, lectura, actualización y borrado de datos para asegurar el control de acceso[cite: 129].
+- **VAST (_Visual, Agile, and Simple Threat modeling_):** Diseñado para grandes organizaciones con múltiples equipos de desarrollo ágil (_DevOps_), divide el modelado en dos vistas separadas: modelos de amenazas de aplicaciones (usando diagramas de flujo de procesos para desarrolladores) y modelos de amenazas operativas (usando diagramas de infraestructura para los equipos de redes y sistemas)[cite: 129, 236].
+
+> [!NOTE:No acumular metodologías innecesarias]
+> En una PyME no se obtiene mayor seguridad aplicando cuatro marcos distintos sobre el mismo diagrama[cite: 33]. La combinación de un **Árbol de Ataque** (para pensar el recorrido completo de un adversario) junto con una tabla **STRIDE** en los límites de confianza críticos cubre con creces las necesidades de validación arquitectónica sin generar parálisis por análisis.
+
+### Integración con MITRE ATT&CK y Árboles de Ataque realistas
+
+Uno de los mayores riesgos al construir Árboles de Ataque sin experiencia previa es desviar la atención hacia escenarios de película —como suponer que un agente encubierto infiltrará un dispositivo físico modificado en el centro de datos— mientras se pasan por alto los vectores cotidianos que destruyen empresas todos los días[cite: 160, 162, 226].
+
+Para garantizar que los escenarios modelados sean plausibles y estén basados en datos empíricos, el diseño se apoya en la base de conocimientos **MITRE ATT&CK** y en el **Modelo de Defensa Comunitaria (CDM)** del CIS[cite: 161, 254]. Estos recursos documentan las **Tácticas, Técnicas y Procedimientos (TTP)** reales observados en miles de investigaciones forenses alrededor del mundo[cite: 144, 161, 222]. Al construir un árbol de ataque para una PyME, cada rama debe corresponder a técnicas reales que los atacantes ejecutan encadenadas:
+
+```filetree:Arbol_de_Ataque_Ransomware_y_Exfiltracion
+OBJETIVO_RAIZ: Paralizar operaciones por Ransomware y extorsionar con datos de clientes (Impacto: TA0040)
+├── RAMA_A: Infiltración vía Identidad y Acceso Remoto (Foco en Secciones 03.3 y 03.4)
+│   ├── 1. Acceso Inicial: Phishing con enlace falso a empleado o soporte (T1566)
+│   ├── 2. Acceso a Credenciales: Captura de usuario y contraseña en sitio clonado (T1056 / T1539)
+│   ├── 3. Persistencia / Acceso: Uso de Cuentas Válidas en VPN o portal cloud (T1078 / T1133)
+│   │   ├── [CONDICIÓN DE DISEÑO]: ¿Exige la arquitectura MFA resistente en VPN y SaaS? (CIS 6.3 / 6.4)
+│   │   └── [CONDICIÓN DE DISEÑO]: ¿Tenía esa cuenta permisos de administrador local o de red? (CIS 5.4)
+│   └── 4. Movimiento Lateral: Salto por RDP o SSH hacia servidores internos (T1021)
+│       └── [CONDICIÓN DE DISEÑO]: ¿Bloquea el firewall interno el paso de VLAN Usuarios a VLAN 30? (CIS 13.4)
+├── RAMA_B: Explotación de Aplicación Pública Expuesta (Foco en Sección 03.2)
+│   ├── 1. Acceso Inicial: Inyección SQL o falla en aplicación web pública (T1190)
+│   ├── 2. Ejecución y Escalada: Obtención de consola en el servidor web
+│   └── 3. Descubrimiento y Movimiento Lateral: Escaneo interno desde el servidor web hacia la red local (T1046)
+│       ├── [CONDICIÓN DE DISEÑO]: ¿Está el servidor web aislado en una DMZ con Reverse Proxy?
+│       └── [CONDICIÓN DE DISEÑO]: ¿Impide la regla F-03 que la DMZ inicie conexiones hacia la LAN?
+└── RAMA_C: Destrucción de la Capacidad de Recuperación (Fase final necesaria para forzar el pago)
+    ├── 1. Descubrimiento de red: Localizar servidor NAS o repositorio de copias de seguridad (T1135)
+    └── 2. Impacto: Inhibir la recuperación del sistema borrando o cifrando backups (T1490)
+        ├── [CONDICIÓN DE DISEÑO]: ¿Están los backups en la VLAN 40 aislada con modelo Pull? (CIS 11.4)
+        └── [CONDICIÓN DE DISEÑO]: ¿Existe una copia externa con inmutabilidad activada?
+```
+
+Al observar este árbol de ataque, el valor del diseño en capas cobra sentido inmediato: para que el atacante alcance el objetivo raíz, necesita completar con éxito todos los pasos de una rama desde el acceso inicial hasta la destrucción del respaldo. Si la arquitectura diseñada en las secciones previas corta el camino en el paso 3 con autenticación multifactor, o lo frena en el paso 4 con segmentación de subredes, o le impide tocar los respaldos en la Rama C gracias al aislamiento unidireccional, el ataque fracasa o queda reducido a un incidente menor fácilmente recuperable.
+
+### Caso práctico: Modelado STRIDE sobre la arquitectura diseñada
+
+Para ilustrar cómo se documenta el entregable de esta sección en una PyME real, tomemos el flujo más sensible de nuestra arquitectura proyectada: **la interacción entre Clientes Externos, Empleados Remotos, la aplicación comercial e infraestructura de datos y respaldos** (cruzando los Límites de Confianza definidos en `03.2`, `03.3` y `03.4`).
+
+Al examinar los cruces de frontera en nuestro diagrama preliminar, realizamos el análisis STRIDE y descubrimos **cuatro brechas de diseño** que habían pasado desapercibidas al redactar las secciones anteriores:
+
+| ID Amenaza | Cruce de Límite de Confianza evaluado                                               | Categoría STRIDE y Táctica ATT&CK                         | Escenario de amenaza detectado en el diseño preliminar | ¿Cubierto en diseño inicial? | Corrección arquitectónica obligatoria (Retroalimentación del diseño) |
+| ---------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------ | ---------------------------- | -------------------------------------------------------------------- |
+| **TM-01**  | Zona Usuarios (`VLAN 20`) $\rightarrow$ Zona Restringida (`VLAN 30` — Servidor ERP) | **S** (_Spoofing_) / **E** (_Elevation of Privilege_)<br> |
+
+<br>_Valid Accounts (`T1078`)_ | Un atacante compromete la sesión activa de un empleado comercial mediante un robo de cookies en su navegador (_session hijacking_) y accede al sistema interno sin conocer la contraseña ni el segundo factor.
+
+| **Parcialmente** _(Se había diseñado MFA al inicio, pero sin políticas de sesión)_ | **Mitigar (Actualizar `03.3` y `03.4`):** Incorporar expiración corta de tokens de sesión, reautenticación obligatoria para acciones sensibles (exportación masiva de datos) y vinculación de la sesión a la dirección IP interna o túnel VPN.
+
+|
+| **TM-02** | `DMZ` (`VLAN 10` — Proxy Inverso) $\rightarrow$ Zona Restringida (`VLAN 30` — Base de Datos) | **T** (_Tampering_) / **I** (_Information Disclosure_)<br>
+
+<br>_Exploit Public-Facing App (`T1190`)_ | En la Matriz de Flujos `03.2` (Flujo `F-02`), el servidor web consultaba a la base de datos en el puerto `5432`. Si el aplicativo usa una única cuenta de servicio con permisos de administrador sobre toda la base de datos, una inyección SQL permitiría borrar todas las tablas o leer datos de otros módulos.
+
+| **No (Brecha detectada)** | **Mitigar (Actualizar `03.1` y `03.3`):** Diseñar dos cuentas de servicio separadas en la base de datos: la cuenta del portal público solo tendrá permisos `SELECT`/`INSERT` sobre las tablas de pedidos web, prohibiendo comandos `DROP`/`ALTER` y bloqueando la lectura de tablas financieras o de recursos humanos.
+
+|
+| **TM-03** | Todos los segmentos (`VLAN 10/20/30`) $\rightarrow$ Zona Resiliencia (`VLAN 40` — Colector de Logs) | **R** (_Repudiation_) / **D** (_Denial of Service_)<br>
+
+<br>_Impair Defenses (`T1562`)_ | Si un servidor en la `DMZ` es comprometido, el atacante podría enviar millones de eventos falsos por segundo hacia el puerto `6514` del colector de registros (Flujo `F-09`) hasta llenar su disco duro, dejando a la empresa ciega ante el resto del ataque.
+
+| **No (Brecha detectada)** | **Mitigar (Actualizar `03.1` y `03.2`):** Agregar en el diseño del colector de registros cuotas máximas de ingesta por host de origen (_rate limiting_ de logs), rotación con alerta al llegar al 80% de disco (`CIS 8.3`) y autenticación mutua por certificado para que solo hosts registrados puedan escribir eventos.
+
+|
+| **TM-04** | Proveedor Externo de Soporte $\rightarrow$ Túnel VPN $\rightarrow$ Zona Restringida (`VLAN 30`) | **E** (_Elevation of Privilege_) / **T** (_Tampering_)<br>
+
+<br>_External Remote Services (`T1133`)_ | Cuando el proveedor contable externo se conecta por VPN para diagnosticar un fallo, si el túnel le asigna una dirección IP dentro del mismo grupo que los administradores de TI (`VLAN 50`), podría conectarse por el puerto `22` a otros servidores que no le corresponden.
+
+| **No (Brecha detectada)** | **Mitigar (Actualizar `03.2` y `03.4`):** Crear un grupo de direcciones de VPN exclusivo para proveedores externos cuyas reglas de cortafuegos solo permitan alcanzar la dirección IP y puerto exactos del servidor contable asignado, y únicamente cuando su cuenta temporal sea habilitada bajo demanda.
+
+|
+| _Tabla de Modelado de Amenazas aplicando STRIDE y MITRE ATT&CK para descubrir y corregir brechas en el diseño previo._ | | | | | |
+
+> [!WARNING:Documentación transparente del Riesgo Residual]
+> Ninguna arquitectura reduce el riesgo a cero. Por ejemplo, tras aplicar todas las correcciones de la tabla anterior, aún existe el **riesgo residual** de que un administrador de TI con acceso legítimo a la consola física del hipervisor decida sabotear intencionalmente los servidores locales. Si la PyME no cuenta con presupuesto ni personal para exigir que dos administradores distintos introduzcan sus llaves físicas al mismo tiempo para abrir el gabinete (control de doble custodia), ese riesgo residual no se oculta: se registra explícitamente en la tabla indicando que se mitiga parcialmente mediante alertas de inicio de sesión enviadas a la gerencia y copias de seguridad en la nube bajo una cuenta custodiada por el director de la empresa.
+
+### Herramientas representativas para el Modelado de Amenazas
+
+El valor del modelado reside en el razonamiento crítico del equipo sobre el diagrama, no en la sofisticación del software utilizado. Según la preferencia operativa de la organización, existen dos caminos prácticos para generar y mantener estos artefactos:
+
+1. **Enfoque ligero integrado en la documentación (Recomendado para PyMEs en nivel `IG1`/`IG2`):**
+
+- En lugar de aprender a usar un programa nuevo desde cero, se reutiliza el mismo diagrama topológico y de flujos de datos creado en `Draw.io` (`diagrams.net`) o `Excalidraw` durante las secciones `03.2` y `03.4`.
+
+- Sobre una copia o capa adicional de ese diagrama, se trazan las cajas o líneas punteadas rojas numeradas (`TB-01`, `TB-02`, `TB-03`) para representar cada **Límite de Confianza**, y se mantiene la tabla de análisis STRIDE y el árbol de ataque en un archivo Markdown o planilla de cálculo versionada junto a la documentación de la red.
+
+2. **Herramientas específicas y gratuitas de Modelado de Amenazas:**
+
+- **`OWASP Threat Dragon`:** Es una herramienta gratuita y de código abierto (disponible como aplicación web o de escritorio para Linux, macOS y Windows) mantenida oficialmente por la fundación OWASP. Permite dibujar diagramas de flujo de datos (`DFD`), marcar límites de confianza y generar o sugerir amenazas organizadas bajo marcos como STRIDE, guardando todo el modelo en archivos de texto estructurado (`JSON`) que pueden versionarse en un repositorio `Git`.
+
+- **`Microsoft Threat Modeling Tool`:** Aplicación gratuita para sistemas Windows que permite diagramar arquitecturas locales o en la nube y genera automáticamente una lista de amenazas potenciales basadas en STRIDE a partir de los elementos y conectores dibujados en el lienzo.
+
+### Verificación del Modelado de Amenazas
+
+Antes de dar por cerrado el diseño técnico y pasar a la última etapa del módulo —la planificación de la hoja de ruta de transición (`03.6`)—, el modelo de amenazas debe superar dos comprobaciones de calidad documental y trazabilidad:
+
+:::steps
+
+### 1. Auditoría de cobertura de Límites de Confianza (Cruces de frontera)
+
+Observa tu Diagrama de Flujo de Datos con los Límites de Confianza marcados y verifica cada flecha que cruza una línea roja punteada:
+
+- **Validación de extremo a extremo:** Ningún flujo que transporte datos clasificados como _Restringidos_ o _Confidenciales_ puede cruzar un límite de confianza desde o hacia una zona de menor seguridad sin tener documentado en la tabla cómo se resuelve su autenticación (**S**), cómo se protege su integridad y confidencialidad en tránsito (**T** / **I**) y dónde se registra el evento (**R**).
+
+- **Verificación del camino de respaldos y registros:** Confirma que el límite de confianza que rodea a la Zona de Resiliencia (`VLAN 40`) haya sido evaluado específicamente contra las amenazas de Manipulación (**T**), Denegación de Servicio (**D**) y Elevación de Privilegios (**E**), garantizando que el árbol de ataque de _ransomware_ quede truncado antes de alcanzar las copias de recuperación.
+
+### 2. Verificación de retroalimentación efectiva (Cierre del circuito de diseño)
+
+Un informe de modelado de amenazas que encuentra brechas pero deja los planos anteriores intactos es un ejercicio inútil. Revisa cada fila de tu tabla STRIDE donde la columna _"¿Cubierto en diseño inicial?"_ haya sido respondida con un **"No"** o **"Parcialmente"**:
+
+- Comprueba que por cada una de esas filas exista una modificación real y verificable aplicada en la versión final de tu **Matriz de Flujos Autorizados (`03.2`)**, en tu **Matriz RBAC (`03.3`)** o en tu **Arquitectura de Acceso Remoto (`03.4`)**.
+- Verifica que todo riesgo que se haya decidido no mitigar técnicamente por limitaciones presupuestarias u operativas cuente con su entrada correspondiente en el **Registro de Riesgo Residual**, especificando qué control compensatorio o detectivo amortiguará su impacto y quién dentro de la dirección de la PyME aprueba esa condición.
+  :::
+
+```
+
+```
 
 # 4) Proteger <!-- id: layer-4 -->
 

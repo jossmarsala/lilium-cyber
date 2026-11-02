@@ -21,6 +21,8 @@ export interface DiagramaProps extends HTMLAttributes<HTMLDivElement> {
   title?: string
   /** Subtítulo o descripción breve */
   description?: string
+  /** Variante o preset del diagrama ('network' | 'dfd' | 'dataflow' | string) */
+  variant?: 'network' | 'dfd' | 'dataflow' | string
   /** Badge / etiqueta técnica en la esquina superior izquierda */
   badge?: string
   /** Elemento o botones personalizados para la esquina superior derecha */
@@ -1534,6 +1536,7 @@ export default function Diagrama({
   title,
   description,
   badge,
+  variant,
   headerRight,
   caption,
   footer,
@@ -1793,6 +1796,10 @@ export default function Diagrama({
             ) : (
               children
             )
+          ) : variant === 'dfd' ||
+            variant === 'dataflow' ||
+            (title && /flujo|dfd|data\s*flow/i.test(title)) ? (
+            <DataFlowDiagram />
           ) : (
             <NetworkSegmentationArchitecture />
           )}
@@ -1811,6 +1818,507 @@ export default function Diagrama({
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   PRESET: DIAGRAMA DE FLUJO DE DATOS (DFD) GENÉRICO
+   Notación estándar Yourdon/DeMarco con diseño minimalista ortogonal:
+   - Entidades Externas (rectángulos con esquinas sutilmente suavizadas)
+   - Procesos (óvalos)
+   - Almacenes de Datos (barras horizontales dobles)
+   - Flujos de datos (flechas con etiqueta sobre el trazo)
+   - Dos Límites de Confianza diferenciados por nivel de privilegio:
+     * Límite 1 (Azul / Índigo): Zona Aplicativa (Nivel Estándar)
+     * Límite 2 (Rojo Carmesí): Datos Críticos & Auditoría (Alto Privilegio)
+   ═══════════════════════════════════════════════════════════════════ */
+
+export function DataFlowDiagram() {
+  const FONT_SANS = 'var(--font-family, system-ui, sans-serif)'
+  const FONT_MONO = 'var(--font-mono, monospace)'
+
+  function ExternalEntity({
+    x,
+    y,
+    w = 104,
+    h = 42,
+    label,
+    sublabel,
+  }: {
+    x: number
+    y: number
+    w?: number
+    h?: number
+    label: string
+    sublabel?: string
+  }) {
+    return (
+      <g transform={`translate(${x}, ${y})`} className={styles.nodeCard}>
+        <rect
+          x={0}
+          y={0}
+          width={w}
+          height={h}
+          rx={6}
+          fill="#ffffff"
+          stroke="rgba(0,0,0,0.18)"
+          strokeWidth={1.25}
+          filter="url(#dfd-shadow)"
+        />
+        <text
+          x={w / 2}
+          y={sublabel ? h / 2 - 3 : h / 2 + 4}
+          textAnchor="middle"
+          fill="#111827"
+          fontSize={11}
+          fontWeight="700"
+          fontFamily={FONT_SANS}
+        >
+          {label}
+        </text>
+        {sublabel && (
+          <text
+            x={w / 2}
+            y={h / 2 + 10}
+            textAnchor="middle"
+            fill="#6b7280"
+            fontSize={7.5}
+            fontWeight="500"
+            fontFamily={FONT_MONO}
+          >
+            {sublabel}
+          </text>
+        )}
+      </g>
+    )
+  }
+
+  function Process({
+    cx,
+    cy,
+    rx = 52,
+    ry = 26,
+    label,
+    sublabel,
+    dark = false,
+  }: {
+    cx: number
+    cy: number
+    rx?: number
+    ry?: number
+    label: string
+    sublabel?: string
+    dark?: boolean
+  }) {
+    return (
+      <g className={styles.nodeCard}>
+        <ellipse
+          cx={cx}
+          cy={cy}
+          rx={rx}
+          ry={ry}
+          fill={dark ? '#111827' : '#ffffff'}
+          stroke={dark ? '#27272a' : 'rgba(0,0,0,0.18)'}
+          strokeWidth={1.25}
+          filter={dark ? 'url(#dfd-dark-shadow)' : 'url(#dfd-shadow)'}
+        />
+        <text
+          x={cx}
+          y={sublabel ? cy - 4 : cy + 4}
+          textAnchor="middle"
+          fill={dark ? '#ffffff' : '#111827'}
+          fontSize={11}
+          fontWeight="700"
+          fontFamily={FONT_SANS}
+        >
+          {label}
+        </text>
+        {sublabel && (
+          <text
+            x={cx}
+            y={cy + 10}
+            textAnchor="middle"
+            fill={dark ? 'rgba(255,255,255,0.65)' : '#6b7280'}
+            fontSize={7.5}
+            fontWeight="500"
+            fontFamily={FONT_MONO}
+          >
+            {sublabel}
+          </text>
+        )}
+      </g>
+    )
+  }
+
+  function DataStore({
+    x,
+    y,
+    w = 170,
+    h = 38,
+    label,
+    sublabel,
+  }: {
+    x: number
+    y: number
+    w?: number
+    h?: number
+    label: string
+    sublabel?: string
+  }) {
+    return (
+      <g transform={`translate(${x}, ${y})`} className={styles.nodeCard}>
+        {/* Barras dobles horizontales — notación estándar */}
+        <line x1={0} y1={0} x2={w} y2={0} stroke="rgba(0,0,0,0.32)" strokeWidth={1.5} />
+        <line x1={0} y1={h} x2={w} y2={h} stroke="rgba(0,0,0,0.32)" strokeWidth={1.5} />
+        <rect x={0} y={0} width={w} height={h} fill="rgba(0,0,0,0.018)" />
+        <text
+          x={w / 2}
+          y={sublabel ? h / 2 - 2 : h / 2 + 4}
+          textAnchor="middle"
+          fill="#111827"
+          fontSize={11}
+          fontWeight="700"
+          fontFamily={FONT_SANS}
+        >
+          {label}
+        </text>
+        {sublabel && (
+          <text
+            x={w / 2}
+            y={h / 2 + 11}
+            textAnchor="middle"
+            fill="#6b7280"
+            fontSize={7.5}
+            fontWeight="500"
+            fontFamily={FONT_MONO}
+          >
+            {sublabel}
+          </text>
+        )}
+      </g>
+    )
+  }
+
+  function FlowLabel({
+    x,
+    y,
+    label,
+  }: {
+    x: number
+    y: number
+    label: string
+  }) {
+    const pad = Math.max(label.length * 2.8 + 6, 18)
+    return (
+      <g transform={`translate(${x}, ${y})`}>
+        <rect
+          x={-pad}
+          y={-8}
+          width={pad * 2}
+          height={16}
+          rx={8}
+          fill="#ffffff"
+          stroke="rgba(0,0,0,0.12)"
+          strokeWidth={0.75}
+          filter="url(#dfd-shadow)"
+        />
+        <text
+          y={3.5}
+          textAnchor="middle"
+          fill="#111827"
+          fontSize={7.5}
+          fontWeight="700"
+          fontFamily={FONT_MONO}
+        >
+          {label}
+        </text>
+      </g>
+    )
+  }
+
+  return (
+    <svg
+      className={styles.svgCanvas}
+      viewBox="0 0 960 425"
+      preserveAspectRatio="xMidYMid meet"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <marker
+          id="dfd-arrow"
+          viewBox="0 0 10 10"
+          refX="7"
+          refY="5"
+          markerWidth="5"
+          markerHeight="5"
+          orient="auto-start-reverse"
+        >
+          <path d="M 0 2 L 7 5 L 0 8 z" fill="rgba(0,0,0,0.38)" />
+        </marker>
+        <filter id="dfd-shadow" x="-8%" y="-15%" width="130%" height="145%">
+          <feDropShadow dx="0" dy="1.5" stdDeviation="2.5" floodColor="#000000" floodOpacity="0.045" />
+        </filter>
+        <filter id="dfd-dark-shadow" x="-8%" y="-15%" width="130%" height="145%">
+          <feDropShadow dx="0" dy="2.5" stdDeviation="5" floodColor="#000000" floodOpacity="0.16" />
+        </filter>
+      </defs>
+
+      {/* ══════════════════════════════════════════════════════════════
+          1. LÍMITES DE CONFIANZA DIFERENCIADOS POR NIVEL DE PRIVILEGIO
+          ══════════════════════════════════════════════════════════════ */}
+
+      {/* Límite 1: Nivel Estándar (Azul / Índigo) */}
+      <rect
+        x={165}
+        y={46}
+        width={345}
+        height={280}
+        rx={12}
+        fill="rgba(79, 70, 229, 0.012)"
+        stroke="#4f46e5"
+        strokeWidth={1.25}
+        strokeDasharray="5 4"
+      />
+      <g transform="translate(181, 69)">
+        <circle cx={4} cy={-3} r={3} fill="#4f46e5" />
+        <text
+          x={14}
+          y={0}
+          fill="#4f46e5"
+          fontSize={8.5}
+          fontWeight="700"
+          fontFamily={FONT_MONO}
+          letterSpacing="0.06em"
+        >
+          LÍMITE 1 · ZONA DE APLICACIÓN (NIVEL ESTÁNDAR)
+        </text>
+      </g>
+
+      {/* Límite 2: Alto Privilegio (Rojo Carmesí) */}
+      <rect
+        x={550}
+        y={46}
+        width={215}
+        height={280}
+        rx={12}
+        fill="rgba(220, 38, 38, 0.012)"
+        stroke="#dc2626"
+        strokeWidth={1.25}
+        strokeDasharray="5 4"
+      />
+      <g transform="translate(566, 69)">
+        <circle cx={4} cy={-3} r={3} fill="#dc2626" />
+        <text
+          x={14}
+          y={0}
+          fill="#dc2626"
+          fontSize={8.5}
+          fontWeight="700"
+          fontFamily={FONT_MONO}
+          letterSpacing="0.06em"
+        >
+          LÍMITE 2 · ALTO PRIVILEGIO (DATOS & LOGS)
+        </text>
+      </g>
+
+      {/* ══════════════════════════════════════════════════════════════
+          2. CONECTORES ORTOGONALES Y FLUJOS (ESPACIADO HARMONIZADO)
+          ══════════════════════════════════════════════════════════════ */}
+
+      {/* F1: Usuario -> P1 Autenticación (Horizontal, 78px) */}
+      <line
+        x1={124}
+        y1={135}
+        x2={195}
+        y2={135}
+        stroke="rgba(0,0,0,0.22)"
+        strokeWidth={1.25}
+        markerEnd="url(#dfd-arrow)"
+      />
+      <line
+        x1={124}
+        y1={135}
+        x2={195}
+        y2={135}
+        stroke="#111827"
+        strokeWidth={2}
+        className={styles.packetStream}
+      />
+      <FlowLabel x={160} y={135} label="Credenciales" />
+
+      {/* F2: P1 Autenticación -> P2 Lógica de Negocio (Horizontal, 93px) */}
+      <line
+        x1={295}
+        y1={135}
+        x2={382}
+        y2={135}
+        stroke="rgba(0,0,0,0.22)"
+        strokeWidth={1.25}
+        markerEnd="url(#dfd-arrow)"
+      />
+      <line
+        x1={295}
+        y1={135}
+        x2={382}
+        y2={135}
+        stroke="#111827"
+        strokeWidth={2}
+        className={styles.packetStreamFast}
+      />
+      <FlowLabel x={338} y={135} label="Token válido" />
+
+      {/* F3: P2 Lógica -> DS1 Base de Datos (Horizontal: Cruza corredor de límites, 87px) */}
+      <line
+        x1={488}
+        y1={135}
+        x2={568}
+        y2={135}
+        stroke="rgba(0,0,0,0.22)"
+        strokeWidth={1.25}
+        markerEnd="url(#dfd-arrow)"
+      />
+      <line
+        x1={488}
+        y1={135}
+        x2={568}
+        y2={135}
+        stroke="#111827"
+        strokeWidth={2}
+        className={styles.packetStream}
+      />
+      <FlowLabel x={530} y={135} label="Consulta SQL" />
+
+      {/* F4: P2 Lógica -> P3 Auditoría (Vertical descendente: Flujo de eventos, 78px) */}
+      <line
+        x1={435}
+        y1={161}
+        x2={435}
+        y2={239}
+        stroke="rgba(0,0,0,0.22)"
+        strokeWidth={1.25}
+        markerEnd="url(#dfd-arrow)"
+      />
+      <line
+        x1={435}
+        y1={161}
+        x2={435}
+        y2={239}
+        stroke="#111827"
+        strokeWidth={2}
+        className={styles.packetStream}
+      />
+      <FlowLabel x={435} y={200} label="Evento" />
+
+      {/* F5: P3 Auditoría -> DS2 Colector de Logs (Horizontal: Cruza corredor de límites, 87px) */}
+      <line
+        x1={488}
+        y1={265}
+        x2={568}
+        y2={265}
+        stroke="rgba(0,0,0,0.22)"
+        strokeWidth={1.25}
+        markerEnd="url(#dfd-arrow)"
+      />
+      <line
+        x1={488}
+        y1={265}
+        x2={568}
+        y2={265}
+        stroke="#111827"
+        strokeWidth={2}
+        className={styles.packetStreamFast}
+      />
+      <FlowLabel x={530} y={265} label="Syslog TLS" />
+
+      {/* F6: Administrador -> DS2 Colector de Logs (Horizontal hacia la izquierda, 86px) */}
+      <line
+        x1={835}
+        y1={265}
+        x2={749}
+        y2={265}
+        stroke="rgba(0,0,0,0.22)"
+        strokeWidth={1.25}
+        markerEnd="url(#dfd-arrow)"
+      />
+      <FlowLabel x={792} y={265} label="Auditoría" />
+
+      {/* ══════════════════════════════════════════════════════════════
+          3. ELEMENTOS DEL DIAGRAMA (ALINEACIÓN EN GRILLA EQUILIBRADA)
+          ══════════════════════════════════════════════════════════════ */}
+
+      {/* Entidad Externa 1: Usuario (Izquierda, exterior) */}
+      <ExternalEntity x={24} y={114} w={100} h={42} label="Usuario" sublabel="Cliente / Browser" />
+
+      {/* Proceso 1: Autenticación (Zona Aplicativa, Fila 1) */}
+      <Process cx={245} cy={135} rx={50} ry={26} label="Autenticación" sublabel="P1 · Validar sesión" />
+
+      {/* Proceso 2: Lógica de Negocio (Zona Aplicativa, Fila 1 - Central) */}
+      <Process cx={435} cy={135} rx={53} ry={26} label="Lógica de Negocio" sublabel="P2 · Procesar reglas" dark />
+
+      {/* Almacén 1: Base de Datos (Zona Alto Privilegio, Fila 1) */}
+      <DataStore x={573} y={116} w={170} h={38} label="Base de Datos" sublabel="DS1 · Datos de clientes" />
+
+      {/* Proceso 3: Auditoría (Zona Aplicativa, Fila 2 - Directamente bajo P2) */}
+      <Process cx={435} cy={265} rx={53} ry={26} label="Auditoría" sublabel="P3 · Registrar traza" />
+
+      {/* Almacén 2: Colector de Logs (Zona Alto Privilegio, Fila 2) */}
+      <DataStore x={573} y={246} w={170} h={38} label="Colector de Logs" sublabel="DS2 · Repositorio SIEM" />
+
+      {/* Entidad Externa 2: Administrador (Derecha, exterior) */}
+      <ExternalEntity x={835} y={244} w={100} h={42} label="Administrador" sublabel="Gestión IT" />
+
+      {/* ══════════════════════════════════════════════════════════════
+          4. LEYENDA HORIZONTAL CON ESPACIADO EQUILIBRADO
+          ══════════════════════════════════════════════════════════════ */}
+      <g transform="translate(40, 384)">
+        {/* Entidad Externa */}
+        <rect x={0} y={0} width={18} height={12} rx={2} fill="#ffffff" stroke="rgba(0,0,0,0.3)" strokeWidth={1} />
+        <text x={24} y={9.5} fill="#4b5563" fontSize={8.5} fontWeight="600" fontFamily={FONT_SANS}>
+          Entidad Externa
+        </text>
+
+        {/* Proceso */}
+        <ellipse cx={170} cy={6} rx={10} ry={6} fill="#ffffff" stroke="rgba(0,0,0,0.3)" strokeWidth={1} />
+        <text x={186} y={9.5} fill="#4b5563" fontSize={8.5} fontWeight="600" fontFamily={FONT_SANS}>
+          Proceso
+        </text>
+
+        {/* Almacén */}
+        <g transform="translate(285, 0)">
+          <line x1={0} y1={1} x2={16} y2={1} stroke="rgba(0,0,0,0.4)" strokeWidth={1.25} />
+          <line x1={0} y1={11} x2={16} y2={11} stroke="rgba(0,0,0,0.4)" strokeWidth={1.25} />
+          <text x={22} y={9.5} fill="#4b5563" fontSize={8.5} fontWeight="600" fontFamily={FONT_SANS}>
+            Almacén de datos
+          </text>
+        </g>
+
+        {/* Flujo de datos */}
+        <g transform="translate(440, 0)">
+          <line x1={0} y1={6} x2={16} y2={6} stroke="rgba(0,0,0,0.35)" strokeWidth={1.25} markerEnd="url(#dfd-arrow)" />
+          <text x={22} y={9.5} fill="#4b5563" fontSize={8.5} fontWeight="600" fontFamily={FONT_SANS}>
+            Flujo de datos
+          </text>
+        </g>
+
+        {/* Límite 1 */}
+        <g transform="translate(585, 0)">
+          <line x1={0} y1={6} x2={18} y2={6} stroke="#4f46e5" strokeWidth={1.5} strokeDasharray="3 2" />
+          <circle cx={9} cy={6} r={2.5} fill="#4f46e5" />
+          <text x={24} y={9.5} fill="#4f46e5" fontSize={8.5} fontWeight="600" fontFamily={FONT_SANS}>
+            Límite 1 (Nivel Estándar)
+          </text>
+        </g>
+
+        {/* Límite 2 */}
+        <g transform="translate(775, 0)">
+          <line x1={0} y1={6} x2={18} y2={6} stroke="#dc2626" strokeWidth={1.5} strokeDasharray="3 2" />
+          <circle cx={9} cy={6} r={2.5} fill="#dc2626" />
+          <text x={24} y={9.5} fill="#dc2626" fontSize={8.5} fontWeight="600" fontFamily={FONT_SANS}>
+            Límite 2 (Alto Privilegio)
+          </text>
+        </g>
+      </g>
+    </svg>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    ASIGNACIÓN DE SUBCOMPONENTES (COMPOUND PATTERN)
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -1818,3 +2326,4 @@ Diagrama.Zone = DiagramaZone
 Diagrama.Connector = DiagramaConnector
 Diagrama.Node = DiagramaNode
 Diagrama.NetworkArchitecture = NetworkSegmentationArchitecture
+Diagrama.DataFlow = DataFlowDiagram
