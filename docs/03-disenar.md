@@ -1199,7 +1199,7 @@ Para guiar este análisis sin perderse en teorías abstractas, la industria estr
 - 2. ¿Qué puede salir mal? [identificación de amenazas]: Consiste en analizar el diagrama con mentalidad de atacante utilizando metodologías estructuradas y árboles de ataque para descubrir cómo podrían suplantar identidades, alterar datos o interrumpir la operación.
 - 3. ¿Qué vamos a hacer al respecto? [tratamiento y controles]: Define qué medidas de seguridad concretas (preventivas, detectivas o correctivas) se agregarán al diseño para bloquear o mitigar cada amenaza identificada, o qué riesgos residuales serán aceptados formalmente.
 - 4. ¿Hicimos un buen trabajo? [verificación y retroalimentación]: Valida que el modelo sea coherente, que no hayan quedado límites de confianza sin proteger y que los hallazgos hayan modificado efectivamente los planos arquitectónicos antes de pasar a la implementación.
-:::
+     :::
 
 ### Diagrama de Flujo de Datos (DFD) como lienzo del modelado
 
@@ -1207,12 +1207,12 @@ El lienzo sobre el que se aplican las cuatro preguntas no es un diagrama de red 
 
 Un DFD orientado al modelado de amenazas se compone de cuatro elementos estándar:
 
-| Elemento                                                                                  |       Símbolo convencional        | Qué representa en la arquitectura                                                                                                                                                                              |
-| :---------------------------------------------------------------------------------------- | :-------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Proceso (_Process_)**                                                                   |          Círculo u óvalo          | Un componente activo que recibe, transforma o envía datos: una aplicación web, un servidor de autenticación, un módulo de facturación o una tarea automatizada programada.                                     |
-| **Almacén de datos (_Data Store_)**                                                       | Dos líneas paralelas horizontales | Cualquier repositorio donde la información persiste en reposo: una base de datos relacional, un servidor de archivos, una tabla de configuración o un repositorio de registros (`logs`).                       |
-| **Entidad externa (_External Entity_)**                                                   |            Rectángulo             | Actores fuera del control directo de la organización que interactúan con el sistema: un usuario final desde su navegador, un sistema de pago de terceros, una `API` de un proveedor o un administrador remoto. |
-| **Flujo de datos (_Data Flow_)**                                                          |  Flecha direccional con etiqueta  | El canal de comunicación entre dos elementos, indicando qué tipo de dato viaja (por ejemplo: `Credenciales de acceso`, `Registros de auditoría` o `Datos de factura`) y en qué dirección.                      |
+| Elemento                                |       Símbolo convencional        | Qué representa en la arquitectura                                                                                                                                                                              |
+| :-------------------------------------- | :-------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Proceso (_Process_)**                 |          Círculo u óvalo          | Un componente activo que recibe, transforma o envía datos: una aplicación web, un servidor de autenticación, un módulo de facturación o una tarea automatizada programada.                                     |
+| **Almacén de datos (_Data Store_)**     | Dos líneas paralelas horizontales | Cualquier repositorio donde la información persiste en reposo: una base de datos relacional, un servidor de archivos, una tabla de configuración o un repositorio de registros (`logs`).                       |
+| **Entidad externa (_External Entity_)** |            Rectángulo             | Actores fuera del control directo de la organización que interactúan con el sistema: un usuario final desde su navegador, un sistema de pago de terceros, una `API` de un proveedor o un administrador remoto. |
+| **Flujo de datos (_Data Flow_)**        |  Flecha direccional con etiqueta  | El canal de comunicación entre dos elementos, indicando qué tipo de dato viaja (por ejemplo: `Credenciales de acceso`, `Registros de auditoría` o `Datos de factura`) y en qué dirección.                      |
 
 _Elementos estándar de notación para construir un DFD orientado al Modelado de Amenazas._
 
@@ -1301,14 +1301,14 @@ Cuando un equipo técnico observa un diagrama de red y se pregunta de forma abie
 
 Desarrollada originalmente en Microsoft y ampliamente adoptada por OWASP por su claridad didáctica y rigor técnico, la metodología **STRIDE** clasifica las amenazas en seis categorías cuyas iniciales en inglés forman el acrónimo. Su gran fortaleza arquitectónica reside en que cada amenaza representa exactamente la violación de una propiedad específica de seguridad de la información, indicando de inmediato qué familia de control se necesita para contrarrestarla:
 
-| Categoría STRIDE                                                                                                          | Significado en Español     | Propiedad violada             | Qué pregunta hacer frente al diagrama                                                                                                                                                                                          | Controles arquitectónicos de mitigación típicos                                                                                                                                                                                                    |
-| :------------------------------------------------------------------------------------------------------------------------ | :------------------------- | :---------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **S — Spoofing**                                                                                                          | Suplantación de identidad  | **Autenticación**             | ¿Puede un atacante, un equipo no autorizado o un sitio falso fingir ser un usuario legítimo, un servidor interno o un proveedor de confianza en este flujo?                                                                    | Autenticación Multifactor (MFA) resistente a phishing, certificados digitales (TLS mutuo o infraestructura de clave pública), validación de correo (SPF, DKIM, DMARC) y prohibición de protocolos sin validación.                                  |
-| **T — Tampering**                                                                                                         | Manipulación de datos      | **Integridad**                | ¿Puede alguien interceptar y modificar los paquetes que viajan por este enlace, alterar registros de la base de datos, inyectar código o modificar archivos de configuración o respaldos sin permiso?                          | Cifrado y verificación de integridad en tránsito (TLS, IPsec, SSH), funciones hash criptográficas (`sha256sum`), firmas digitales en código y scripts, listas de control de acceso estrictas, consultas SQL parametrizadas y respaldos inmutables. |
-| **R — Repudiation**                                                                                                       | Repudio                    | **No repudio y Trazabilidad** | Si un usuario, administrador o proceso realiza una acción fraudulenta o destructiva en este punto, ¿podría negar haberlo hecho porque no queda evidencia confiable o porque puede borrar sus huellas?                          | Eliminación total de cuentas compartidas, registro detallado de eventos de auditoría con marcas de tiempo sincronizadas (NTP) y envío inmediato a un servidor colector centralizado fuera del alcance del usuario.                                 |
-| **I — Information Disclosure**                                                                                            | Divulgación de información | **Confidencialidad**          | ¿Puede una persona no autorizada leer datos sensibles mientras viajan por la red (rastreo de paquetes), acceder a carpetas o tablas de otros sectores, o extraer secretos desde mensajes de error detallados o discos robados? | Cifrado de datos en tránsito y en reposo (AES-256 en discos y bases de datos), segmentación de red, principio de privilegio mínimo en la matriz de roles y desactivación de mensajes de depuración en producción.                                  |
-| **D — Denial of Service**                                                                                                 | Denegación de servicio     | **Disponibilidad**            | ¿Puede un atacante externo o un fallo interno agotar el ancho de banda, la memoria, el procesador o el espacio en disco de este componente para dejar inoperativa a la empresa?                                                | Cortafuegos perimetrales con limitación de tasa de conexiones (_rate limiting_), proxies inversos o redes de distribución de contenido, cuotas de almacenamiento para registros, redundancia eléctrica y copias de seguridad probadas.             |
-| **E — Elevation of Privilege**                                                                                            | Elevación de privilegios   | **Autorización**              | ¿Puede un usuario con una cuenta estándar o un atacante que comprometió un servicio web básico saltar las restricciones para ejecutar comandos como administrador (`root` o `SYSTEM`) o acceder a la red de gestión?           | Separación de cuentas cotidianas y administrativas, validación y saneamiento estricto de entradas de usuario en aplicaciones, ejecución de servicios con cuentas de mínimo privilegio y segmentación de la red administrativa.                     |
+| Categoría STRIDE               | Significado en Español     | Propiedad violada             | Qué pregunta hacer frente al diagrama                                                                                                                                                                                          | Controles arquitectónicos de mitigación típicos                                                                                                                                                                                                    |
+| :----------------------------- | :------------------------- | :---------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **S — Spoofing**               | Suplantación de identidad  | **Autenticación**             | ¿Puede un atacante, un equipo no autorizado o un sitio falso fingir ser un usuario legítimo, un servidor interno o un proveedor de confianza en este flujo?                                                                    | Autenticación Multifactor (MFA) resistente a phishing, certificados digitales (TLS mutuo o infraestructura de clave pública), validación de correo (SPF, DKIM, DMARC) y prohibición de protocolos sin validación.                                  |
+| **T — Tampering**              | Manipulación de datos      | **Integridad**                | ¿Puede alguien interceptar y modificar los paquetes que viajan por este enlace, alterar registros de la base de datos, inyectar código o modificar archivos de configuración o respaldos sin permiso?                          | Cifrado y verificación de integridad en tránsito (TLS, IPsec, SSH), funciones hash criptográficas (`sha256sum`), firmas digitales en código y scripts, listas de control de acceso estrictas, consultas SQL parametrizadas y respaldos inmutables. |
+| **R — Repudiation**            | Repudio                    | **No repudio y Trazabilidad** | Si un usuario, administrador o proceso realiza una acción fraudulenta o destructiva en este punto, ¿podría negar haberlo hecho porque no queda evidencia confiable o porque puede borrar sus huellas?                          | Eliminación total de cuentas compartidas, registro detallado de eventos de auditoría con marcas de tiempo sincronizadas (NTP) y envío inmediato a un servidor colector centralizado fuera del alcance del usuario.                                 |
+| **I — Information Disclosure** | Divulgación de información | **Confidencialidad**          | ¿Puede una persona no autorizada leer datos sensibles mientras viajan por la red (rastreo de paquetes), acceder a carpetas o tablas de otros sectores, o extraer secretos desde mensajes de error detallados o discos robados? | Cifrado de datos en tránsito y en reposo (AES-256 en discos y bases de datos), segmentación de red, principio de privilegio mínimo en la matriz de roles y desactivación de mensajes de depuración en producción.                                  |
+| **D — Denial of Service**      | Denegación de servicio     | **Disponibilidad**            | ¿Puede un atacante externo o un fallo interno agotar el ancho de banda, la memoria, el procesador o el espacio en disco de este componente para dejar inoperativa a la empresa?                                                | Cortafuegos perimetrales con limitación de tasa de conexiones (_rate limiting_), proxies inversos o redes de distribución de contenido, cuotas de almacenamiento para registros, redundancia eléctrica y copias de seguridad probadas.             |
+| **E — Elevation of Privilege** | Elevación de privilegios   | **Autorización**              | ¿Puede un usuario con una cuenta estándar o un atacante que comprometió un servicio web básico saltar las restricciones para ejecutar comandos como administrador (`root` o `SYSTEM`) o acceder a la red de gestión?           | Separación de cuentas cotidianas y administrativas, validación y saneamiento estricto de entradas de usuario en aplicaciones, ejecución de servicios con cuentas de mínimo privilegio y segmentación de la red administrativa.                     |
 
 _Matriz de análisis STRIDE vinculando cada categoría de amenaza con la propiedad afectada y su respuesta arquitectónica._
 
@@ -1355,7 +1355,7 @@ Revisa tus planos arquitectónicos para verificar qué barrera frena cada eslab�
 - Si el paso de acceso inicial se enfrenta a una política que exige Autenticación Multifactor, el robo de credenciales pierde su efecto.
 - Si la segmentación de red diseñada en la sección `3.2` impide que las computadoras de los usuarios se conecten libremente con la zona de servidores, el movimiento lateral se detiene.
 - Si las copias de seguridad de la sección `3.1` están aisladas en un modelo unidireccional, el intento de destruir los respaldos fracasa por completo.
-:::
+  :::
 
 Al visualizarlo de esta forma, el valor del diseño en capas se vuelve evidente: para que un ataque triunfe, el adversario necesita superar **todos** los eslabones de la cadena; para detenerlo, a la arquitectura le basta con bloquear con éxito al menos uno de ellos **en cada cadena de ataque plausible**. Esto no garantiza invulnerabilidad —siempre pueden existir cadenas que no se han mapeado—, pero reduce drásticamente la superficie de ataque real.
 
@@ -1372,7 +1372,7 @@ Al examinar los cruces de frontera en nuestro diagrama preliminar, realizamos el
 - **Escenario detectado:** Un atacante compromete la sesión activa de un empleado comercial mediante un robo de cookies en su navegador (_session hijacking_) y accede al sistema interno sin conocer la contraseña ni el segundo factor.
 - **¿Cubierto en diseño inicial?** **Parcialmente** — Se había diseñado MFA al inicio, pero sin políticas de sesión.
 - **Corrección obligatoria (Actualizar `03.3` y `03.4`):** Incorporar expiración corta de tokens de sesión, reautenticación obligatoria para acciones sensibles (exportación masiva de datos) y vinculación de la sesión a la dirección IP interna o túnel VPN.
-:::
+  :::
 
 :::group title="TM-02 — Inyección SQL desde la DMZ hacia la base de datos"
 
@@ -1381,7 +1381,7 @@ Al examinar los cruces de frontera en nuestro diagrama preliminar, realizamos el
 - **Escenario detectado:** En la Matriz de Flujos `03.2` (Flujo `F-02`), el servidor web consultaba a la base de datos en el puerto `5432`. Si el aplicativo usa una única cuenta de servicio con permisos de administrador sobre toda la base de datos, una inyección SQL permitiría borrar todas las tablas o leer datos de otros módulos.
 - **¿Cubierto en diseño inicial?** **No (Brecha detectada).**
 - **Corrección obligatoria (Actualizar `03.1` y `03.3`):** Diseñar dos cuentas de servicio separadas en la base de datos: la cuenta del portal público solo tendrá permisos `SELECT`/`INSERT` sobre las tablas de pedidos web, prohibiendo comandos `DROP`/`ALTER` y bloqueando la lectura de tablas financieras o de recursos humanos.
-:::
+  :::
 
 :::group title="TM-03 — Inundación del colector de registros"
 
@@ -1390,7 +1390,7 @@ Al examinar los cruces de frontera en nuestro diagrama preliminar, realizamos el
 - **Escenario detectado:** Si un servidor en la `DMZ` es comprometido, el atacante podría enviar millones de eventos falsos por segundo hacia el puerto `6514` del colector de registros (Flujo `F-09`) hasta llenar su disco duro, dejando a la empresa ciega ante el resto del ataque.
 - **¿Cubierto en diseño inicial?** **No (Brecha detectada).**
 - **Corrección obligatoria (Actualizar `03.1` y `03.2`):** Agregar en el diseño del colector de registros cuotas máximas de ingesta por host de origen (_rate limiting_ de logs), rotación con alerta al llegar al 80% de disco (`CIS 8.3`) y autenticación mutua por certificado para que solo hosts registrados puedan escribir eventos.
-:::
+  :::
 
 :::group title="TM-04 — Acceso lateral del proveedor externo vía VPN"
 
@@ -1399,7 +1399,7 @@ Al examinar los cruces de frontera en nuestro diagrama preliminar, realizamos el
 - **Escenario detectado:** Cuando el proveedor contable externo se conecta por VPN para diagnosticar un fallo, si el túnel le asigna una dirección IP dentro del mismo grupo que los administradores de TI (`VLAN 50`), podría conectarse por el puerto `22` a otros servidores que no le corresponden.
 - **¿Cubierto en diseño inicial?** **No (Brecha detectada).**
 - **Corrección obligatoria (Actualizar `03.2` y `03.4`):** Crear un grupo de direcciones de VPN exclusivo para proveedores externos cuyas reglas de cortafuegos solo permitan alcanzar la dirección IP y puerto exactos del servidor contable asignado, y únicamente cuando su cuenta temporal sea habilitada bajo demanda.
-:::
+  :::
 
 _Modelado de Amenazas aplicando STRIDE y MITRE ATT&CK para descubrir y corregir brechas en el diseño previo._
 
@@ -1450,4 +1450,127 @@ El modelado de amenazas no es una foto estática ni un trámite de una sola vez.
 - **Modificación en el flujo de datos sensibles:** Tratamiento de nuevos tipos de datos regulados, bancarios o de nómina.
 - **Incidentes o cuasi-incidentes de seguridad:** Tras cualquier intento de intrusión o anomalía, se debe contrastar el evento contra el modelo para determinar qué límite de confianza o hipótesis falló.
 - **Revisión periódica anual:** Como mínimo una revalidación formal al año, coordinada con la actualización del inventario del Módulo 2.
+  :::
+
+## 3.6. Planear la transición <!-- id: planificacion-transicion, icon: ToolsIcon -->
+
+Llegar a este punto significa que la organización ya dejó atrás la incertidumbre: ahora conoce sus activos y cuenta con un diseño defensivo sólido para protegerlos. El siguiente gran paso es llevar esa visión a la práctica de forma inteligente.
+
+Esta sección convierte todas las decisiones de red, identidad y acceso en un plan de acción realista y listo para ejecutarse. Su objetivo es conectar directamente con el Módulo 4 (Proteger) mediante una estrategia escalonada: definirás qué controles activar hoy mismo para neutralizar los riesgos más urgentes con el menor esfuerzo, qué secuencia técnica seguir para que cada cambio se apoye en el anterior y cómo asegurar que cada avance sea verificable, predecible y seguro para el negocio.
+
+### Del Perfil Actual al Perfil Objetivo: El Análisis de Brechas
+
+Para saber qué camino recorrer, primero es necesario contrastar el punto de partida con el destino diseñado. Los marcos de gestión de riesgos estandarizan este ejercicio mediante la comparación de dos fotografías organizacionales conocidas como Perfiles:
+
+:::group title="Análisis de Brechas (_Gap Analysis_)"
+
+- Perfil Actual (_Current Profile_) [punto de partida]: Representa el estado real de la infraestructura tal como fue descubierto y documentado al cierre del Módulo 2. Incluye las redes planas existentes, los permisos acumulados, los activos sin soporte y las vulnerabilidades activas.
+- Perfil Objetivo (_Target Profile_) [meta de diseño]: Representa la arquitectura deseada que acabamos de construir entre las secciones `3.1` y `3.5` (zonas de red segmentadas, matriz de roles, acceso remoto seguro y controles validados frente a amenazas).
+- Brecha (Gap) [trabajo por realizar]: Es la diferencia exacta entre el estado actual y el objetivo. Cada brecha identificada se convierte en una tarea concreta o proyecto técnico dentro de nuestra hoja de ruta.
+  :::
+
+Al evaluar esas brechas, el diseño debe pasar por un filtro de realismo operativo. Si una PyME se encuentra hoy en un nivel inicial de madurez (donde las prácticas son informales o reactivas) y pretende saltar en un solo mes a una arquitectura de seguridad extremadamente compleja, el proyecto fracasará por falta de presupuesto y agotamiento del personal técnico. La hoja de ruta debe escalonar el avance asegurando primero los cimientos de higiene cibernética esencial (IG1).
+
+### Criterios de priorización: Las 3 olas de implementación
+
+No todas las brechas de seguridad tienen la misma urgencia ni exigen el mismo esfuerzo. Para evitar la parálisis por análisis, las tareas pendientes se ordenan cruzando dos variables: cuánto riesgo real reduce la medida frente a cuánta fricción operativa, tiempo o presupuesto demanda su ejecución.
+
+Para tomar decisiones rápidas al organizar las tareas y definir qué priorizar, aplica esta regla de ponderación operativa:
+
+- **Alto Impacto + Baja Fricción = Ola 1 (Quick Win):** Actívalo de inmediato.
+- **Alto Impacto + Alta Fricción = Ola 2 (Proyecto Estructural):** Planifícalo con ventanas de mantenimiento.
+- **Bajo Impacto + Alta Fricción = Ola 3 o Descartar:** Postérgalo a largo plazo o deséchalo si no aporta valor defensivo real.
+
+A partir de ese cruce, la transición se divide en tres horizontes u olas progresivas. Este enfoque garantiza que la organización reduzca drásticamente su exposición desde las primeras semanas:
+
+| Horizonte                                                                                         | Enfoque arquitectónico                                                                                              | Acciones típicas incluidas                                                                                                                                                                                                                                                                                                                                          | Impacto en riesgo vs. Esfuerzo                                                                                          |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Ola 1: Cimientos** _(Semanas 1 a 4 — Base esencial)_                                            | Contener los riesgos críticos inmediatos que podrían destruir la continuidad del negocio con baja fricción técnica. | Aislar y automatizar copias de seguridad críticas; activar Autenticación Multifactor (MFA) en correo, accesos remotos y cuentas administrativas; deshabilitar cuentas huérfanas o de exempleados; cerrar puertos administrativos expuestos directamente a Internet y aplicar parches críticos.                                                                      | **Impacto Muy Alto / Esfuerzo Bajo a Moderado.** Resuelve hasta el 80% de los vectores de ataques oportunistas comunes. |
+| **Ola 2: Estructuración y Control** _(Meses 2 a 3 — Consolidación)_                               | Implementar las barreras estructurales diseñadas en las matrices de red e identidad.                                | Configurar las Redes de Área Local Virtuales (VLAN) y la Zona Desmilitarizada (DMZ) en conmutadores y firewalls; aplicar la matriz de Control de Acceso Basado en Roles (RBAC) en carpetas y sistemas; separar cuentas de administrador de las de uso diario; desplegar la Red Privada Virtual (VPN) o proxy inverso y centralizar la recolección básica de _logs_. | **Impacto Alto / Esfuerzo Moderado a Alto.** Requiere ventanas de mantenimiento planificadas y pruebas con usuarios.    |
+| **Ola 3: Madurez y Optimización** _(Meses 4 a 6+ — Mejora continua)_                              | Endurecer configuraciones avanzadas, automatizar defensas y afinar la detección.                                    | Aplicar plantillas completas de configuración segura (imágenes base) en todos los puestos; implementar listas blancas de ejecución de software; ajustar umbrales finos de alertas de seguridad; formalizar auditorías de proveedores externos y ejercicios periódicos de simulación de incidentes.                                                                  | **Impacto Moderado a Alto / Esfuerzo Alto.** Sostiene la postura defensiva a largo plazo frente a amenazas dirigidas.   |
+| _Plan de transición en tres olas progresivas según retorno de seguridad y complejidad operativa._ |                                                                                                                     |                                                                                                                                                                                                                                                                                                                                                                     |                                                                                                                         |
+
+> [!TIP:Prioriza siempre la capacidad de recuperación antes de tocar la producción]
+> La primera tarea de la Ola 1 debe ser invariablemente asegurar y probar una copia de seguridad aislada de los servidores y configuraciones actuales. Esto no solo protege a la empresa contra un ataque de secuestro de datos hoy mismo, sino que actúa como un salvavidas de seguridad técnica en caso de que se cometa un error humano al reconfigurar redes o permisos en las etapas siguientes.
+
+### Secuencia lógica y mapeo de dependencias técnicas
+
+En ingeniería de sistemas, el orden de los factores altera por completo el resultado. Muchas tareas de seguridad dependen técnicamente de que otra condición previa ya esté funcionando. Si se ignora esta secuencia lógica en la hoja de ruta, el propio equipo técnico provocará una denegación de servicio interna contra su propia empresa.
+
+Antes de ordenar las fechas del plan, verifica que tu secuencia respete estas cuatro reglas de dependencia técnica:
+
+1. **Visibilidad y cuentas de servicio antes de revocar permisos o cambiar contraseñas:** No se deben revocar permisos masivos en carpetas compartidas ni rotar contraseñas de cuentas antiguas sin haber identificado primero qué procesos automatizados, scripts o sistemas de facturación utilizan esas credenciales como cuentas de servicio (mapeadas en la sección 03.3). Hacerlo a ciegas detendrá las integraciones entre aplicaciones y bases de datos.
+2. **Enrutamiento y servicios base antes de activar el bloqueo por defecto en la red:** Al implementar la segmentación diseñada en la sección 03.2, primero se deben crear las subredes, verificar que el servicio de asignación dinámica de direcciones (en los puertos `UDP 67` y `UDP 68`) y la resolución de nombres (en el puerto `UDP 53`) respondan correctamente en cada nueva zona, y cargar las reglas que permiten el tráfico legítimo. Recién cuando se ha comprobado en los registros del firewall que el tráfico operativo fluye por las reglas permitidas, se activa la regla final de denegación por defecto (`DROP ALL`).
+3. **Canal alternativo verificado antes de cerrar puertos de administración remota:** Nunca se debe bloquear en el firewall el puerto de consola remota (como `TCP 22` o `TCP 3389`) ni deshabilitar el acceso del usuario `root` en `/etc/ssh/sshd_config` sin haber probado antes, en una segunda ventana de terminal simultánea, que la nueva cuenta administrativa dedicada puede iniciar sesión a través del túnel privado y elevar privilegios con `sudo`.
+4. **Sincronización horaria antes de centralizar registros:** Antes de conectar los servidores al colector central de eventos, es requisito configurar la sincronización de relojes mediante el protocolo de tiempo en el puerto `UDP 123`. De lo contrario, los eventos entrantes se almacenarán con marcas de tiempo desfasadas, inutilizando las alertas por correlación.
+
+### Gestión del cambio y protección de la continuidad operativa
+
+La resistencia de los usuarios y directivos hacia las medidas de ciberseguridad rara vez nace de un rechazo a estar protegidos; surge cuando los controles se imponen por sorpresa a mitad de la jornada laboral, impidiendo trabajar. Para que la transición hacia el Módulo 4 sea fluida, cada cambio estructural debe ejecutarse bajo tres normas de gestión del cambio:
+
+#### 1. Comunicación previa y ventanas de mantenimiento
+
+Ningún cambio con potencial de interrumpir la conectividad o el inicio de sesión debe ejecutarse en horario pico comercial. Las modificaciones de red o de directorio deben programarse en **ventanas de mantenimiento** acordadas (por ejemplo, fuera del horario de atención o durante el fin de semana), notificando previamente a los usuarios qué cambiará, cuándo ocurrirá y a quién contactar si encuentran un inconveniente al día siguiente.
+
+#### 2. Despliegue mediante grupos piloto
+
+Cuando se implementa un control que modifica la experiencia diaria del personal —como exigir Autenticación Multifactor, aplicar restricciones de navegador o mover computadoras a una nueva subred restringida—, nunca se despliega a toda la empresa de una sola vez. Se selecciona un **grupo piloto** reducido (de 2 a 5 usuarios representativos de distintas áreas) durante unos días. Esto permite descubrir aplicaciones internas que fallan o permisos faltantes en la matriz con un impacto controlado antes de extender la medida al resto de la organización.
+
+#### 3. El Plan de Reversión (_Rollback Plan_)
+
+Todo ingeniero debe asumir que una configuración puede fallar en el mundo real. Por ello, ninguna tarea de impacto medio o alto puede entrar al Módulo 4 sin tener redactado su **Plan de Reversión (_Rollback_)**: el procedimiento exacto para deshacer el cambio y devolver el sistema a su estado funcional anterior dentro de la misma ventana de mantenimiento.
+
+:::steps
+
+### 1. Respaldo previo de la configuración (Snapshot)
+
+Minutos antes de aplicar el cambio en el módulo siguiente, se guarda una copia exacta del archivo de configuración original o una instantánea de la máquina virtual. Por ejemplo, antes de editar las reglas de red o el servicio de acceso remoto en un servidor Linux:
+
+```bash:terminal
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+
+```
+
+Esto garantiza tener un archivo idéntico y funcional listo para restaurar en segundos.
+
+### 2. Definición del disparador y tiempo límite (Go / No-Go)
+
+Se establece de antemano qué síntoma indica que el cambio falló (por ejemplo, que el sistema de facturación no conecte con la base de datos) y se fija un **tiempo máximo de resolución** (por ejemplo, 20 minutos antes de que termine la ventana de mantenimiento). Si cumplido ese minuto el problema no se ha resuelto, queda prohibido seguir improvisando: se ejecuta obligatoriamente la reversión.
+
+### 3. Ejecución de los pasos de vuelta atrás y prueba segura
+
+Se aplican las instrucciones documentadas para restaurar la configuración previa (por ejemplo, restaurar el archivo de respaldo ejecutando `sudo cp /etc/ssh/sshd_config.bak /etc/ssh/sshd_config && sudo systemctl restart sshd`) y se verifica que la operación normal se haya restablecido. El fallo se analiza con calma al día siguiente para corregir el diseño antes de volver a intentarlo.
+
+> [!WARNING:Consejo de oro de administración]
+> **Jamás cierres la sesión actual de la terminal** desde la cual estás realizando el cambio hasta haber abierto una segunda ventana y verificado con éxito que la nueva configuración responde y permite el acceso. Si te quedas fuera en la primera sesión y ya la cerraste, el rollback será mucho más complejo.
+> :::
+
+### Criterios de Aceptación: La definición de "Terminado"
+
+Una tarea de la hoja de ruta no se marca como completada cuando se termina de instalar un programa, sino cuando se obtiene la **evidencia técnica verificable** de que el control cumple su propósito y no ha roto la operación.
+
+En la hoja de ruta, cada tarea debe llevar predefinido su **Criterio de Aceptación** (que se ejecutará al cierre de cada práctica en el Módulo 4):
+
+- **Evidencia de efectividad de seguridad (Prueba negativa):** Qué resultado debe arrojar una prueba para confirmar que el riesgo fue mitigado (por ejemplo: un escaneo con `nmap -p 22,3389` desde fuera de la subred que devuelva estado `filtered` o `closed`; o un intento de inicio de sesión que sea rechazado al no proporcionar el código de segundo factor MFA).
+- **Evidencia de continuidad operativa (Prueba positiva):** Qué comprobación confirma que el negocio sigue funcionando sin degradación (por ejemplo: un usuario del rol autorizado inicia sesión en el sistema contable, emite un comprobante de prueba y la operación queda registrada en el colector de eventos).
+
 :::
+
+### Hoja de Ruta de Implementación (Roadmap)
+
+Como cierre de todo el Módulo 03, consolidamos las decisiones tomadas en un único documento rector conocido en los estándares de gestión como **Plan de Acción e Hitos (POA&M, _Plan of Action and Milestones_)**.
+
+Esta tabla constituye una lista de trabajo ejemplificadora y expandible para la organización. No requiere software especializado de gestión de proyectos; mantener esta matriz actualizada en una hoja de cálculo o documento en un repositorio es suficiente para guiar la implementación de principio a fin:
+
+| ID / Ola                                                            | Tarea y Responsable                                                                                                         | Riesgo y Prerrequisito                                                                                                      | Impacto Operativo                              | Plan de Reversión (Rollback)                                                                               | Criterio de Aceptación (Verificación en Mód. 4)                                                                                        |
+| :------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------- | :--------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
+| **T-01**<br>_Ola 1 (Sem 1)_                                         | Configurar respaldo automatizado en servidor aislado por extracción (_Pull_).<br>**Resp:** Admin TI                         | **Riesgo:** Pérdida total por Ransomware.<br>**Prerreq:** Almacenamiento separado y cuenta de servicio dedicada.            | **Nulo**<br>_(Se ejecuta en horario nocturno)_ | Deshabilitar tarea programada si satura el ancho de banda o el disco de producción.                        | Copia completada sin errores y prueba exitosa de restauración de un archivo en carpeta de prueba.                                      |
+| **T-02**<br>_Ola 1 (Sem 1)_                                         | Deshabilitar cuentas huérfanas de exempleados y bloquear cuentas predeterminadas.<br>**Resp:** Admin TI + RRHH              | **Riesgo:** Acceso con credenciales válidas.<br>**Prerreq:** Validar lista activa con RRHH y verificar cuentas de servicio. | **Nulo** para empleados activos.               | Rehabilitar la cuenta bloqueada en el directorio en caso de falso positivo operativo.                      | Intento de login con cuenta deshabilitada rechazado y registrado en el log de autenticación.                                           |
+| **T-03**<br>_Ola 1 (Sem 2)_                                         | Activar MFA obligatorio en cuentas de administrador, correo y accesos externos.<br>**Resp:** Admin TI                       | **Riesgo:** Robo de contraseñas / Phishing.<br>**Prerreq:** Cuenta de emergencia _break-glass_ y aviso a usuarios.          | **Bajo**<br>_(Enrolamiento app móvil 5 min)_   | Excluir temporalmente al usuario afectado de la política de MFA por 24 h mientras se reconfigura su token. | Login administrativo y remoto exige código temporal; intento sin segundo factor es bloqueado.                                          |
+| **T-04**<br>_Ola 2 (Mes 2)_                                         | Segmentar red en zonas (`VLAN 10, 20, 30, 40, 99`) y aplicar Matriz de Flujos.<br>**Resp:** Admin TI / Redes                | **Riesgo:** Movimiento lateral y exposición.<br>**Prerreq:** T-01 completado y servicios probados.                          | **Medio**<br>_(Reconexión de equipos)_         | Restaurar archivo de configuración previo del cortafuegos/switch si en 30 min no hay conectividad interna. | Estaciones de usuarios acceden al sistema interno por puerto `TCP 443`, pero fallan al intentar conectar por `TCP 22` o hacia backups. |
+| **T-05**<br>_Ola 2 (Mes 2)_                                         | Desplegar acceso remoto por VPN con MFA y cerrar puertos administrativos públicos.<br>**Resp:** Admin TI                    | **Riesgo:** Explotación de servicios expuestos.<br>**Prerreq:** T-03 completado y prueba en grupo piloto de 3 usuarios.     | **Medio**<br>_(Uso de cliente VPN)_            | Reactivar temporalmente la regla de acceso anterior restringida por dirección IP fija de origen.           | Escaneo externo a la IP pública muestra puertos `TCP 22` y `TCP 3389` cerrados; acceso funcional vía túnel VPN.                        |
+| **T-06**<br>_Ola 2 (Mes 3)_                                         | Aplicar Matriz RBAC en servidor de archivos y aplicaciones; separar cuentas admin (`adm_`).<br>**Resp:** Admin TI + Líderes | **Riesgo:** Fuga de datos y abuso de privilegios.<br>**Prerreq:** Aprobación de la Matriz RBAC (03.3).                      | **Bajo**<br>_(Usuarios operan en su sector)_   | Reasignar al usuario al grupo de permisos anterior si una tarea legítima queda bloqueada.                  | Usuario de Ventas lee y escribe en CRM pero recibe `Permission Denied` al intentar abrir la carpeta de Finanzas.                       |
+| _POA&M de ejemplo para guiar la ejecución técnica en el Módulo 04._ |
+
+> [!WARNING:Gestión de Riesgos Diferidos]
+> Si por limitaciones presupuestarias o técnicas la dirección decide posponer o no implementar alguna de las tareas previstas en el diseño, esa decisión **nunca debe ignorarse en silencio**. Debe registrarse formalmente al pie de la hoja de ruta como un **Riesgo Diferido / Aceptado**, especificando quién autorizó la excepción y fijando una fecha obligatoria para su reevaluación futura.

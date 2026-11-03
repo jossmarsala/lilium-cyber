@@ -6518,6 +6518,282 @@
             ]
           }
         ]
+      },
+      {
+        "id": "planificacion-transicion",
+        "title": "3.6. Planear la transición",
+        "icon": "ToolsIcon",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Llegar a este punto significa que la organización ya dejó atrás la incertidumbre: ahora conoce sus activos y cuenta con un diseño defensivo sólido para protegerlos. El siguiente gran paso es llevar esa visión a la práctica de forma inteligente."
+          },
+          {
+            "type": "paragraph",
+            "text": "Esta sección convierte todas las decisiones de red, identidad y acceso en un plan de acción realista y listo para ejecutarse. Su objetivo es conectar directamente con el Módulo 4 (Proteger) mediante una estrategia escalonada: definirás qué controles activar hoy mismo para neutralizar los riesgos más urgentes con el menor esfuerzo, qué secuencia técnica seguir para que cada cambio se apoye en el anterior y cómo asegurar que cada avance sea verificable, predecible y seguro para el negocio."
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Del Perfil Actual al Perfil Objetivo: El Análisis de Brechas"
+          },
+          {
+            "type": "paragraph",
+            "text": "Para saber qué camino recorrer, primero es necesario contrastar el punto de partida con el destino diseñado. Los marcos de gestión de riesgos estandarizan este ejercicio mediante la comparación de dos fotografías organizacionales conocidas como Perfiles:"
+          },
+          {
+            "type": "group",
+            "title": "Análisis de Brechas (_Gap Analysis_)",
+            "rows": [
+              {
+                "keyLabel": "Perfil Actual (_Current Profile_) [punto de partida]",
+                "text": "Representa el estado real de la infraestructura tal como fue descubierto y documentado al cierre del Módulo 2. Incluye las redes planas existentes, los permisos acumulados, los activos sin soporte y las vulnerabilidades activas."
+              },
+              {
+                "keyLabel": "Perfil Objetivo (_Target Profile_) [meta de diseño]",
+                "text": "Representa la arquitectura deseada que acabamos de construir entre las secciones `3.1` y `3.5` (zonas de red segmentadas, matriz de roles, acceso remoto seguro y controles validados frente a amenazas)."
+              },
+              {
+                "keyLabel": "Brecha (Gap) [trabajo por realizar]",
+                "text": "Es la diferencia exacta entre el estado actual y el objetivo. Cada brecha identificada se convierte en una tarea concreta o proyecto técnico dentro de nuestra hoja de ruta."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Al evaluar esas brechas, el diseño debe pasar por un filtro de realismo operativo. Si una PyME se encuentra hoy en un nivel inicial de madurez (donde las prácticas son informales o reactivas) y pretende saltar en un solo mes a una arquitectura de seguridad extremadamente compleja, el proyecto fracasará por falta de presupuesto y agotamiento del personal técnico. La hoja de ruta debe escalonar el avance asegurando primero los cimientos de higiene cibernética esencial (IG1)."
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Criterios de priorización: Las 3 olas de implementación"
+          },
+          {
+            "type": "paragraph",
+            "text": "No todas las brechas de seguridad tienen la misma urgencia ni exigen el mismo esfuerzo. Para evitar la parálisis por análisis, las tareas pendientes se ordenan cruzando dos variables: cuánto riesgo real reduce la medida frente a cuánta fricción operativa, tiempo o presupuesto demanda su ejecución."
+          },
+          {
+            "type": "paragraph",
+            "text": "Para tomar decisiones rápidas al organizar las tareas y definir qué priorizar, aplica esta regla de ponderación operativa:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "**Alto Impacto + Baja Fricción = Ola 1 (Quick Win):** Actívalo de inmediato.",
+              "**Alto Impacto + Alta Fricción = Ola 2 (Proyecto Estructural):** Planifícalo con ventanas de mantenimiento.",
+              "**Bajo Impacto + Alta Fricción = Ola 3 o Descartar:** Postérgalo a largo plazo o deséchalo si no aporta valor defensivo real."
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "A partir de ese cruce, la transición se divide en tres horizontes u olas progresivas. Este enfoque garantiza que la organización reduzca drásticamente su exposición desde las primeras semanas:"
+          },
+          {
+            "type": "table",
+            "columns": [
+              "Horizonte",
+              "Enfoque arquitectónico",
+              "Acciones típicas incluidas",
+              "Impacto en riesgo vs. Esfuerzo"
+            ],
+            "rows": [
+              [
+                "**Ola 1: Cimientos** _(Semanas 1 a 4 — Base esencial)_",
+                "Contener los riesgos críticos inmediatos que podrían destruir la continuidad del negocio con baja fricción técnica.",
+                "Aislar y automatizar copias de seguridad críticas; activar Autenticación Multifactor (MFA) en correo, accesos remotos y cuentas administrativas; deshabilitar cuentas huérfanas o de exempleados; cerrar puertos administrativos expuestos directamente a Internet y aplicar parches críticos.",
+                "**Impacto Muy Alto / Esfuerzo Bajo a Moderado.** Resuelve hasta el 80% de los vectores de ataques oportunistas comunes."
+              ],
+              [
+                "**Ola 2: Estructuración y Control** _(Meses 2 a 3 — Consolidación)_",
+                "Implementar las barreras estructurales diseñadas en las matrices de red e identidad.",
+                "Configurar las Redes de Área Local Virtuales (VLAN) y la Zona Desmilitarizada (DMZ) en conmutadores y firewalls; aplicar la matriz de Control de Acceso Basado en Roles (RBAC) en carpetas y sistemas; separar cuentas de administrador de las de uso diario; desplegar la Red Privada Virtual (VPN) o proxy inverso y centralizar la recolección básica de _logs_.",
+                "**Impacto Alto / Esfuerzo Moderado a Alto.** Requiere ventanas de mantenimiento planificadas y pruebas con usuarios."
+              ],
+              [
+                "**Ola 3: Madurez y Optimización** _(Meses 4 a 6+ — Mejora continua)_",
+                "Endurecer configuraciones avanzadas, automatizar defensas y afinar la detección.",
+                "Aplicar plantillas completas de configuración segura (imágenes base) en todos los puestos; implementar listas blancas de ejecución de software; ajustar umbrales finos de alertas de seguridad; formalizar auditorías de proveedores externos y ejercicios periódicos de simulación de incidentes.",
+                "**Impacto Moderado a Alto / Esfuerzo Alto.** Sostiene la postura defensiva a largo plazo frente a amenazas dirigidas."
+              ]
+            ],
+            "caption": "Plan de transición en tres olas progresivas según retorno de seguridad y complejidad operativa."
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "label": "Prioriza siempre la capacidad de recuperación antes de tocar la producción",
+            "text": "La primera tarea de la Ola 1 debe ser invariablemente asegurar y probar una copia de seguridad aislada de los servidores y configuraciones actuales. Esto no solo protege a la empresa contra un ataque de secuestro de datos hoy mismo, sino que actúa como un salvavidas de seguridad técnica en caso de que se cometa un error humano al reconfigurar redes o permisos en las etapas siguientes."
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Secuencia lógica y mapeo de dependencias técnicas"
+          },
+          {
+            "type": "paragraph",
+            "text": "En ingeniería de sistemas, el orden de los factores altera por completo el resultado. Muchas tareas de seguridad dependen técnicamente de que otra condición previa ya esté funcionando. Si se ignora esta secuencia lógica en la hoja de ruta, el propio equipo técnico provocará una denegación de servicio interna contra su propia empresa."
+          },
+          {
+            "type": "paragraph",
+            "text": "Antes de ordenar las fechas del plan, verifica que tu secuencia respete estas cuatro reglas de dependencia técnica:"
+          },
+          {
+            "type": "list",
+            "ordered": true,
+            "items": [
+              "**Visibilidad y cuentas de servicio antes de revocar permisos o cambiar contraseñas:** No se deben revocar permisos masivos en carpetas compartidas ni rotar contraseñas de cuentas antiguas sin haber identificado primero qué procesos automatizados, scripts o sistemas de facturación utilizan esas credenciales como cuentas de servicio (mapeadas en la sección 03.3). Hacerlo a ciegas detendrá las integraciones entre aplicaciones y bases de datos.",
+              "**Enrutamiento y servicios base antes de activar el bloqueo por defecto en la red:** Al implementar la segmentación diseñada en la sección 03.2, primero se deben crear las subredes, verificar que el servicio de asignación dinámica de direcciones (en los puertos `UDP 67` y `UDP 68`) y la resolución de nombres (en el puerto `UDP 53`) respondan correctamente en cada nueva zona, y cargar las reglas que permiten el tráfico legítimo. Recién cuando se ha comprobado en los registros del firewall que el tráfico operativo fluye por las reglas permitidas, se activa la regla final de denegación por defecto (`DROP ALL`).",
+              "**Canal alternativo verificado antes de cerrar puertos de administración remota:** Nunca se debe bloquear en el firewall el puerto de consola remota (como `TCP 22` o `TCP 3389`) ni deshabilitar el acceso del usuario `root` en `/etc/ssh/sshd_config` sin haber probado antes, en una segunda ventana de terminal simultánea, que la nueva cuenta administrativa dedicada puede iniciar sesión a través del túnel privado y elevar privilegios con `sudo`.",
+              "**Sincronización horaria antes de centralizar registros:** Antes de conectar los servidores al colector central de eventos, es requisito configurar la sincronización de relojes mediante el protocolo de tiempo en el puerto `UDP 123`. De lo contrario, los eventos entrantes se almacenarán con marcas de tiempo desfasadas, inutilizando las alertas por correlación."
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Gestión del cambio y protección de la continuidad operativa"
+          },
+          {
+            "type": "paragraph",
+            "text": "La resistencia de los usuarios y directivos hacia las medidas de ciberseguridad rara vez nace de un rechazo a estar protegidos; surge cuando los controles se imponen por sorpresa a mitad de la jornada laboral, impidiendo trabajar. Para que la transición hacia el Módulo 4 sea fluida, cada cambio estructural debe ejecutarse bajo tres normas de gestión del cambio:"
+          },
+          {
+            "type": "heading",
+            "level": 4,
+            "text": "1. Comunicación previa y ventanas de mantenimiento"
+          },
+          {
+            "type": "paragraph",
+            "text": "Ningún cambio con potencial de interrumpir la conectividad o el inicio de sesión debe ejecutarse en horario pico comercial. Las modificaciones de red o de directorio deben programarse en **ventanas de mantenimiento** acordadas (por ejemplo, fuera del horario de atención o durante el fin de semana), notificando previamente a los usuarios qué cambiará, cuándo ocurrirá y a quién contactar si encuentran un inconveniente al día siguiente."
+          },
+          {
+            "type": "heading",
+            "level": 4,
+            "text": "2. Despliegue mediante grupos piloto"
+          },
+          {
+            "type": "paragraph",
+            "text": "Cuando se implementa un control que modifica la experiencia diaria del personal —como exigir Autenticación Multifactor, aplicar restricciones de navegador o mover computadoras a una nueva subred restringida—, nunca se despliega a toda la empresa de una sola vez. Se selecciona un **grupo piloto** reducido (de 2 a 5 usuarios representativos de distintas áreas) durante unos días. Esto permite descubrir aplicaciones internas que fallan o permisos faltantes en la matriz con un impacto controlado antes de extender la medida al resto de la organización."
+          },
+          {
+            "type": "heading",
+            "level": 4,
+            "text": "3. El Plan de Reversión (_Rollback Plan_)"
+          },
+          {
+            "type": "paragraph",
+            "text": "Todo ingeniero debe asumir que una configuración puede fallar en el mundo real. Por ello, ninguna tarea de impacto medio o alto puede entrar al Módulo 4 sin tener redactado su **Plan de Reversión (_Rollback_)**: el procedimiento exacto para deshacer el cambio y devolver el sistema a su estado funcional anterior dentro de la misma ventana de mantenimiento."
+          },
+          {
+            "type": "steps",
+            "items": [
+              {
+                "title": "1. Respaldo previo de la configuración (Snapshot)",
+                "code": {
+                  "lang": "bash:terminal",
+                  "content": "sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak\n"
+                },
+                "description": "Minutos antes de aplicar el cambio en el módulo siguiente, se guarda una copia exacta del archivo de configuración original o una instantánea de la máquina virtual. Por ejemplo, antes de editar las reglas de red o el servicio de acceso remoto en un servidor Linux: Esto garantiza tener un archivo idéntico y funcional listo para restaurar en segundos."
+              },
+              {
+                "title": "2. Definición del disparador y tiempo límite (Go / No-Go)",
+                "description": "Se establece de antemano qué síntoma indica que el cambio falló (por ejemplo, que el sistema de facturación no conecte con la base de datos) y se fija un **tiempo máximo de resolución** (por ejemplo, 20 minutos antes de que termine la ventana de mantenimiento). Si cumplido ese minuto el problema no se ha resuelto, queda prohibido seguir improvisando: se ejecuta obligatoriamente la reversión."
+              },
+              {
+                "title": "3. Ejecución de los pasos de vuelta atrás y prueba segura",
+                "description": "Se aplican las instrucciones documentadas para restaurar la configuración previa (por ejemplo, restaurar el archivo de respaldo ejecutando `sudo cp /etc/ssh/sshd_config.bak /etc/ssh/sshd_config && sudo systemctl restart sshd`) y se verifica que la operación normal se haya restablecido. El fallo se analiza con calma al día siguiente para corregir el diseño antes de volver a intentarlo. > [!WARNING:Consejo de oro de administración] > **Jamás cierres la sesión actual de la terminal** desde la cual estás realizando el cambio hasta haber abierto una segunda ventana y verificado con éxito que la nueva configuración responde y permite el acceso. Si te quedas fuera en la primera sesión y ya la cerraste, el rollback será mucho más complejo. > :::"
+              },
+              {
+                "title": "Criterios de Aceptación: La definición de \"Terminado\"",
+                "description": "Una tarea de la hoja de ruta no se marca como completada cuando se termina de instalar un programa, sino cuando se obtiene la **evidencia técnica verificable** de que el control cumple su propósito y no ha roto la operación. En la hoja de ruta, cada tarea debe llevar predefinido su **Criterio de Aceptación** (que se ejecutará al cierre de cada práctica en el Módulo 4):",
+                "bullets": [
+                  "**Evidencia de efectividad de seguridad (Prueba negativa):** Qué resultado debe arrojar una prueba para confirmar que el riesgo fue mitigado (por ejemplo: un escaneo con `nmap -p 22,3389` desde fuera de la subred que devuelva estado `filtered` o `closed`; o un intento de inicio de sesión que sea rechazado al no proporcionar el código de segundo factor MFA).",
+                  "**Evidencia de continuidad operativa (Prueba positiva):** Qué comprobación confirma que el negocio sigue funcionando sin degradación (por ejemplo: un usuario del rol autorizado inicia sesión en el sistema contable, emite un comprobante de prueba y la operación queda registrada en el colector de eventos)."
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Hoja de Ruta de Implementación (Roadmap)"
+          },
+          {
+            "type": "paragraph",
+            "text": "Como cierre de todo el Módulo 03, consolidamos las decisiones tomadas en un único documento rector conocido en los estándares de gestión como **Plan de Acción e Hitos (POA&M, _Plan of Action and Milestones_)**."
+          },
+          {
+            "type": "paragraph",
+            "text": "Esta tabla constituye tu lista de trabajo exacta para ingresar al Módulo 04 (`04. PROTECT`). No requiere software especializado de gestión de proyectos; mantener esta matriz actualizada en una hoja de cálculo o documento en un repositorio es suficiente para guiar la implementación de principio a fin:"
+          },
+          {
+            "type": "table",
+            "columns": [
+              "ID / Ola",
+              "Tarea y Responsable",
+              "Riesgo y Prerrequisito",
+              "Impacto Operativo",
+              "Plan de Reversión (Rollback)",
+              "Criterio de Aceptación (Verificación en Mód. 4)"
+            ],
+            "rows": [
+              [
+                "**T-01**<br>_Ola 1 (Sem 1)_",
+                "Configurar respaldo automatizado en servidor aislado por extracción (_Pull_).<br>**Resp:** Admin TI",
+                "**Riesgo:** Pérdida total por Ransomware.<br>**Prerreq:** Almacenamiento separado y cuenta de servicio dedicada.",
+                "**Nulo**<br>_(Se ejecuta en horario nocturno)_",
+                "Deshabilitar tarea programada si satura el ancho de banda o el disco de producción.",
+                "Copia completada sin errores y prueba exitosa de restauración de un archivo en carpeta de prueba."
+              ],
+              [
+                "**T-02**<br>_Ola 1 (Sem 1)_",
+                "Deshabilitar cuentas huérfanas de exempleados y bloquear cuentas predeterminadas.<br>**Resp:** Admin TI + RRHH",
+                "**Riesgo:** Acceso con credenciales válidas.<br>**Prerreq:** Validar lista activa con RRHH y verificar cuentas de servicio.",
+                "**Nulo** para empleados activos.",
+                "Rehabilitar la cuenta bloqueada en el directorio en caso de falso positivo operativo.",
+                "Intento de login con cuenta deshabilitada rechazado y registrado en el log de autenticación."
+              ],
+              [
+                "**T-03**<br>_Ola 1 (Sem 2)_",
+                "Activar MFA obligatorio en cuentas de administrador, correo y accesos externos.<br>**Resp:** Admin TI",
+                "**Riesgo:** Robo de contraseñas / Phishing.<br>**Prerreq:** Cuenta de emergencia _break-glass_ y aviso a usuarios.",
+                "**Bajo**<br>_(Enrolamiento app móvil 5 min)_",
+                "Excluir temporalmente al usuario afectado de la política de MFA por 24 h mientras se reconfigura su token.",
+                "Login administrativo y remoto exige código temporal; intento sin segundo factor es bloqueado."
+              ],
+              [
+                "**T-04**<br>_Ola 2 (Mes 2)_",
+                "Segmentar red en zonas (`VLAN 10, 20, 30, 40, 99`) y aplicar Matriz de Flujos.<br>**Resp:** Admin TI / Redes",
+                "**Riesgo:** Movimiento lateral y exposición.<br>**Prerreq:** T-01 completado y servicios probados.",
+                "**Medio**<br>_(Reconexión de equipos)_",
+                "Restaurar archivo de configuración previo del cortafuegos/switch si en 30 min no hay conectividad interna.",
+                "Estaciones de usuarios acceden al sistema interno por puerto `TCP 443`, pero fallan al intentar conectar por `TCP 22` o hacia backups."
+              ],
+              [
+                "**T-05**<br>_Ola 2 (Mes 2)_",
+                "Desplegar acceso remoto por VPN con MFA y cerrar puertos administrativos públicos.<br>**Resp:** Admin TI",
+                "**Riesgo:** Explotación de servicios expuestos.<br>**Prerreq:** T-03 completado y prueba en grupo piloto de 3 usuarios.",
+                "**Medio**<br>_(Uso de cliente VPN)_",
+                "Reactivar temporalmente la regla de acceso anterior restringida por dirección IP fija de origen.",
+                "Escaneo externo a la IP pública muestra puertos `TCP 22` y `TCP 3389` cerrados; acceso funcional vía túnel VPN."
+              ],
+              [
+                "**T-06**<br>_Ola 2 (Mes 3)_",
+                "Aplicar Matriz RBAC en servidor de archivos y aplicaciones; separar cuentas admin (`adm_`).<br>**Resp:** Admin TI + Líderes",
+                "**Riesgo:** Fuga de datos y abuso de privilegios.<br>**Prerreq:** Aprobación de la Matriz RBAC (03.3).",
+                "**Bajo**<br>_(Usuarios operan en su sector)_",
+                "Reasignar al usuario al grupo de permisos anterior si una tarea legítima queda bloqueada.",
+                "Usuario de Ventas lee y escribe en CRM pero recibe `Permission Denied` al intentar abrir la carpeta de Finanzas."
+              ]
+            ],
+            "caption": "Hoja de Ruta de Implementación (Roadmap / POA&M) lista para guiar la ejecución técnica en el Módulo 04."
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "label": "Gestión de Riesgos Diferidos",
+            "text": "Si por limitaciones presupuestarias o técnicas la dirección decide posponer o no implementar alguna de las tareas previstas en el diseño, esa decisión **nunca debe ignorarse en silencio**. Debe registrarse formalmente al pie de la hoja de ruta como un **Riesgo Diferido / Aceptado**, especificando quién autorizó la excepción y fijando una fecha obligatoria para su reevaluación futura."
+          }
+        ]
       }
     ],
     "overview": "## Módulo 3: Diseño de Arquitectura de Seguridad\n\nEl módulo de diseño traduce los riesgos y vulnerabilidades descubiertas en la etapa anterior en un plano arquitectónico estructurado, estableciendo la lógica defensiva antes de implementar cualquier herramienta.\n\nEn el _framework_ de LILIUM, la subcapa **DESIGN (Lógica arquitectónica)** representa la continuación estratégica del módulo anterior. Este módulo enseña a pensar la seguridad como un plano de ingeniería. Utilizando el inventario y las debilidades mapeadas en la capa anterior, aquí se decide cómo segmentar la red, cómo agrupar a los usuarios y cómo distribuir los controles para aislar los activos críticos, garantizando que si una barrera falla, el impacto operativo esté estrictamente limitado.\n\n### ¿Qué vas a aprender?\n\n- Aplicar del modelo de defensa en profundidad para proteger el perímetro, la red, el _endpoint_ y los datos.\n- Diseñar de zonas de confianza, subredes, aislamientos y zonas desmilitarizadas (`DMZ`).\n- Estructurar de permisos mediante Control de Acceso Basado en Roles (`RBAC`) y la lógica de mínimo privilegio.\n- Diseñar vías seguras para el trabajo remoto y la conexión con proveedores de servicios en la nube (`IaaS`, `SaaS`).\n- Modelar amenazas evaluando el diseño propuesto mediante la simulación de vectores de ataque (`Threat Modeling`).\n- Planificar la transición, elaborando de un plan de acción escalonado para migrar hacia la nueva arquitectura sin interrumpir el negocio.\n\n### ¿Para quién es?\n\nEste módulo asume que el lector ya comprende los fundamentos del riesgo y conoce el estado actual de su infraestructura. Su enfoque es analítico y de planificación arquitectónica.\n\n| Perfil de usuario                                                  | Nivel esperado            | Conocimientos previos recomendados                                                                                                                      |\n| :----------------------------------------------------------------- | :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| **Responsables de infraestructura e IT**                           | Intermedio - Principiante | Comprensión de topologías de red básicas y administración general de sistemas. Capacidad para leer diagramas de red.                                    |\n| **Líderes técnicos y arquitectos**                                 | Intermedio                | Experiencia en el diseño de soluciones tecnológicas. Interés en alinear la arquitectura existente con los marcos de referencia (ej. CIS Controls v8.1). |\n| **Estudiantes de ciberseguridad**                                  | Principiante - Avanzado   | Haber completado los módulos `01. UNDERSTAND` y `02. DISCOVER`. Familiaridad con conceptos como puertos, direcciones IP y vulnerabilidades.             |\n| _Perfiles recomendados y requisitos de entrada para el módulo 03._ |\n\n:::subindex\ntitle=\"Índice del módulo\"\n:::\n\n### Cómo abordar este módulo\n\n:::steps\n\n### 1. Revisión de la línea base\n\nAntes de comenzar, asegúrate de tener claros los hallazgos críticos que priorizaste al finalizar el módulo `02. DISCOVER`. El diseño que construyas aquí debe responder directamente a esas debilidades.\n\n### 2. Entregables de la sección\n\nAl leer las secciones, irás construyendo matrices y diagramas de arquitectura que te ayudarán a lograr un diseño de seguridad sólido. Procura ir realizando estos entregables antes de llegar al siguiente módulo.\n\n### 3. Creación del mapa de ruta\n\nFinaliza el módulo construyendo tu propio plan de transición (sección `03.6`). Este documento será tu guía exacta de instrucciones cuando pases al módulo `04. PROTECT` para ejecutar los comandos y configurar las herramientas reales.\n:::",
