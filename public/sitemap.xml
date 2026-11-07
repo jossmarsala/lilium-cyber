@@ -217,6 +217,24 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://lilium-playbook.com/docs/layer-5/visibilidad-endpoint/herramienta-wazuh</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lilium-playbook.com/docs/layer-5/siem-ml</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://lilium-playbook.com/docs/layer-5/siem-ml/siem-correlacion-practica</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://lilium-playbook.com/docs/layer-6</loc>
     <lastmod>2026-11-07</lastmod>
     <changefreq>monthly</changefreq>

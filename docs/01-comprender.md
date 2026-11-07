@@ -1319,6 +1319,7 @@ export ENTORNO="laboratorio"
 ```
 
 El sistema operativo incluye variables de entorno predefinidas clave:
+
 - **`$USER`:** Nombre de la cuenta conectada actualmente (ej. `estudiante` o `root`).
 - **`$HOME`:** Ruta absoluta al directorio personal del usuario (ej. `/home/estudiante`).
 - **`$PATH`:** Directorios donde la terminal busca binarios para ejecutar comandos por su nombre.
@@ -1326,8 +1327,8 @@ El sistema operativo incluye variables de entorno predefinidas clave:
 
 > [!TIP:¿Por qué los tutoriales y comandos usan $USER y $HOME?]
 > En guías y comandos como `sudo usermod -aG wireshark $USER` o `cp archivo $HOME/`, **no debes reemplazar `$USER` por tu nombre**: escríbelo tal cual. La shell sustituye automáticamente `$USER` por tu usuario conectado en ese instante. Los autores lo usan como comodín dinámico para que el comando sea **universal y portátil**, funcionando en cualquier equipo y usuario sin necesidad de editarlo.
-> 
-> *Comillas:* Con comillas dobles (`"Hola $USER"`) el valor se expande; con comillas simples (`'Hola $USER'`) se interpreta como texto literal.
+>
+> _Comillas:_ Con comillas dobles (`"Hola $USER"`) el valor se expande; con comillas simples (`'Hola $USER'`) se interpreta como texto literal.
 
 #### Editores de Texto en la Terminal
 
