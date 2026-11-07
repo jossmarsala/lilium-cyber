@@ -7,6 +7,7 @@ import styles from './DocsPagination.module.css'
 export interface DocsPaginationProps {
   sectionId?: string
   subSectionId?: string
+  subSubSectionId?: string
   prev?: Partial<DocNavItem> | null
   next?: Partial<DocNavItem> | null
   className?: string
@@ -15,15 +16,23 @@ export interface DocsPaginationProps {
 export default function DocsPagination({
   sectionId,
   subSectionId,
+  subSubSectionId,
   prev,
   next,
   className = '',
 }: DocsPaginationProps) {
-  const routeParams = useParams<{ sectionId?: string; subSectionId?: string }>()
+  const routeParams = useParams<{
+    sectionId?: string
+    subSectionId?: string
+    subSubSectionId?: string
+  }>()
   const effSectionId = sectionId ?? routeParams.sectionId
   const effSubSectionId = subSectionId ?? routeParams.subSectionId
+  const effSubSubSectionId = subSubSectionId ?? routeParams.subSubSectionId
 
-  const nav = effSectionId ? getDocNavigation(docsData, effSectionId, effSubSectionId) : null
+  const nav = effSectionId
+    ? getDocNavigation(docsData, effSectionId, effSubSectionId, effSubSubSectionId)
+    : null
 
   const resolvedPrev = prev !== undefined ? prev : nav?.prev
   const resolvedNext = next !== undefined ? next : nav?.next

@@ -5,6 +5,7 @@ import type {
   CalloutVariant,
   BadgeKind,
   StepItem,
+  StepElement,
   GroupRowItem,
 } from '@/data/docs'
 
@@ -117,26 +118,62 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
         i++
       }
 
+      // Check whether steps are demarcated by markdown headings (### ...)
+      const hasHeadingSteps = stepLines.some((l) => /^#{1,4}\s+/.test(l.trim()))
+
+      const isStepHeader = (lineTrim: string) => {
+        if (lineTrim.startsWith('```')) return false
+        if (hasHeadingSteps) {
+          return /^#{1,4}\s+(.+)$/.test(lineTrim)
+        }
+        return /^(\d+\.|\d+\))\s+(.+)$/.test(lineTrim)
+      }
+
+      const parseStepHeader = (lineTrim: string) => {
+        const match = hasHeadingSteps
+          ? lineTrim.match(/^#{1,4}\s+(.+)$/)
+          : lineTrim.match(/^(\d+\.|\d+\))\s+(.+)$/)
+        if (!match) return null
+        let title = match[1].trim()
+        let completed = false
+        if (title.startsWith('[x] ') || title.startsWith('[X] ')) {
+          completed = true
+          title = title.slice(4).trim()
+        }
+        return { title, completed }
+      }
+
       const stepItems: StepItem[] = []
       let currentStep: Partial<StepItem> | null = null
-      let descLines: string[] = []
-      let bulletLines: string[] = []
-      let inBullets = false
+      let elements: StepElement[] = []
 
       const commitCurrentStep = () => {
         if (currentStep && currentStep.title) {
-          if (descLines.length > 0) {
-            currentStep.description = descLines.join(' ').trim()
+          currentStep.elements = elements
+          // Backwards-compatibility fallbacks
+          const firstCode = elements.find((e): e is Extract<StepElement, { type: 'code' }> => e.type === 'code')
+          if (firstCode) {
+            currentStep.code = {
+              lang: firstCode.lang,
+              content: firstCode.content,
+            }
           }
-          if (bulletLines.length > 0) {
-            ;(currentStep as Partial<StepItem> & { bullets?: string[] }).bullets = bulletLines
+          const allParas = elements
+            .filter((e): e is Extract<StepElement, { type: 'paragraph' }> => e.type === 'paragraph')
+            .map((e) => e.text)
+          if (allParas.length > 0) {
+            currentStep.description = allParas.join(' ')
+          }
+          const firstBullets = elements.find(
+            (e): e is Extract<StepElement, { type: 'list' }> => e.type === 'list' && !e.ordered
+          )
+          if (firstBullets) {
+            currentStep.bullets = firstBullets.items
           }
           stepItems.push(currentStep as StepItem)
         }
         currentStep = null
-        descLines = []
-        bulletLines = []
-        inBullets = false
+        elements = []
       }
 
       let sIdx = 0
@@ -144,20 +181,39 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
         const sLine = stepLines[sIdx]
         const sTrim = sLine.trim()
 
-        const stepHeaderMatch = sTrim.match(/^(?:#{1,4}|\d+\.)\s+(.+)$/)
-        if (stepHeaderMatch && !sTrim.startsWith('```')) {
-          commitCurrentStep()
-          let title = stepHeaderMatch[1].trim()
-          let completed = false
-          if (title.startsWith('[x] ') || title.startsWith('[X] ')) {
-            completed = true
-            title = title.slice(4).trim()
-          }
-          currentStep = { title, completed }
+        if (!sTrim) {
           sIdx++
           continue
         }
 
+        // Step heading
+        if (isStepHeader(sTrim)) {
+          commitCurrentStep()
+          const parsed = parseStepHeader(sTrim)
+          if (parsed) {
+            currentStep = {
+              title: parsed.title,
+              ...(parsed.completed ? { completed: true } : {}),
+            }
+          }
+          sIdx++
+          continue
+        }
+
+        if (!currentStep) {
+          sIdx++
+          continue
+        }
+
+        // Expected outcome pill
+        const outcomeMatch = sTrim.match(/^(?:>\s*)?(?:outcome|result):\s*(.+)$/i)
+        if (outcomeMatch) {
+          currentStep.outcome = outcomeMatch[1].trim()
+          sIdx++
+          continue
+        }
+
+        // Code block inside step
         if (sTrim.startsWith('```')) {
           const lang = sTrim.slice(3).trim() || 'shell'
           sIdx++
@@ -169,49 +225,142 @@ export function parseMarkdownToBlocks(markdown: string): DocBlock[] {
           if (sIdx < stepLines.length && stepLines[sIdx].trim().startsWith('```')) {
             sIdx++
           }
-          if (currentStep) {
-            currentStep.code = {
-              lang,
-              content: codeContent.join('\n'),
+          elements.push({
+            type: 'code',
+            lang,
+            content: codeContent.join('\n'),
+          })
+          continue
+        }
+
+        // Numbered list item inside step: 1. Item or 1) Item
+        const numMatch = sTrim.match(/^(\d+\.|\d+\))\s+(.+)$/)
+        if (numMatch) {
+          const items: string[] = []
+          const startNum = parseInt(numMatch[1], 10) || 1
+          while (sIdx < stepLines.length) {
+            const rawLine = stepLines[sIdx]
+            const curTrim = rawLine.trim()
+
+            if (!curTrim) {
+              let nextIdx = sIdx + 1
+              while (nextIdx < stepLines.length && !stepLines[nextIdx].trim()) {
+                nextIdx++
+              }
+              if (
+                nextIdx < stepLines.length &&
+                !isStepHeader(stepLines[nextIdx].trim()) &&
+                stepLines[nextIdx].trim().match(/^(\d+\.|\d+\))\s+/)
+              ) {
+                sIdx = nextIdx
+                continue
+              }
+              break
+            }
+
+            const nMatch = curTrim.match(/^(\d+\.|\d+\))\s+(.+)$/)
+            if (nMatch) {
+              let itemText = nMatch[2].trim()
+              sIdx++
+              while (
+                sIdx < stepLines.length &&
+                stepLines[sIdx].trim() &&
+                (stepLines[sIdx].startsWith('  ') || stepLines[sIdx].startsWith('\t')) &&
+                !stepLines[sIdx].trim().match(/^[-*]\s+/) &&
+                !stepLines[sIdx].trim().match(/^(\d+\.|\d+\))\s+/) &&
+                !stepLines[sIdx].trim().startsWith('```') &&
+                !isStepHeader(stepLines[sIdx].trim())
+              ) {
+                itemText += ' ' + stepLines[sIdx].trim()
+                sIdx++
+              }
+              items.push(itemText)
+            } else {
+              break
             }
           }
-          inBullets = false
+          elements.push({
+            type: 'list',
+            ordered: true,
+            items,
+            start: startNum,
+          })
           continue
         }
 
-        const outcomeMatch = sTrim.match(/^(?:>\s*)?(?:outcome|result):\s*(.+)$/i)
-        if (outcomeMatch && currentStep) {
-          currentStep.outcome = outcomeMatch[1].trim()
-          sIdx++
-          continue
-        }
-
-        // Bullet list item inside a step
+        // Bullet list item inside step: - Item or * Item
         const bulletMatch = sTrim.match(/^[-*]\s+(.+)$/)
-        if (bulletMatch && currentStep) {
-          inBullets = true
-          bulletLines.push(bulletMatch[1].trim())
-          sIdx++
+        if (bulletMatch) {
+          const items: string[] = []
+          while (sIdx < stepLines.length) {
+            const rawLine = stepLines[sIdx]
+            const curTrim = rawLine.trim()
+
+            if (!curTrim) {
+              let nextIdx = sIdx + 1
+              while (nextIdx < stepLines.length && !stepLines[nextIdx].trim()) {
+                nextIdx++
+              }
+              if (
+                nextIdx < stepLines.length &&
+                !isStepHeader(stepLines[nextIdx].trim()) &&
+                stepLines[nextIdx].trim().match(/^[-*]\s+/)
+              ) {
+                sIdx = nextIdx
+                continue
+              }
+              break
+            }
+
+            const bMatch = curTrim.match(/^[-*]\s+(.+)$/)
+            if (bMatch) {
+              let itemText = bMatch[1].trim()
+              sIdx++
+              while (
+                sIdx < stepLines.length &&
+                stepLines[sIdx].trim() &&
+                (stepLines[sIdx].startsWith('  ') || stepLines[sIdx].startsWith('\t')) &&
+                !stepLines[sIdx].trim().match(/^[-*]\s+/) &&
+                !stepLines[sIdx].trim().match(/^(\d+\.|\d+\))\s+/) &&
+                !stepLines[sIdx].trim().startsWith('```') &&
+                !isStepHeader(stepLines[sIdx].trim())
+              ) {
+                itemText += ' ' + stepLines[sIdx].trim()
+                sIdx++
+              }
+              items.push(itemText)
+            } else {
+              break
+            }
+          }
+          elements.push({
+            type: 'list',
+            ordered: false,
+            items,
+          })
           continue
         }
 
-        // Continuation line for a bullet (indented)
-        if (
-          inBullets &&
-          (sLine.startsWith('  ') || sLine.startsWith('\t')) &&
-          sTrim &&
-          currentStep
+        // Regular paragraph inside step
+        const paraLines: string[] = []
+        while (
+          sIdx < stepLines.length &&
+          stepLines[sIdx].trim() &&
+          !isStepHeader(stepLines[sIdx].trim()) &&
+          !stepLines[sIdx].trim().startsWith('```') &&
+          !stepLines[sIdx].trim().match(/^(?:>\s*)?(?:outcome|result):\s*(.+)$/i) &&
+          !stepLines[sIdx].trim().match(/^[-*]\s+/) &&
+          !stepLines[sIdx].trim().match(/^(\d+\.|\d+\))\s+/)
         ) {
-          bulletLines[bulletLines.length - 1] += ' ' + sTrim
+          paraLines.push(stepLines[sIdx].trim())
           sIdx++
-          continue
         }
-
-        if (sTrim && currentStep) {
-          inBullets = false
-          descLines.push(sTrim)
+        if (paraLines.length > 0) {
+          elements.push({
+            type: 'paragraph',
+            text: paraLines.join(' ').trim(),
+          })
         }
-        sIdx++
       }
       commitCurrentStep()
 

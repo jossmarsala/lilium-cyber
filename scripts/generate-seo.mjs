@@ -51,6 +51,15 @@ try {
           changefreq: 'monthly',
           priority: '0.8',
         })
+        if (Array.isArray(sub.subsections)) {
+          sub.subsections.forEach((subsub) => {
+            routes.push({
+              url: `/docs/${section.id}/${sub.id}/${subsub.id}`,
+              changefreq: 'monthly',
+              priority: '0.7',
+            })
+          })
+        }
       })
     }
   })

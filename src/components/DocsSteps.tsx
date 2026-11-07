@@ -27,6 +27,11 @@ export interface StepCode {
   content: string
 }
 
+export type StepElement =
+  | { type: 'paragraph'; text: string }
+  | { type: 'code'; lang?: string; content: string }
+  | { type: 'list'; ordered?: boolean; items: string[]; start?: number }
+
 interface StepProps {
   title: ReactNode
   /** Optional prose description (supports inline `code` via children) */
@@ -39,6 +44,8 @@ interface StepProps {
   outcome?: ReactNode
   /** Renders the number bubble as filled/checked */
   completed?: boolean
+  /** Ordered sequence of step elements (paragraphs, code blocks, lists) */
+  elements?: StepElement[]
 }
 
 /* ── Wrapper ── */
@@ -52,7 +59,17 @@ export function DocsSteps({ children }: StepsProps) {
 }
 
 /** Individual step */
-export function DocsStep({ title, children, bullets, code, outcome, completed = false }: StepProps) {
+export function DocsStep({
+  title,
+  children,
+  bullets,
+  code,
+  outcome,
+  completed = false,
+  elements,
+}: StepProps) {
+  const hasElements = Boolean(elements && elements.length > 0)
+
   return (
     <li className={`${styles.step}${completed ? ` ${styles.completed}` : ''}`}>
       {/* Counter bubble */}
@@ -77,25 +94,79 @@ export function DocsStep({ title, children, bullets, code, outcome, completed = 
       <div className={styles.body}>
         <h3 className={styles.title}>{typeof title === 'string' ? renderInline(title) : title}</h3>
 
-        {children && <p className={styles.description}>{children}</p>}
+        {hasElements ? (
+          elements!.map((el, elIdx) => {
+            if (el.type === 'paragraph') {
+              return (
+                <p key={elIdx} className={styles.description}>
+                  {renderInline(el.text, `step-el-${elIdx}`)}
+                </p>
+              )
+            }
+            if (el.type === 'code') {
+              return (
+                <CodeBlock
+                  key={elIdx}
+                  code={el.content}
+                  lang={el.lang ?? 'shell'}
+                  className={styles.stepCodeBlock}
+                />
+              )
+            }
+            if (el.type === 'list') {
+              if (el.ordered) {
+                const start = el.start ?? 1
+                return (
+                  <ol key={elIdx} className={styles.numberedList} start={start}>
+                    {el.items.map((item, lIdx) => (
+                      <li key={lIdx} className={styles.numberedItem}>
+                        <span className={styles.orderNumber}>{start + lIdx}.</span>
+                        <span className={styles.bulletText}>
+                          {renderInline(item, `step-num-${elIdx}-${lIdx}`)}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                )
+              }
+              return (
+                <ul key={elIdx} className={styles.bulletList}>
+                  {el.items.map((item, lIdx) => (
+                    <li key={lIdx} className={styles.bulletItem}>
+                      <span className={styles.bulletDot} aria-hidden="true" />
+                      <span className={styles.bulletText}>
+                        {renderInline(item, `step-bullet-${elIdx}-${lIdx}`)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
+            return null
+          })
+        ) : (
+          <>
+            {children && <p className={styles.description}>{children}</p>}
 
-        {bullets && bullets.length > 0 && (
-          <ul className={styles.bulletList}>
-            {bullets.map((item, idx) => (
-              <li key={idx} className={styles.bulletItem}>
-                <span className={styles.bulletDot} aria-hidden="true" />
-                <span className={styles.bulletText}>{renderInline(item, `step-bullet-${idx}`)}</span>
-              </li>
-            ))}
-          </ul>
-        )}
+            {bullets && bullets.length > 0 && (
+              <ul className={styles.bulletList}>
+                {bullets.map((item, idx) => (
+                  <li key={idx} className={styles.bulletItem}>
+                    <span className={styles.bulletDot} aria-hidden="true" />
+                    <span className={styles.bulletText}>{renderInline(item, `step-bullet-${idx}`)}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
 
-        {code && (
-          <CodeBlock
-            code={code.content}
-            lang={code.lang ?? 'shell'}
-            className={styles.stepCodeBlock}
-          />
+            {code && (
+              <CodeBlock
+                code={code.content}
+                lang={code.lang ?? 'shell'}
+                className={styles.stepCodeBlock}
+              />
+            )}
+          </>
         )}
 
         {outcome && (

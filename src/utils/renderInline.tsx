@@ -133,22 +133,6 @@ export function renderInline(text: string, key?: string | number): ReactNode {
               className={styles.externalRefLink}
               title={title ? `${label}: ${title}` : label}
             >
-              <span className={styles.refIcon} aria-hidden="true">
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M6.5 3.5H3.5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9.5" />
-                  <path d="M10 2h4v4" />
-                  <path d="M7.5 8.5L14 2" />
-                </svg>
-              </span>
               <span className={styles.refLabel}>{renderInline(label, `lbl-${i}`)}</span>
               {title && (
                 <>

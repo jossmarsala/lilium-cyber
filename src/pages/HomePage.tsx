@@ -170,7 +170,8 @@ export default function HomePage() {
           </h1>
           <p className={styles.heroDesc}>
             Lilium es un playbook enfocado en construir una arquitectura digital segura para tu PyME
-            con prácticas interactivas.
+            con prácticas interactivas, basado en los conocimientos adquiridos en la Diplomatura en
+            Ciberseguridad.
           </p>
           <div className={styles.heroCta}>
             <SpecularButton

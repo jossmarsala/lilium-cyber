@@ -20,9 +20,10 @@ import SEO from '@/components/SEO'
 import styles from './DocsPage.module.css'
 
 export default function DocsPage() {
-  const { sectionId, subSectionId } = useParams<{
+  const { sectionId, subSectionId, subSubSectionId } = useParams<{
     sectionId?: string
     subSectionId?: string
+    subSubSectionId?: string
   }>()
   const navigate = useNavigate()
   const location = useLocation()
@@ -36,6 +37,9 @@ export default function DocsPage() {
     docs.find((s) => s.id === resolvedSectionId || s.id === sectionId) ?? docs[0]
   const activeSubSection = subSectionId
     ? activeSection?.subsections.find((ss) => ss.id === subSectionId)
+    : undefined
+  const activeSubSubSection = subSubSectionId
+    ? activeSubSection?.subsections?.find((sss) => sss.id === subSubSectionId)
     : undefined
 
   // Auto-close mobile drawer when route changes
@@ -92,21 +96,27 @@ export default function DocsPage() {
     }
   }, [sectionId, subSectionId, activeSection, navigate])
 
-  const currentDisplayTitle = activeSubSection
-    ? activeSubSection.title
-    : (activeSection?.title ?? 'Documentación')
+  const currentDisplayTitle = activeSubSubSection
+    ? activeSubSubSection.title
+    : activeSubSection
+      ? activeSubSection.title
+      : (activeSection?.title ?? 'Documentación')
 
-  const docTitle = activeSubSection
-    ? `${activeSubSection.title} — ${activeSection?.title ?? 'Playbook'}`
-    : `${activeSection?.title ?? 'Documentación'} — Playbook`
+  const docTitle = activeSubSubSection
+    ? `${activeSubSubSection.title} — ${activeSubSection?.title ?? ''} — ${activeSection?.title ?? 'Playbook'}`
+    : activeSubSection
+      ? `${activeSubSection.title} — ${activeSection?.title ?? 'Playbook'}`
+      : `${activeSection?.title ?? 'Documentación'} — Playbook`
 
-  const firstParagraph = activeSubSection?.blocks?.find(
+  const activeTarget = activeSubSubSection ?? activeSubSection
+
+  const firstParagraph = activeTarget?.blocks?.find(
     (b) => b.type === 'paragraph' && 'text' in b
   ) as { text?: string } | undefined
 
   const rawDescription =
     firstParagraph?.text ||
-    activeSubSection?.content ||
+    activeTarget?.content ||
     activeSection?.overview ||
     'Documentación prescriptiva del playbook de ciberseguridad e infraestructura Lilium.'
 
@@ -145,6 +155,15 @@ export default function DocsPage() {
       position: 4,
       name: activeSubSection.title,
       item: `https://lilium-playbook.com/docs/${activeSection.id}/${activeSubSection.id}`,
+    })
+  }
+
+  if (activeSubSubSection && activeSubSection && activeSection) {
+    breadcrumbsList.push({
+      '@type': 'ListItem',
+      position: 5,
+      name: activeSubSubSection.title,
+      item: `https://lilium-playbook.com/docs/${activeSection.id}/${activeSubSection.id}/${activeSubSubSection.id}`,
     })
   }
 
@@ -216,10 +235,15 @@ export default function DocsPage() {
         sections={docs}
         activeSectionId={activeSection?.id}
         activeSubSectionId={activeSubSection?.id}
+        activeSubSubSectionId={activeSubSubSection?.id}
         isOpen={isMobileOpen}
         onClose={() => setIsMobileOpen(false)}
       />
-      <DocsContent section={activeSection} subSection={activeSubSection} />
+      <DocsContent
+        section={activeSection}
+        subSection={activeSubSection}
+        subSubSection={activeSubSubSection}
+      />
     </div>
   )
 }

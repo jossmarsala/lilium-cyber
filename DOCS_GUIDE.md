@@ -263,6 +263,38 @@ Reusable action button to navigate readers to the next (or previous) subindex or
 
 ---
 
+### 10. Responsive Image (`"image"`)
+
+Responsive, rounded-border image or screenshot rendered via [DocsImage.tsx](file:///Users/jossmarsala/Documents/cyber-range/src/components/DocsImage.tsx). Features built-in zoomable lightbox, caption support, lazy loading, and fallback handling.
+
+Can be authored in Markdown as `<DocsImage ... />` or standard `![alt](url "caption")`:
+
+- **`src`**: Image source URL or path (e.g. `"/images/docs/example.png"` or remote URL).
+- **`alt`**: _(Optional)_ Accessible alternative text description.
+- **`caption`**: _(Optional)_ Muted label displayed underneath the image.
+- **`title`**: _(Optional)_ Window/tab title in the top frame bar.
+- **`rounded`**: _(Optional)_ `"sm"` | `"md"` | `"lg"` | `"xl"` (default: `"xl"`).
+- **`zoomable`**: _(Optional)_ `true` (default) to enable click-to-expand lightbox modal.
+
+```markdown
+<DocsImage
+  src="https://www.wireshark.org/docs/wsug_html_chunked/images/ws-main.png"
+  alt="Interfaz principal de Wireshark"
+  caption="Ventana principal de Wireshark con sus tres paneles sincronizados."
+/>
+```
+
+```json
+{
+  "type": "image",
+  "src": "https://www.wireshark.org/docs/wsug_html_chunked/images/ws-main.png",
+  "alt": "Interfaz principal de Wireshark",
+  "caption": "Ventana principal de Wireshark con sus tres paneles sincronizados."
+}
+```
+
+---
+
 ## 4. Sidebar & Icon Configuration
 
 Icons are resolved automatically in [src/utils/docIcons.ts](file:///Users/jossmarsala/Documents/cyber-range/src/utils/docIcons.ts). You can assign icons using two methods:
@@ -306,6 +338,7 @@ import {
   DocsGroupRow,
   DocsTable,
   CodeBlock,
+  DocsImage,
   DocsNextButton,
   DocsPagination,
   DocsSubindexCard,
@@ -354,6 +387,7 @@ export function MyCustomGuide() {
 ## 6. Writing in Markdown (`docs/*.md` Compiler)
 
 Instead of hand-writing JSON, you can author all your documentation in standard Markdown inside individual modular files in `docs/`:
+
 - `docs/00-introduccion.md` (Introduction)
 - `docs/01-comprender.md` (Module 1 — Comprender / Layer 1)
 - `docs/02-descubrir.md` (Module 2 — Descubrir / Layer 2)

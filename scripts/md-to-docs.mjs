@@ -126,26 +126,58 @@ export function parseMarkdownToBlocks(markdown) {
         i++
       }
 
+      // Check whether steps are demarcated by markdown headings (### ...)
+      const hasHeadingSteps = stepLines.some((l) => /^#{1,4}\s+/.test(l.trim()))
+
+      const isStepHeader = (lineTrim) => {
+        if (lineTrim.startsWith('```')) return false
+        if (hasHeadingSteps) {
+          return /^#{1,4}\s+(.+)$/.test(lineTrim)
+        }
+        return /^(\d+\.|\d+\))\s+(.+)$/.test(lineTrim)
+      }
+
+      const parseStepHeader = (lineTrim) => {
+        const match = hasHeadingSteps
+          ? lineTrim.match(/^#{1,4}\s+(.+)$/)
+          : lineTrim.match(/^(\d+\.|\d+\))\s+(.+)$/)
+        if (!match) return null
+        let title = match[1].trim()
+        let completed = false
+        if (title.startsWith('[x] ') || title.startsWith('[X] ')) {
+          completed = true
+          title = title.slice(4).trim()
+        }
+        return { title, completed }
+      }
+
       const stepItems = []
       let currentStep = null
-      let descLines = []
-      let bulletLines = []
-      let inBullets = false
+      let elements = []
 
       const commitCurrentStep = () => {
         if (currentStep && currentStep.title) {
-          if (descLines.length > 0) {
-            currentStep.description = descLines.join(' ').trim()
+          currentStep.elements = elements
+          // Backwards-compatibility fallbacks
+          const firstCode = elements.find((e) => e.type === 'code')
+          if (firstCode) {
+            currentStep.code = {
+              lang: firstCode.lang,
+              content: firstCode.content,
+            }
           }
-          if (bulletLines.length > 0) {
-            currentStep.bullets = bulletLines
+          const allParas = elements.filter((e) => e.type === 'paragraph').map((e) => e.text)
+          if (allParas.length > 0) {
+            currentStep.description = allParas.join(' ')
+          }
+          const firstBullets = elements.find((e) => e.type === 'list' && !e.ordered)
+          if (firstBullets) {
+            currentStep.bullets = firstBullets.items
           }
           stepItems.push(currentStep)
         }
         currentStep = null
-        descLines = []
-        bulletLines = []
-        inBullets = false
+        elements = []
       }
 
       let sIdx = 0
@@ -153,20 +185,37 @@ export function parseMarkdownToBlocks(markdown) {
         const sLine = stepLines[sIdx]
         const sTrim = sLine.trim()
 
-        const stepHeaderMatch = sTrim.match(/^(?:#{1,4}|\d+\.)\s+(.+)$/)
-        if (stepHeaderMatch && !sTrim.startsWith('```')) {
-          commitCurrentStep()
-          let title = stepHeaderMatch[1].trim()
-          let completed = false
-          if (title.startsWith('[x] ') || title.startsWith('[X] ')) {
-            completed = true
-            title = title.slice(4).trim()
-          }
-          currentStep = { title, ...(completed ? { completed: true } : {}) }
+        if (!sTrim) {
           sIdx++
           continue
         }
 
+        // Step heading
+        if (isStepHeader(sTrim)) {
+          commitCurrentStep()
+          const parsed = parseStepHeader(sTrim)
+          currentStep = {
+            title: parsed.title,
+            ...(parsed.completed ? { completed: true } : {}),
+          }
+          sIdx++
+          continue
+        }
+
+        if (!currentStep) {
+          sIdx++
+          continue
+        }
+
+        // Expected outcome pill
+        const outcomeMatch = sTrim.match(/^(?:>\s*)?(?:outcome|result):\s*(.+)$/i)
+        if (outcomeMatch) {
+          currentStep.outcome = outcomeMatch[1].trim()
+          sIdx++
+          continue
+        }
+
+        // Code block inside step
         if (sTrim.startsWith('```')) {
           const lang = sTrim.slice(3).trim() || 'shell'
           sIdx++
@@ -178,49 +227,142 @@ export function parseMarkdownToBlocks(markdown) {
           if (sIdx < stepLines.length && stepLines[sIdx].trim().startsWith('```')) {
             sIdx++
           }
-          if (currentStep) {
-            currentStep.code = {
-              lang,
-              content: codeContent.join('\n'),
+          elements.push({
+            type: 'code',
+            lang,
+            content: codeContent.join('\n'),
+          })
+          continue
+        }
+
+        // Numbered list item inside step: 1. Item or 1) Item
+        const numMatch = sTrim.match(/^(\d+\.|\d+\))\s+(.+)$/)
+        if (numMatch) {
+          const items = []
+          const startNum = parseInt(numMatch[1], 10) || 1
+          while (sIdx < stepLines.length) {
+            const rawLine = stepLines[sIdx]
+            const curTrim = rawLine.trim()
+
+            if (!curTrim) {
+              let nextIdx = sIdx + 1
+              while (nextIdx < stepLines.length && !stepLines[nextIdx].trim()) {
+                nextIdx++
+              }
+              if (
+                nextIdx < stepLines.length &&
+                !isStepHeader(stepLines[nextIdx].trim()) &&
+                stepLines[nextIdx].trim().match(/^(\d+\.|\d+\))\s+/)
+              ) {
+                sIdx = nextIdx
+                continue
+              }
+              break
+            }
+
+            const nMatch = curTrim.match(/^(\d+\.|\d+\))\s+(.+)$/)
+            if (nMatch) {
+              let itemText = nMatch[2].trim()
+              sIdx++
+              while (
+                sIdx < stepLines.length &&
+                stepLines[sIdx].trim() &&
+                (stepLines[sIdx].startsWith('  ') || stepLines[sIdx].startsWith('\t')) &&
+                !stepLines[sIdx].trim().match(/^[-*]\s+/) &&
+                !stepLines[sIdx].trim().match(/^(\d+\.|\d+\))\s+/) &&
+                !stepLines[sIdx].trim().startsWith('```') &&
+                !isStepHeader(stepLines[sIdx].trim())
+              ) {
+                itemText += ' ' + stepLines[sIdx].trim()
+                sIdx++
+              }
+              items.push(itemText)
+            } else {
+              break
             }
           }
-          inBullets = false
+          elements.push({
+            type: 'list',
+            ordered: true,
+            items,
+            start: startNum,
+          })
           continue
         }
 
-        const outcomeMatch = sTrim.match(/^(?:>\s*)?(?:outcome|result):\s*(.+)$/i)
-        if (outcomeMatch && currentStep) {
-          currentStep.outcome = outcomeMatch[1].trim()
-          sIdx++
-          continue
-        }
-
-        // Bullet list item inside a step
+        // Bullet list item inside step: - Item or * Item
         const bulletMatch = sTrim.match(/^[-*]\s+(.+)$/)
-        if (bulletMatch && currentStep) {
-          inBullets = true
-          bulletLines.push(bulletMatch[1].trim())
-          sIdx++
+        if (bulletMatch) {
+          const items = []
+          while (sIdx < stepLines.length) {
+            const rawLine = stepLines[sIdx]
+            const curTrim = rawLine.trim()
+
+            if (!curTrim) {
+              let nextIdx = sIdx + 1
+              while (nextIdx < stepLines.length && !stepLines[nextIdx].trim()) {
+                nextIdx++
+              }
+              if (
+                nextIdx < stepLines.length &&
+                !isStepHeader(stepLines[nextIdx].trim()) &&
+                stepLines[nextIdx].trim().match(/^[-*]\s+/)
+              ) {
+                sIdx = nextIdx
+                continue
+              }
+              break
+            }
+
+            const bMatch = curTrim.match(/^[-*]\s+(.+)$/)
+            if (bMatch) {
+              let itemText = bMatch[1].trim()
+              sIdx++
+              while (
+                sIdx < stepLines.length &&
+                stepLines[sIdx].trim() &&
+                (stepLines[sIdx].startsWith('  ') || stepLines[sIdx].startsWith('\t')) &&
+                !stepLines[sIdx].trim().match(/^[-*]\s+/) &&
+                !stepLines[sIdx].trim().match(/^(\d+\.|\d+\))\s+/) &&
+                !stepLines[sIdx].trim().startsWith('```') &&
+                !isStepHeader(stepLines[sIdx].trim())
+              ) {
+                itemText += ' ' + stepLines[sIdx].trim()
+                sIdx++
+              }
+              items.push(itemText)
+            } else {
+              break
+            }
+          }
+          elements.push({
+            type: 'list',
+            ordered: false,
+            items,
+          })
           continue
         }
 
-        // Continuation line for a bullet (indented)
-        if (
-          inBullets &&
-          (sLine.startsWith('  ') || sLine.startsWith('\t')) &&
-          sTrim &&
-          currentStep
+        // Regular paragraph inside step
+        const paraLines = []
+        while (
+          sIdx < stepLines.length &&
+          stepLines[sIdx].trim() &&
+          !isStepHeader(stepLines[sIdx].trim()) &&
+          !stepLines[sIdx].trim().startsWith('```') &&
+          !stepLines[sIdx].trim().match(/^(?:>\s*)?(?:outcome|result):\s*(.+)$/i) &&
+          !stepLines[sIdx].trim().match(/^[-*]\s+/) &&
+          !stepLines[sIdx].trim().match(/^(\d+\.|\d+\))\s+/)
         ) {
-          bulletLines[bulletLines.length - 1] += ' ' + sTrim
+          paraLines.push(stepLines[sIdx].trim())
           sIdx++
-          continue
         }
-
-        if (sTrim && currentStep) {
-          inBullets = false
-          descLines.push(sTrim)
+        if (paraLines.length > 0) {
+          elements.push({
+            type: 'paragraph',
+            text: paraLines.join(' ').trim(),
+          })
         }
-        sIdx++
       }
       commitCurrentStep()
 
@@ -351,6 +493,88 @@ export function parseMarkdownToBlocks(markdown) {
         ...(hasHoverAttr ? { hover: true } : {}),
         ...(hasNoHoverAttr ? { noHover: true } : {}),
       })
+      continue
+    }
+
+    // ── 3f. Custom container / JSX component: <DocsImage ... /> or :::image ──
+    if (
+      trimmed.startsWith('<DocsImage') ||
+      trimmed.startsWith('<DocImage') ||
+      trimmed.startsWith('<Image') ||
+      trimmed.startsWith(':::image') ||
+      trimmed.startsWith(':::figure')
+    ) {
+      let tagStr = ''
+      if (
+        trimmed.startsWith('<DocsImage') ||
+        trimmed.startsWith('<DocImage') ||
+        trimmed.startsWith('<Image')
+      ) {
+        while (i < lines.length) {
+          tagStr += ' ' + lines[i]
+          if (
+            lines[i].includes('/>') ||
+            lines[i].includes('</DocsImage>') ||
+            lines[i].includes('</DocImage>') ||
+            lines[i].includes('</Image>')
+          ) {
+            i++
+            break
+          }
+          i++
+        }
+      } else {
+        const dLine = lines[i]
+        i++
+        while (i < lines.length && !lines[i].trim().startsWith(':::')) {
+          i++
+        }
+        if (i < lines.length && lines[i].trim().startsWith(':::')) {
+          i++
+        }
+        tagStr = dLine
+      }
+
+      const attrs = parseDirectiveAttrs(tagStr)
+      blocks.push({
+        type: 'image',
+        src: attrs.src || attrs.url || '',
+        ...(attrs.fallbackSrc || attrs.fallback
+          ? { fallbackSrc: attrs.fallbackSrc || attrs.fallback }
+          : {}),
+        ...(attrs.alt ? { alt: attrs.alt } : {}),
+        ...(attrs.caption ? { caption: attrs.caption } : {}),
+        ...(attrs.title ? { title: attrs.title } : {}),
+        ...(attrs.width ? { width: attrs.width } : {}),
+        ...(attrs.maxHeight || attrs.height ? { maxHeight: attrs.maxHeight || attrs.height } : {}),
+        ...(attrs.aspectRatio ? { aspectRatio: attrs.aspectRatio } : {}),
+        ...(attrs.rounded ? { rounded: attrs.rounded } : {}),
+        ...(attrs.border !== undefined ? { border: attrs.border !== 'false' } : {}),
+        ...(attrs.shadow !== undefined ? { shadow: attrs.shadow !== 'false' } : {}),
+        ...(attrs.zoomable !== undefined ? { zoomable: attrs.zoomable !== 'false' } : {}),
+        ...(attrs.objectFit ? { objectFit: attrs.objectFit } : {}),
+      })
+      continue
+    }
+
+    // ── 3g. Markdown image syntax: ![alt](url "optional caption") ──
+    const mdImgMatch = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/)
+    if (mdImgMatch) {
+      const alt = mdImgMatch[1].trim()
+      let rest = mdImgMatch[2].trim()
+      let caption = undefined
+      const titleMatch = rest.match(/\s+['"]([^'"]*)['"]$/)
+      if (titleMatch) {
+        caption = titleMatch[1].trim()
+        rest = rest.slice(0, titleMatch.index).trim()
+      }
+      blocks.push({
+        type: 'image',
+        src: rest,
+        ...(alt ? { alt } : {}),
+        ...(caption ? { caption } : {}),
+      })
+      i++
       continue
     }
 
@@ -848,18 +1072,46 @@ export function parseMarkdownToSections(markdown) {
 
   let currentSection = null
   let currentSubSection = null
+  let currentSubSubSection = null
   let sectionOverviewLines = []
   let subSectionMarkdownLines = []
+  let subSectionOverviewLines = []
+  let subSubSectionMarkdownLines = []
+
+  const commitSubSubSection = () => {
+    if (currentSubSubSection && currentSubSection) {
+      const rawMd = subSubSectionMarkdownLines.join('\n').trim()
+      if (rawMd) {
+        currentSubSubSection.blocks = parseMarkdownToBlocks(rawMd)
+      }
+      if (!currentSubSection.subsections) {
+        currentSubSection.subsections = []
+      }
+      currentSubSection.subsections.push(currentSubSubSection)
+      currentSubSubSection = null
+      subSubSectionMarkdownLines = []
+    }
+  }
 
   const commitSubSection = () => {
+    commitSubSubSection()
     if (currentSubSection && currentSection) {
-      const rawMd = subSectionMarkdownLines.join('\n').trim()
-      if (rawMd) {
-        currentSubSection.blocks = parseMarkdownToBlocks(rawMd)
+      if (currentSubSection.subsections && currentSubSection.subsections.length > 0) {
+        const overviewText = subSectionOverviewLines.join('\n').trim()
+        if (overviewText) {
+          currentSubSection.overview = overviewText
+          currentSubSection.blocks = parseMarkdownToBlocks(overviewText)
+        }
+      } else {
+        const rawMd = subSectionMarkdownLines.join('\n').trim()
+        if (rawMd) {
+          currentSubSection.blocks = parseMarkdownToBlocks(rawMd)
+        }
       }
       currentSection.subsections.push(currentSubSection)
       currentSubSection = null
       subSectionMarkdownLines = []
+      subSectionOverviewLines = []
     }
   }
 
@@ -929,8 +1181,36 @@ export function parseMarkdownToSections(markdown) {
       continue
     }
 
-    if (currentSubSection) {
+    // Sub-subsection: `### 5.2.1. Enfoques <!-- id: ... -->`
+    const isSubSubSectionHeader =
+      trimmed.startsWith('### ') &&
+      (trimmed.includes('id:') || trimmed.includes('icon:')) &&
+      currentSubSection
+
+    if (isSubSubSectionHeader) {
+      commitSubSubSection()
+
+      const rawTitle = trimmed.slice(4).trim()
+      const { cleanTitle, meta } = extractHeadingMetadata(rawTitle)
+      const id = meta.id || slugify(cleanTitle)
+      const isSubSubHidden = meta.hidden === 'true' || meta.hidden === true
+
+      currentSubSubSection = {
+        id,
+        title: cleanTitle,
+        ...(meta.displayTitle ? { displayTitle: meta.displayTitle } : {}),
+        ...(meta.description ? { description: meta.description } : {}),
+        ...(meta.icon ? { icon: meta.icon } : {}),
+        ...(isSubSubHidden ? { hidden: true } : {}),
+      }
+      continue
+    }
+
+    if (currentSubSubSection) {
+      subSubSectionMarkdownLines.push(line)
+    } else if (currentSubSection) {
       subSectionMarkdownLines.push(line)
+      subSectionOverviewLines.push(line)
     } else if (currentSection) {
       sectionOverviewLines.push(line)
     }
@@ -1019,11 +1299,20 @@ function runCLI() {
   fs.mkdirSync(path.dirname(fullOutputPath), { recursive: true })
   fs.writeFileSync(fullOutputPath, JSON.stringify(sections, null, 2), 'utf8')
 
-  console.log(`✅ Successfully compiled ${sections.length} documentation sections from ${filesToProcess.length} file(s):`)
+  console.log(
+    `✅ Successfully compiled ${sections.length} documentation sections from ${filesToProcess.length} file(s):`
+  )
   for (const s of sections) {
     console.log(`   📂 ${s.title} (${s.id}) -> ${s.subsections.length} subsections`)
     for (const sub of s.subsections) {
       console.log(`      📄 ${sub.title} (${sub.id}) [${sub.blocks?.length || 0} blocks]`)
+      if (sub.subsections) {
+        for (const subsub of sub.subsections) {
+          console.log(
+            `         🔹 ${subsub.title} (${subsub.id}) [${subsub.blocks?.length || 0} blocks]`
+          )
+        }
+      }
     }
   }
   console.log(`\n🎉 Written to: ${path.relative(ROOT_DIR, fullOutputPath)}`)

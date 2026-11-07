@@ -26,9 +26,10 @@ export default function AppRouter() {
           <Route index element={<HomePage />} />
           <Route path="labs" element={<LabsPage />} />
           <Route path="docs" element={<DocsPage />}>
-            {/* Nested: /docs/:sectionId/:subSectionId? */}
+            {/* Nested: /docs/:sectionId/:subSectionId?/:subSubSectionId? */}
             <Route path=":sectionId" element={<DocsPage />} />
             <Route path=":sectionId/:subSectionId" element={<DocsPage />} />
+            <Route path=":sectionId/:subSectionId/:subSubSectionId" element={<DocsPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Route>

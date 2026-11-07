@@ -150,6 +150,40 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.bulletText strong {
+  font-weight: 650;
+  color: #111111;
+}
+
+/* ── Numbered list inside a step ── */
+.numberedList {
+  list-style: none;
+  margin: 0.25rem 0 0.75rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.numberedItem {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
+
+.orderNumber {
+  font-family: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #111111;
+  min-width: 1.35rem;
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+
 /* ── Code block inside a step (legacy fallback) ── */
 .codeBlock {
   border-radius: var(--radius-sm);

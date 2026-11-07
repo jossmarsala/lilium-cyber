@@ -11,6 +11,11 @@ import docsJson from './docs.json'
 export type CalloutVariant = 'note' | 'tip' | 'warning' | 'critical'
 export type BadgeKind = 'required' | 'optional' | 'default'
 
+export type StepElement =
+  | { type: 'paragraph'; text: string }
+  | { type: 'code'; lang?: string; content: string }
+  | { type: 'list'; ordered?: boolean; items: string[]; start?: number }
+
 export interface StepItem {
   title: string
   description?: string
@@ -21,6 +26,7 @@ export interface StepItem {
   }
   outcome?: string
   completed?: boolean
+  elements?: StepElement[]
 }
 
 export interface GroupRowItem {
@@ -71,6 +77,22 @@ export type DocBlock =
       hover?: boolean
       noHover?: boolean
     }
+  | {
+      type: 'image'
+      src: string
+      fallbackSrc?: string
+      alt?: string
+      caption?: string
+      title?: string
+      rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
+      width?: string | number
+      maxHeight?: string | number
+      aspectRatio?: string
+      border?: boolean
+      shadow?: boolean
+      zoomable?: boolean
+      objectFit?: 'contain' | 'cover' | 'fill' | 'none'
+    }
 
 export interface DocSubSection {
   id: string
@@ -81,6 +103,7 @@ export interface DocSubSection {
   content?: string
   blocks?: DocBlock[]
   hidden?: boolean
+  subsections?: DocSubSection[]
 }
 
 export interface DocSection {

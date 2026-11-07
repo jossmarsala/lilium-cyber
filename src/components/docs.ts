@@ -19,7 +19,7 @@ export { default as DocsCallout } from './DocsCallout'
 export type { CalloutVariant } from './DocsCallout'
 
 export { DocsSteps, DocsStep } from './DocsSteps'
-export type { StepCode } from './DocsSteps'
+export type { StepCode, StepElement } from './DocsSteps'
 
 export { DocsList, DocsListItem, DocsGroup, DocsGroupRow } from './DocsList'
 
@@ -44,3 +44,6 @@ export type {
   DiagramaNodeProps,
   DiagramaGridType,
 } from './Diagrama'
+
+export { default as DocsImage } from './DocsImage'
+export type { DocsImageProps } from './DocsImage'

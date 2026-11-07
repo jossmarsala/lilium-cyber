@@ -2,9 +2,10 @@ import type { DocSection, DocSubSection } from '@/data/docs'
 import defaultDocs from '@/data/docs'
 
 export interface DocNavItem {
-  type: 'section' | 'subsection'
+  type: 'section' | 'subsection' | 'sub-subsection'
   sectionId: string
   subSectionId?: string
+  subSubSectionId?: string
   title: string
   sectionTitle: string
   icon?: string
@@ -13,7 +14,7 @@ export interface DocNavItem {
 
 /**
  * Flattens the hierarchical documentation structure into a linear reading order:
- * Section Overview -> SubSection 1 -> SubSection 2 -> Next Section Overview -> ...
+ * Section Overview -> SubSection 1 -> Sub-subsections -> SubSection 2 -> ...
  */
 export function flattenDocs(sections: DocSection[] = defaultDocs): DocNavItem[] {
   const items: DocNavItem[] = []
@@ -49,6 +50,23 @@ export function flattenDocs(sections: DocSection[] = defaultDocs): DocNavItem[] 
         icon: sub.icon,
         path: `/docs/${section.id}/${sub.id}`,
       })
+
+      // Sub-subsections
+      if (sub.subsections && sub.subsections.length > 0) {
+        for (const subsub of sub.subsections) {
+          if (subsub.hidden) continue
+          items.push({
+            type: 'sub-subsection',
+            sectionId: section.id,
+            subSectionId: sub.id,
+            subSubSectionId: subsub.id,
+            title: subsub.title,
+            sectionTitle: sub.title,
+            icon: subsub.icon,
+            path: `/docs/${section.id}/${sub.id}/${subsub.id}`,
+          })
+        }
+      }
     }
   }
 
@@ -56,12 +74,13 @@ export function flattenDocs(sections: DocSection[] = defaultDocs): DocNavItem[] 
 }
 
 /**
- * Returns previous, next, and current navigation items for the given section & subsection.
+ * Returns previous, next, and current navigation items for the given section, subsection & sub-subsection.
  */
 export function getDocNavigation(
   sections: DocSection[] = defaultDocs,
   currentSectionId?: string,
-  currentSubSectionId?: string
+  currentSubSectionId?: string,
+  currentSubSubSectionId?: string
 ): {
   prev: DocNavItem | null
   next: DocNavItem | null
@@ -71,8 +90,19 @@ export function getDocNavigation(
   const flat = flattenDocs(sections)
 
   const currentIndex = flat.findIndex((item) => {
+    if (currentSubSubSectionId) {
+      return (
+        item.sectionId === currentSectionId &&
+        item.subSectionId === currentSubSectionId &&
+        item.subSubSectionId === currentSubSubSectionId
+      )
+    }
     if (currentSubSectionId) {
-      return item.sectionId === currentSectionId && item.subSectionId === currentSubSectionId
+      return (
+        item.sectionId === currentSectionId &&
+        item.subSectionId === currentSubSectionId &&
+        !item.subSubSectionId
+      )
     }
     return item.sectionId === currentSectionId && !item.subSectionId
   })

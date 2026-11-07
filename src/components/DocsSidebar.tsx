@@ -19,6 +19,7 @@ interface Props {
   sections: DocSection[]
   activeSectionId?: string
   activeSubSectionId?: string
+  activeSubSubSectionId?: string
   isOpen?: boolean
   onClose?: () => void
 }
@@ -37,8 +38,9 @@ function truncateTitle(title: string, limit = SUBSECTION_CHAR_LIMIT): string {
  * Map the app's DocSection[] into the shape BranchedMenu expects.
  *
  * Routing values:
- *   - subsection leaf  → "<sectionId>/<subSectionId>"
- *   - section-only     → "<sectionId>"  (no children case)
+ *   - sub-subsection leaf → "<sectionId>/<subSectionId>/<subSubSectionId>"
+ *   - subsection leaf     → "<sectionId>/<subSectionId>"
+ *   - section-only        → "<sectionId>"  (no children case)
  */
 function toMenuItems(sections: DocSection[]): BranchedMenuItem[] {
   return sections.map((section) => {
@@ -47,9 +49,7 @@ function toMenuItems(sections: DocSection[]): BranchedMenuItem[] {
         section.id === '00-introduccion' ||
         (section.subsections.length === 1 && (!section.blocks || section.blocks.length === 0))
 
-      const redirectTo = isSingleSub
-        ? `${section.id}/${section.subsections[0].id}`
-        : undefined
+      const redirectTo = isSingleSub ? `${section.id}/${section.subsections[0].id}` : undefined
 
       return {
         label: section.title,
@@ -58,10 +58,20 @@ function toMenuItems(sections: DocSection[]): BranchedMenuItem[] {
         children: section.subsections.map((sub) => {
           const icon = resolveDocIcon(sub.icon, sub.id)
 
+          const subChildren =
+            sub.subsections && sub.subsections.length > 0
+              ? sub.subsections.map((subsub) => ({
+                  value: `${section.id}/${sub.id}/${subsub.id}`,
+                  label: truncateTitle(subsub.title),
+                  icon: resolveDocIcon(subsub.icon, subsub.id),
+                }))
+              : undefined
+
           return {
             value: `${section.id}/${sub.id}`,
             label: truncateTitle(sub.title),
             icon,
+            children: subChildren,
           }
         }),
       }
@@ -79,6 +89,7 @@ export default function DocsSidebar({
   sections,
   activeSectionId,
   activeSubSectionId,
+  activeSubSubSectionId,
   isOpen = false,
   onClose,
 }: Props) {
@@ -118,12 +129,15 @@ export default function DocsSidebar({
 
   /**
    * The currently active value mirrors the routing value format:
-   *   - "<sectionId>/<subSectionId>" when a subsection is active
-   *   - "<sectionId>"                when only the section root is active
+   *   - "<sectionId>/<subSectionId>/<subSubSectionId>" when a sub-subsection is active
+   *   - "<sectionId>/<subSectionId>"                   when a subsection is active
+   *   - "<sectionId>"                                  when only the section root is active
    */
-  const defaultActive = activeSubSectionId
-    ? `${activeSectionId}/${activeSubSectionId}`
-    : (activeSectionId ?? '')
+  const defaultActive = activeSubSubSectionId
+    ? `${activeSectionId}/${activeSubSectionId}/${activeSubSubSectionId}`
+    : activeSubSectionId
+      ? `${activeSectionId}/${activeSubSectionId}`
+      : (activeSectionId ?? '')
 
   const handleSelect = (value: string) => {
     onClose?.()

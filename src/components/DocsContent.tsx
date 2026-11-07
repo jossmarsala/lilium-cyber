@@ -36,12 +36,14 @@ import DocsNextButton from './DocsNextButton'
 import DocsPagination from './DocsPagination'
 import DocsSubindexCard from './DocsSubindexCard'
 import Diagrama from './Diagrama'
+import DocsImage from './DocsImage'
 import Footer from './Footer'
 import { renderInline } from '@/utils/renderInline'
 
 interface Props {
   section?: DocSection
   subSection?: DocSubSection
+  subSubSection?: DocSubSection
 }
 
 /* ── Body parser for plain-text / Markdown fallback ── */
@@ -191,6 +193,7 @@ function renderBlock(block: DocBlock, index: number, section?: DocSection): Reac
               code={step.code}
               outcome={step.outcome}
               completed={step.completed}
+              elements={step.elements}
             >
               {step.description ? renderInline(step.description, sIdx) : null}
             </DocsStep>
@@ -311,16 +314,36 @@ function renderBlock(block: DocBlock, index: number, section?: DocSection): Reac
         />
       )
 
+    case 'image':
+      return (
+        <DocsImage
+          key={index}
+          src={block.src}
+          fallbackSrc={block.fallbackSrc}
+          alt={block.alt}
+          caption={block.caption ? renderInline(block.caption, `img-cap-${index}`) : undefined}
+          title={block.title}
+          rounded={block.rounded}
+          width={block.width}
+          maxHeight={block.maxHeight}
+          aspectRatio={block.aspectRatio}
+          border={block.border}
+          shadow={block.shadow}
+          zoomable={block.zoomable}
+          objectFit={block.objectFit}
+        />
+      )
+
     default:
       return null
   }
 }
 
-export default function DocsContent({ section, subSection }: Props) {
+export default function DocsContent({ section, subSection, subSubSection }: Props) {
   const articleRef = useRef<HTMLElement>(null)
   const rafRef = useRef<number | null>(null)
 
-  const isSubIndex = Boolean(subSection)
+  const isSubIndex = Boolean(subSection || subSubSection)
 
   const emitProgress = useCallback(
     (overrideScrollTop?: number) => {
@@ -365,7 +388,7 @@ export default function DocsContent({ section, subSection }: Props) {
     }, 60)
 
     return () => clearTimeout(timer)
-  }, [section?.id, subSection?.id, emitProgress])
+  }, [section?.id, subSection?.id, subSubSection?.id, emitProgress])
 
   // Recalculate on window resize
   useEffect(() => {
@@ -406,11 +429,15 @@ export default function DocsContent({ section, subSection }: Props) {
     )
   }
 
-  const title = subSection ? subSection.title : section.title
-  const target = subSection ?? section
+  const title = subSubSection ? subSubSection.title : subSection ? subSection.title : section.title
+  const target = subSubSection ?? subSection ?? section
 
   const hasBlocks = target.blocks && target.blocks.length > 0
-  const fallbackText = subSection ? subSection.content : section.overview
+  const fallbackText = subSubSection
+    ? undefined
+    : subSection
+      ? subSection.content
+      : section.overview
 
   return (
     <article
@@ -422,7 +449,17 @@ export default function DocsContent({ section, subSection }: Props) {
       <div className={styles.inner}>
         <header className={styles.header}>
           <span className={styles.breadcrumb}>
-            {subSection ? (
+            {subSubSection && subSection ? (
+              <>
+                <Link to={`/docs/${section.id}`} className={styles.breadcrumbLink}>
+                  {section.title}
+                </Link>
+                <span className={styles.breadcrumbSeparator}> / </span>
+                <Link to={`/docs/${section.id}/${subSection.id}`} className={styles.breadcrumbLink}>
+                  {subSection.title}
+                </Link>
+              </>
+            ) : subSection ? (
               section.id === '00-introduccion' ||
               (section.subsections.length === 1 &&
                 (!section.blocks || section.blocks.length === 0)) ? (
@@ -450,6 +487,32 @@ export default function DocsContent({ section, subSection }: Props) {
             <p className={styles.empty}>No content yet.</p>
           )}
 
+          {/* Subsection overview → sub-subsections quick-nav cards */}
+          {subSection &&
+            !subSubSection &&
+            subSection.subsections &&
+            subSection.subsections.length > 0 &&
+            !target.blocks?.some((b) => b.type === 'subindex') && (
+              <div className={styles.subIndex}>
+                <div className={styles.subIndexHeader}>
+                  <h2 className={styles.subIndexHeading}>Subíndices de la sección</h2>
+                  <span className={styles.subIndexCount}>
+                    {subSection.subsections.length} subíndices
+                  </span>
+                </div>
+                <div className={styles.subIndexListStacked}>
+                  {subSection.subsections.map((subsub, idx) => (
+                    <DocsSubindexCard
+                      key={subsub.id}
+                      sectionId={`${section.id}/${subSection.id}`}
+                      subSection={subsub}
+                      index={idx + 1}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
           {/* Section overview → subsection quick-nav cards (rendered if not already present inline) */}
           {!subSection &&
             section.subsections.length > 0 &&
@@ -475,7 +538,11 @@ export default function DocsContent({ section, subSection }: Props) {
             )}
 
           {/* Bottom navigation buttons to go into the next / previous subindex */}
-          <DocsPagination sectionId={section.id} subSectionId={subSection?.id} />
+          <DocsPagination
+            sectionId={section.id}
+            subSectionId={subSection?.id}
+            subSubSectionId={subSubSection?.id}
+          />
         </div>
       </div>
 

@@ -147,13 +147,13 @@ Las amenazas a la seguridad pueden tener orígenes diversos, pero todas persigue
 
 Los incidentes no ocurren en el vacío; son perpetrados por entidades con objetivos, capacidades y recursos específicos. Conocer el perfil del atacante permite a las organizaciones ajustar sus defensas.
 
-| Tipo de actor | Descripción | Motivación principal |
-| :--- | :--- | :--- |
-| **Sindicatos criminales** | Grupos organizados que operan como empresas ilícitas. Utilizan ataques masivos o dirigidos para obtener dinero. | Beneficio económico (ej. extorsión mediante _ransomware_ o venta de datos). |
-| **Amenazas Internas (_Insiders_)** | Empleados, proveedores o excolaboradores que abusan de su acceso autorizado. Pueden actuar con intención o por negligencia. | Sabotaje, espionaje corporativo, corrupción o error humano accidental. |
-| **Amenaza Avanzada Persistente (APT)** | Procesos informáticos sigilosos realizados por terceros (frecuentemente actores estatales o patrocinados por Estados) con gran capacidad técnica. | Espionaje, robo de propiedad intelectual, sabotaje estratégico a infraestructuras críticas. |
-| **Hacktivistas** | Individuos o grupos que utilizan ataques cibernéticos para promover una agenda ideológica. | Protesta social, propaganda, búsqueda de notoriedad, difamación de marcas. |
-| _Clasificación de actores de amenazas y sus objetivos operativos._ | | |
+| Tipo de actor                                                      | Descripción                                                                                                                                       | Motivación principal                                                                        |
+| :----------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------ |
+| **Sindicatos criminales**                                          | Grupos organizados que operan como empresas ilícitas. Utilizan ataques masivos o dirigidos para obtener dinero.                                   | Beneficio económico (ej. extorsión mediante _ransomware_ o venta de datos).                 |
+| **Amenazas Internas (_Insiders_)**                                 | Empleados, proveedores o excolaboradores que abusan de su acceso autorizado. Pueden actuar con intención o por negligencia.                       | Sabotaje, espionaje corporativo, corrupción o error humano accidental.                      |
+| **Amenaza Avanzada Persistente (APT)**                             | Procesos informáticos sigilosos realizados por terceros (frecuentemente actores estatales o patrocinados por Estados) con gran capacidad técnica. | Espionaje, robo de propiedad intelectual, sabotaje estratégico a infraestructuras críticas. |
+| **Hacktivistas**                                                   | Individuos o grupos que utilizan ataques cibernéticos para promover una agenda ideológica.                                                        | Protesta social, propaganda, búsqueda de notoriedad, difamación de marcas.                  |
+| _Clasificación de actores de amenazas y sus objetivos operativos._ |                                                                                                                                                   |                                                                                             |
 
 ### Superficie de ataque y vectores de entrada
 
@@ -282,14 +282,14 @@ Construir la seguridad de una organización desde cero mediante prueba y error e
 
 A menudo, los términos asociados a la regulación y gestión de la seguridad se utilizan indistintamente, pero cumplen roles operativos muy distintos dentro de una organización:
 
-| Concepto | Definición técnica | Propósito práctico |
-| :--- | :--- | :--- |
-| **Framework (Marco de trabajo)** | Pautas utilizadas para crear planes que ayuden a mitigar el riesgo y organizar el ciclo de vida de la seguridad. | Proporcionar una estructura organizativa y un enfoque sistemático para gestionar qué proteger y cómo hacerlo. |
-| **Control de seguridad** | Medidas de protección (administrativas, técnicas o físicas) diseñadas para reducir ciertos riesgos específicos. | Reducir la probabilidad o el impacto de una amenaza concreta (ej. exigir autenticación multifactor). |
-| **Playbook (Manual de estrategias)** | Guías que proporcionan detalles sobre cualquier acción operativa de forma prescrita, independientemente de quién trabaje en el caso. | Traducir las políticas y los controles en pasos ejecutables para manejar incidentes antes, durante y después de que ocurran. |
-| **Estándar** | Conjunto de reglas, criterios y metodologías técnicas reconocidas por la industria. | Unificar la forma en que se implementan configuraciones o procesos para garantizar interoperabilidad y seguridad comprobada. |
-| **Normativa / Regulación** | Reglamentos internos y regulaciones externas de cumplimiento obligatorio (_compliance_). | Imponer obligaciones legales (con posibles multas o auditorías) sobre el procesamiento y protección de datos, como el RGPD. |
-| _Diferencias estructurales entre las herramientas de gobernanza y protección._ | | |
+| Concepto                                                                       | Definición técnica                                                                                                                   | Propósito práctico                                                                                                           |
+| :----------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| **Framework (Marco de trabajo)**                                               | Pautas utilizadas para crear planes que ayuden a mitigar el riesgo y organizar el ciclo de vida de la seguridad.                     | Proporcionar una estructura organizativa y un enfoque sistemático para gestionar qué proteger y cómo hacerlo.                |
+| **Control de seguridad**                                                       | Medidas de protección (administrativas, técnicas o físicas) diseñadas para reducir ciertos riesgos específicos.                      | Reducir la probabilidad o el impacto de una amenaza concreta (ej. exigir autenticación multifactor).                         |
+| **Playbook (Manual de estrategias)**                                           | Guías que proporcionan detalles sobre cualquier acción operativa de forma prescrita, independientemente de quién trabaje en el caso. | Traducir las políticas y los controles en pasos ejecutables para manejar incidentes antes, durante y después de que ocurran. |
+| **Estándar**                                                                   | Conjunto de reglas, criterios y metodologías técnicas reconocidas por la industria.                                                  | Unificar la forma en que se implementan configuraciones o procesos para garantizar interoperabilidad y seguridad comprobada. |
+| **Normativa / Regulación**                                                     | Reglamentos internos y regulaciones externas de cumplimiento obligatorio (_compliance_).                                             | Imponer obligaciones legales (con posibles multas o auditorías) sobre el procesamiento y protección de datos, como el RGPD.  |
+| _Diferencias estructurales entre las herramientas de gobernanza y protección._ |                                                                                                                                      |                                                                                                                              |
 
 > [!NOTE]
 > La adopción de marcos y controles puede ser una decisión estratégica (voluntaria) o una obligación legal (mandatoria), dependiendo de la industria y la ubicación de la organización.
@@ -551,7 +551,7 @@ En un entorno digital, la comunicación entre dispositivos puede organizarse med
 
 Un **_host_** es un dispositivo conectado a una red que puede enviar, recibir o procesar información mediante protocolos de comunicación. La comunicación puede desarrollarse dentro de una misma red local o entre redes diferentes. También puede ser síncrona, cuando las partes necesitan coordinarse temporalmente durante el intercambio (como hacer una llamada telefónica), o asíncrona, cuando los mensajes pueden enviarse y procesarse en momentos distintos (como enviar un correo electrónico).
 
-Para que dispositivos de distintos fabricantes y sistemas operativos puedan comunicarse, utilizan **protocolos**: Estos protocolos son conjuntos de reglas estandarizadas que dictan exactamente cómo se formatea, transmite y recibe la información en una red.
+Para que dispositivos de distintos fabricantes y sistemas operativos puedan comunicarse, utilizan **protocolos**: conjuntos de reglas estandarizadas que dictan exactamente cómo se formatea, transmite y recibe la información en una red.
 
 Durante el proceso de envío de datos, estos atraviesan un proceso llamado **encapsulación**. Se puede pensar como el envío de un paquete postal: el contenido se introduce en un sobre, luego, el sobre va dentro de un paquete de envío más grande con la dirección postal, y, después, el paquete se transporta por una serie de centros de distribución. Cada nueva capa o "caja" añade información de control indispensable para el viaje. En una red, cada capa de comunicación incorpora información necesaria para cumplir su función, como puertos de origen y destino, direcciones IP o direcciones de enlace.
 
@@ -589,40 +589,41 @@ Finalmente, la tarjeta de red (NIC) del dispositivo toma esa trama completa y la
 > [!NOTE]
 > **Una primera aproximación:** En esta representación se introducen conceptos técnicos como los protocolos IP, TCP y UDP, y los componentes de hardware involucrados en la comunicación. Todos ellos se profundizarán en los siguientes apartados. Por ahora, el objetivo es comprender de forma general cómo los datos se encapsulan, viajan a través de la red y se desencapsulan al llegar a su destino.
 
+Para ver este recorrido en acción, [Protocol Explorer](https://protocol-explorer-alpha.vercel.app) es una herramienta que permite comprender el funcionamiento de los principales protocolos de Internet mediante animaciones interactivas que representan el viaje de los paquetes de datos entre dispositivos y servidores — cubriendo los 14 protocolos centrales que hacen posible la comunicación en Internet.
+
 El rendimiento de una red se evalúa mediante distintos indicadores:
 
-- **Ancho de banda**: define la capacidad máxima teórica de datos que un enlace puede transportar en un segundo
+- **Ancho de banda**: define la capacidad máxima teórica de datos que un enlace puede transportar en un segundo.
 
 - **Rendimiento (_throughput_)**: cantidad de datos que se transmite efectivamente por unidad de tiempo. Puede verse afectado por la congestión, la sobrecarga de los protocolos y las condiciones del enlace.
 
-- **Latencia**: tiempo que tarda un paquete en viajar desde el origen hasta el destinos, mientras menos latencia, más rápida es una red. Puede medirse en un solo sentido o como tiempo de ida y vuelta (_round-trip time_, RTT).
+- **Latencia**: tiempo que tarda un paquete en viajar desde el origen hasta el destino; mientras menos latencia, más rápida es una red. Puede medirse en un solo sentido o como tiempo de ida y vuelta (_round-trip time_, RTT).
 
 - **Pérdida de paquetes**: proporción de paquetes que no llegan a destino. Puede provocar retransmisiones, interrupciones o degradación de las aplicaciones.
 
-Independientemente de si los sistemas operan en computadoras físicas, máquinas virtuales, contenedores o infraestructura en la nube, siguen utilizando protocolos y principios de comunicación comunes. Sin embargo, las interfaces virtuales, las redes superpuestas y los mecanismos de encapsulación adicionales pueden introducir capas y comportamientos específicos de
-cada entorno.
+Independientemente de si los sistemas operan en computadoras físicas, máquinas virtuales, contenedores o infraestructura en la nube, siguen utilizando protocolos y principios de comunicación comunes. Sin embargo, las interfaces virtuales, las redes superpuestas y los mecanismos de encapsulación adicionales pueden introducir capas y comportamientos específicos de cada entorno.
 
 ### Modelos de referencia: OSI y TCP/IP
 
 Para estudiar las redes informáticas, se utilizan modelos de referencia que dividen las funciones de comunicación en capas lógicas. Esta separación facilita comprender cómo cooperan los protocolos, diagnosticar fallos y determinar en qué parte de una comunicación puede estar un problema.
 
-El modelo de Interconexión de Sistemas Abiertos (**OSI**, por sus siglas en inglés), organiza las funciones de red en siete capas. El modelo **TCP/IP** (Protocolo de Control de Transmisión/Protocolo de Internet) representa la arquitectura de protocolos práctica en la que se basa Internet y condensa estas funciones en cuatro capas principales.
+El modelo de Interconexión de Sistemas Abiertos (**OSI**, por sus siglas en inglés) organiza las funciones de red en siete capas. El modelo **TCP/IP** (Protocolo de Control de Transmisión/Protocolo de Internet) representa la arquitectura de protocolos práctica en la que se basa Internet y condensa estas funciones en cuatro capas principales.
 
 > [!NOTE]
 > Aunque el modelo TCP/IP es el que se implementa en la práctica en los dispositivos modernos, los profesionales de ciberseguridad utilizan el modelo OSI como lenguaje común para aislar e identificar el origen de los problemas o las vulnerabilidades.
 
 La encapsulación, explicada anteriormente, es la que permite a estas capas trabajar en conjunto sin interferir entre sí. Cuando un usuario envía un dato, este desciende por las capas del modelo y cada capa añade su propia cabecera o control con instrucciones específicas. Luego el proceso se invierte.
 
-| Capa Modelo OSI | Capa Modelo TCP/IP | Función Principal e Información de Control | Ejemplos de Protocolos y Dispositivos | Ejemplos de Fallos Comunes |
-| :--- | :--- | :--- | :--- | :--- |
-| 7. Aplicación | Aplicación | Permite la interacción del usuario y proporciona servicios de red a las aplicaciones de software. | HTTP, HTTPS, DNS, SMTP. Navegadores web. | Un certificado TLS inválido o caducado que bloquea la conexión segura. |
-| 6. Presentación | Aplicación | Traduce, formatea, comprime y cifra los datos para que sean comprensibles por la aplicación receptora. | SSL/TLS, formatos como JPEG, ASCII. | Errores de codificación de caracteres o problemas en la negociación de algoritmos de cifrado. |
-| 5. Sesión | Aplicación | Establece, administra, sincroniza y finaliza las sesiones de comunicación entre aplicaciones. | NetBIOS, RPC, PPTP. | Desconexión abrupta o tiempo de espera de sesión agotado sin reconexión automática. |
-| 4. Transporte | Transporte | Segmenta los datos, controla el flujo y garantiza o no la entrega entre extremos mediante puertos lógicos. | TCP (confiable), UDP (rápido). | Un puerto de comunicación cerrado en el firewall del servidor. |
-| 3. Red | Internet | Enruta los paquetes entre redes distintas basándose en direcciones lógicas (Direcciones IP). | IPv4, IPv6, ICMP. Routers. | Una dirección IP incorrecta o una ruta no configurada hacia el destino. |
-| 2. Enlace de Datos | Acceso a la Red | Organiza los bits en tramas y controla el acceso al medio local usando direcciones físicas (MAC). | Ethernet, Wi-Fi (802.11). Switches, Tarjetas de red (NIC). | Conflicto o suplantación de direcciones MAC en la red local. |
-| 1. Física | Acceso a la Red | Transmite los bits en forma de señales eléctricas, ópticas o de radio a través del medio físico. | Cables de cobre, fibra óptica, ondas de radio. Hubs, Módems. | Un cable de red desenchufado, cortado o un puerto de red dañado. |
-| _Comparativa entre el modelo OSI, el modelo TCP/IP y sus características principales en la arquitectura de red._ | | | | |
+| Capa Modelo OSI                                                                                                  | Capa Modelo TCP/IP | Función Principal e Información de Control                                                                 | Ejemplos de Protocolos y Dispositivos                        | Ejemplos de Fallos Comunes                                                                    |
+| :--------------------------------------------------------------------------------------------------------------- | :----------------- | :--------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- | :-------------------------------------------------------------------------------------------- |
+| 7. Aplicación                                                                                                    | Aplicación         | Permite la interacción del usuario y proporciona servicios de red a las aplicaciones de software.          | HTTP, HTTPS, DNS, SMTP. Navegadores web.                     | Un certificado TLS inválido o caducado que bloquea la conexión segura.                        |
+| 6. Presentación                                                                                                  | Aplicación         | Traduce, formatea, comprime y cifra los datos para que sean comprensibles por la aplicación receptora.     | SSL/TLS, formatos como JPEG, ASCII.                          | Errores de codificación de caracteres o problemas en la negociación de algoritmos de cifrado. |
+| 5. Sesión                                                                                                        | Aplicación         | Establece, administra, sincroniza y finaliza las sesiones de comunicación entre aplicaciones.              | NetBIOS, RPC, PPTP.                                          | Desconexión abrupta o tiempo de espera de sesión agotado sin reconexión automática.           |
+| 4. Transporte                                                                                                    | Transporte         | Segmenta los datos, controla el flujo y garantiza o no la entrega entre extremos mediante puertos lógicos. | TCP (confiable), UDP (rápido).                               | Un puerto de comunicación cerrado en el firewall del servidor.                                |
+| 3. Red                                                                                                           | Internet           | Enruta los paquetes entre redes distintas basándose en direcciones lógicas (Direcciones IP).               | IPv4, IPv6, ICMP. Routers.                                   | Una dirección IP incorrecta o una ruta no configurada hacia el destino.                       |
+| 2. Enlace de Datos                                                                                               | Acceso a la Red    | Organiza los bits en tramas y controla el acceso al medio local usando direcciones físicas (MAC).          | Ethernet, Wi-Fi (802.11). Switches, Tarjetas de red (NIC).   | Conflicto o suplantación de direcciones MAC en la red local.                                  |
+| 1. Física                                                                                                        | Acceso a la Red    | Transmite los bits en forma de señales eléctricas, ópticas o de radio a través del medio físico.           | Cables de cobre, fibra óptica, ondas de radio. Hubs, Módems. | Un cable de red desenchufado, cortado o un puerto de red dañado.                              |
+| _Comparativa entre el modelo OSI, el modelo TCP/IP y sus características principales en la arquitectura de red._ |                    |                                                                                                            |                                                              |                                                                                               |
 
 ### Tipos de redes, topologías y componentes
 
@@ -643,17 +644,17 @@ Los datos en estas redes deben viajar a través de **medios de transmisión**, q
 
 El funcionamiento fluido de estas redes depende de una serie de dispositivos de hardware especializados:
 
-1. **Tarjeta de Interfaz de Red (NIC):** Es el componente de hardware es un componente de hardware que conecta una computadora o servidor a una red de datos (como Internet o una red local LAN).
+1. **Tarjeta de Interfaz de Red (NIC):** Componente de hardware que conecta una computadora o servidor a una red de datos (como Internet o una red local).
 
 2. **Switch (Conmutador):** El dispositivo que conecta múltiples equipos por cable dentro de una misma red local (LAN), enviando las tramas únicamente al dispositivo receptor específico mediante su dirección MAC.
 
-3. **Router (Enrutador):** Encargado de conecta una LAN (como la de una casa u oficina) con Internet y dirige el tráfico de datos entre los diferentes dispositivos, decidiendo la ruta más eficiente para enviar los paquetes de datos hacia su destino final basándose en direcciones IP. Un router doméstico puede integrar también otras funciones, como firewall, NAT y punto de acceso inalámbrico.
+3. **Router (Enrutador):** Conecta una LAN (como la de una casa u oficina) con Internet y dirige el tráfico de datos entre los diferentes dispositivos, decidiendo la ruta más eficiente para enviar los paquetes hacia su destino final basándose en direcciones IP. Un router doméstico puede integrar también otras funciones, como firewall, NAT y punto de acceso inalámbrico.
 
 4. **Punto de Acceso Inalámbrico (WAP):** Es la parte del hardware que permite que computadoras portátiles y teléfonos móviles se unan a la red local mediante señales Wi-Fi, sin necesidad de cables. Actúa como un puente entre la red cableada y los dispositivos inalámbricos.
 
 5. **Módem y ONT:** Son dispositivos que traducen las señales de la red del proveedor de servicios de Internet (ISP) a un formato que la red local puede entender, pero funcionan con tecnologías distintas: la ONT se usa exclusivamente en conexiones de fibra óptica para convertir los pulsos de luz en una señal eléctrica digital, mientras que el módem tradicional se conecta a líneas telefónicas (ADSL) o cable coaxial para modular y demodular señales analógicas. Hoy en día, los ISPs suelen entregar un único aparato que integra la ONT o el módem con el router.
 
-6. **Firewall (Cortafuegos):** Es un dispositivo de seguridad que monitorea y controla estrictamente el tráfico entrante y saliente. unciona como una barrera de control —similar a un guardián o portero— que decide qué información puede pasar y cuál debe bloquearse según reglas preestablecidas. para proteger la red de amenazas externas.
+6. **Firewall (Cortafuegos):** Dispositivo de seguridad que monitorea y controla estrictamente el tráfico entrante y saliente. Funciona como una barrera de control —similar a un guardián o portero— que decide qué información puede pasar y cuál debe bloquearse según reglas preestablecidas, para proteger la red de amenazas externas.
 
 ### Direccionamiento y comunicación dentro de una red
 
@@ -663,7 +664,7 @@ A nivel de enlace, las interfaces de red utilizan **direcciones MAC** (_Media Ac
 
 La MAC opera exclusivamente en la Capa 2 (Enlace de datos) y su alcance está estrictamente limitado a la red local; un dispositivo no puede usarla para comunicarse directamente a través de Internet porque los _routers_ no propagan esta información más allá de su segmento de red.
 
-Para habilitar la comunicación global y el enrutamiento entre redes diferentes, se emplea la dirección del **Protocolo de Internet (IP _adress_)**, la cual funciona como un identificador lógico (virtual) asignado al dispositivo. Actualmente conviven dos versiones de este protocolo:
+Para habilitar la comunicación global y el enrutamiento entre redes diferentes, se emplea la **dirección del Protocolo de Internet** (_IP address_), la cual funciona como un identificador lógico (virtual) asignado al dispositivo. Actualmente conviven dos versiones de este protocolo:
 
 - **IPv4**: utiliza direcciones de 32 bits representadas habitualmente en cuatro números decimales separados por puntos, como 192.168.1.10. La cantidad limitada de direcciones IPv4 disponibles impulsó el uso de mecanismos como NAT y la adopción de IPv6.
 
@@ -676,10 +677,10 @@ La dirección IP de un equipo puede cambiar con el tiempo y una misma máquina p
 Según la cantidad y el tipo de destinatarios, la comunicación puede clasificarse de la siguiente manera:
 
 - _Unicast_: Dirigido de un host a otro host específico. El paquete de datos lleva la dirección IP o MAC exacta del destinatario. Por ejemplo, enviar un mail o descargar un archivo.
-- _Multicast_: • Comunicación de uno a muchos (o de muchos a muchos) dirigida a un grupo específico de dispositivos que se han suscripto previamente para recibir esa información. El emisor envía un único paquete utilizando una dirección IP especial. Los routers y switches se encargan de replicar el tráfico únicamente hacia los nodos que pertenecen al grupo. Ejemplo: Salas de juegos en línea.
+- _Multicast_: Comunicación de uno a muchos (o de muchos a muchos) dirigida a un grupo específico de dispositivos que se han suscripto previamente para recibir esa información. El emisor envía un único paquete utilizando una dirección IP especial. Los routers y switches se encargan de replicar el tráfico únicamente hacia los nodos que pertenecen al grupo. Ejemplo: Salas de juegos en línea.
 - _Broadcast_: Dirigido desde un host hacia absolutamente todos los hosts presentes en la red local. El emisor envía el mensaje y todos los equipos de la red lo reciben y lo procesan, lo necesiten o no. En IPv4, 255.255.255.255 es la dirección de broadcast limitada. IPv6 no utiliza broadcast; utiliza multicast para funciones equivalentes cuando corresponde.
 
-Además, las direcciones IP pueden configurarse de forma **estática**, donde un administrador asigna los valores manualmente para que nunca cambien hasta volver a ser actualizados; O configurarse de forma **dinámica** mediante el protocolo DHCP (_Dynamic Host Configuration Protocol_), encargado de alquilar direcciones automáticamente a los dispositivos que se conectan, simplificando la administración.
+Además, las direcciones IP pueden configurarse de forma **estática**, donde un administrador asigna los valores manualmente para que nunca cambien hasta volver a ser actualizados; o configurarse de forma **dinámica** mediante el protocolo DHCP (_Dynamic Host Configuration Protocol_), encargado de alquilar direcciones automáticamente a los dispositivos que se conectan, simplificando la administración.
 
 :::steps
 
@@ -709,14 +710,15 @@ Cuando un dispositivo necesita enviar información, primero determina si la dire
 
 El _router_ recibe este paquete y consulta su tabla de enrutamiento, que es un mapa interno que contiene rutas estáticas (configuradas manualmente por el administrador) y rutas dinámicas (aprendidas automáticamente mediante protocolos de enrutamiento comunicándose con otros routers). Dado que los dispositivos de la red interna suelen usar direcciones IP privadas que no pueden navegar por Internet, el _router_ o el firewall aplican un proceso llamado **NAT (_Network Address Translation_)** o PAT (_Port Address Translation_). Este proceso intercepta el paquete, reemplaza la dirección IP privada de origen por la dirección IP pública del _router_, y lleva un registro interno para que, cuando regrese la respuesta, pueda traducir la dirección nuevamente y entregar el paquete al dispositivo interno correcto.
 
-### Diferencias entre IP, MAC, Puerto y Socket
+### Diferencias entre IP, MAC, Interfaz, Puerto y Socket
 
-Para que la comunicación en una red sea exitosa, los datos no solo deben llegar al dispositivo correcto, sino también a la aplicación exacta que los está esperando. Este proceso se gestiona mediante una combinación de direcciones, protocolos de transporte y conexiones lógicas.
+Para que la comunicación en una red sea exitosa, los datos no solo deben llegar al dispositivo correcto, sino también a la aplicación exacta que los está esperando. Este proceso se gestiona mediante una combinación de direcciones, interfaces, protocolos de transporte y conexiones lógicas.
 
 Para comprender el enrutamiento de la información, es útil pensar en la red como un sistema postal:
 
 - **Dirección IP:** Como vimos antes, identifica de forma única la ubicación lógica de un dispositivo en una red (como la dirección de un edificio). Puede cambiar y no identifica de forma permanente a un dispositivo.
 - **Dirección MAC:** Es el identificador físico único asignado de fábrica a la tarjeta de red (NIC) del dispositivo para su identificación a nivel local. Funciona como la huella digital del hardware.
+- **Interfaz de red:** Una interfaz de red es el punto de conexión —físico o virtual— que permite a un dispositivo (como una computadora o un servidor) comunicarse con una red informática.
 - **Puerto:** Es un punto virtual que organiza la transmisión y permite a los protocolos dirigir los datos al programa o servicio correcto dentro del dispositivo (como el número de departamento dentro del edificio).
 - **Socket**: Es un punto de conexión virtual que permite que dos programas o computadoras hablen entre sí a través de una red o internet (por ejemplo, cuando carga una página web). Funciona como una puerta con una dirección IP y un número de puerto.
 
@@ -749,9 +751,9 @@ UDP es un protocolo de transporte sin conexión. Envía datagramas sin establece
 
 El Protocolo de Mensajes de Control de Internet (**ICMP, _Internet Control Message Protocol_**) se utiliza en la capa de red para diagnosticar una red: compartir información de errores, actualizaciones de estado y probar la conectividad entre dispositivos. ICMPv6 cumple la misma función para redes IPv6, incorporando funciones adicionales de descubrimiento de vecinos.
 
-El comando `ping` utiliza normalmente mensajes ICMP Echo Request y Echo Reply para comprobar si un destino responde a ese tipo de solicitud y medir el tiempo de ida y vuelta. Ejemplo: Una computadora envía un paquete Echo Request hacia la dirección IP o dominio de destino (por ejemplo, ping google.com); Si el equipo de destino está encendido y permite este tráfico, recibe el paquete y devuelve otro paquete ICMP llamado Eco Reply. Luego, el comando mide el tiempo exacto que tarda el paquete en ir y volver (latencia) e indica si hubo pérdida de datos
+El comando `ping` utiliza normalmente mensajes ICMP Echo Request y Echo Reply para comprobar si un destino responde a ese tipo de solicitud y medir el tiempo de ida y vuelta. Ejemplo: una computadora envía un paquete Echo Request hacia la dirección IP o dominio de destino (por ejemplo, `ping google.com`); si el equipo de destino está encendido y permite este tráfico, recibe el paquete y devuelve otro paquete ICMP llamado Echo Reply. El comando mide el tiempo exacto que tarda el paquete en ir y volver (latencia) e indica si hubo pérdida de datos.
 
-Es útil imaginar a ICMP es como un camión de mantenimiento de carreteras: Su único trabajo es asegurarse de que las vías funcionen bien e informar si hay problemas. Por ejemplo, una computadora puede enviar un mensaje ICMP a un sitio web para ver si está activo y cuánto tarda en responder, o, si un paquete de datos no puede llegar a su destino porque un servidor se cayó, el router puede devolver un mensaje ICMP indicando "Destino inalcanzable".
+Es útil imaginar ICMP como un camión de mantenimiento de carreteras: su único trabajo es asegurarse de que las vías funcionen bien e informar si hay problemas. Por ejemplo, una computadora puede enviar un mensaje ICMP a un sitio web para ver si está activo y cuánto tarda en responder, o, si un paquete de datos no puede llegar a su destino porque un servidor se cayó, el router puede devolver un mensaje ICMP indicando "Destino inalcanzable".
 
 > [!WARNING]
 > Los atacantes pueden abusar de ICMP para realizar reconocimiento de red o ataques de denegación de servicio (DoS), como la "Inundación ICMP" o el "Ping de la muerte" (_Ping of Death_), que envían paquetes masivos o malformados para agotar el ancho de banda del servidor.
@@ -778,7 +780,7 @@ Un **servicio en escucha** (_listening service_) es un programa o proceso que se
 - **`127.0.0.1` (o `::1` en IPv6) — Interfaz de bucle local (_loopback_):** El servicio únicamente escucha solicitudes originadas dentro de la propia máquina local. Ningún dispositivo externo de la red ni de Internet puede alcanzar este puerto. Es ideal para bases de datos locales, colas internas o paneles administrativos que no deben exponerse al exterior.
 - **`0.0.0.0` (o `*` / `::` en IPv6) — Dirección comodín (_wildcard_):** Significa que el servicio está **escuchando en todas las interfaces de red del equipo simultáneamente** (hacia adentro y hacia afuera). Esto implica que el puerto está expuesto a cualquier dispositivo con conectividad hacia la máquina (en la red local, en la VPN o directamente en Internet si no hay un firewall intermedio o local que lo restrinja).
 
-Distinguir entre `127.0.0.1` y `0.0.0.0` al tirar comandos como `ss -tulpn` es vital para saber de inmediato qué servicio es solo interno y cuál está expuesto a toda la red como una potencial superficie de ataque.
+Distinguir entre `127.0.0.1` y `0.0.0.0` al ejecutar comandos como `ss -tulpn` es vital para saber de inmediato qué servicio es solo interno y cuál está expuesto a toda la red como una potencial superficie de ataque.
 
 Desde la perspectiva de una prueba de conectividad (escaneo de red), un puerto puede presentar tres estados:
 
@@ -787,7 +789,7 @@ Desde la perspectiva de una prueba de conectividad (escaneo de red), un puerto p
 3. **Filtrado:** Las sondas de red no pueden alcanzar el puerto, generalmente porque un _firewall_ o regla de red está bloqueando el tráfico e impidiendo determinar si está abierto o cerrado.
 
 > [!CRITICAL]
-> Cada servicio expuesto (puerto abierto) en una red puede convertirse un vector de entrada si contiene vulnerabilidades. Deshabilitar servicios innecesarios, limitar las interfaces en las que escuchan y restringir quién puede conectarse a ciertos puertos son buenas prácticas para reducir la superficie de ataque.
+> Cada servicio expuesto (puerto abierto) en una red puede convertirse en un vector de entrada si contiene vulnerabilidades. Deshabilitar servicios innecesarios, limitar las interfaces en las que escuchan y restringir quién puede conectarse a ciertos puertos son buenas prácticas para reducir la superficie de ataque.
 
 ### DNS (Sistema de Nombres de Dominio)
 
@@ -800,7 +802,7 @@ El proceso de **resolución de nombres** depende de un trabajo en equipo entre d
 - **Consultas recursivas vs. iterativas:** En una consulta recursiva, el equipo le pide una IP al servidor DNS local y le delega la responsabilidad ("busca la respuesta final o devuélveme un error"). Para cumplir con esto, ese servidor local realiza consultas iterativas: va preguntando paso a paso a diferentes servidores en la jerarquía de internet, saltando de uno a otro hasta dar con la IP correcta.
 - **Servidores Autoritativos vs. Recursivos:** Tienen roles complementarios. Los recursivos (usualmente provistos por el ISP o la red local) actúan como intermediarios o "investigadores" que hacen el trabajo de búsqueda DNS. Los **autoritativos**, en cambio, son la fuente oficial: guardan la verdad absoluta y final sobre la configuración de un dominio específico, y sólo se llega a ellos como recurso final cuando una consulta no pudo ser respondida por el servidor recursivo.
 
-Además de ¨traducir¨ nombres web a direcciones IP, DNS utiliza el mismo flujo para tomar el tráfico que llega a un nombre único y lo redirige dinámicamente hacia los servidores especializados (de correo, de aplicaciones, de bases de datos, etc.) según lo que el cliente esté solicitando. Para ello, utiliza distintos **tipos de registros**:
+Además de traducir nombres web a direcciones IP, DNS utiliza el mismo flujo para tomar el tráfico que llega a un nombre único y lo redirige dinámicamente hacia los servidores especializados (de correo, de aplicaciones, de bases de datos, etc.) según lo que el cliente esté solicitando. Para ello, utiliza distintos **tipos de registros**:
 
 - **A:** Asocia un dominio con una dirección **IPv4**.
 - **AAAA:** Asocia un dominio con una dirección **IPv6**.
@@ -821,8 +823,6 @@ DHCPv4 utiliza el puerto UDP 67 en el servidor y UDP 68 en el cliente. Las direc
 
 Si bien DHCP automatiza la administración, también es un vector de ataque crítico. La amenaza principal es el despliegue de un servidor DHCP no autorizado (_Rogue DHCP_). El atacante puede entregar parámetros alterados (como un DNS o puerta de enlace maliciosa) para redirigir e interceptar el tráfico de los usuarios. Para mitigarlo, se debe implementar **_DHCP Snooping_** en los switches para admitir respuestas DHCP solo desde puertos confiables.
 
-Acá tenés la versión mejorada. Mantuve la misma estructura y el formato, pero le inyecté un poco más de contexto técnico y de ciberseguridad para que explique no solo _qué_ hace cada protocolo, sino _por qué_ es tan crítico en la vida real de una infraestructura.
-
 ### Protocolos NTP, SNMP, Syslog y Directorios
 
 - **NTP (Network Time Protocol):** Sincroniza los relojes de todos los dispositivos de la infraestructura. Una estricta precisión temporal no solo es indispensable para correlacionar _logs_ en un SIEM y trazar la línea de tiempo exacta de un ataque, sino que es un requisito técnico: protocolos de seguridad como Kerberos (usado en Windows) o la validación de certificados TLS fallan automáticamente y bloquean accesos si los relojes se encuentran desfasados.
@@ -830,7 +830,8 @@ Acá tenés la versión mejorada. Mantuve la misma estructura y el formato, pero
 - **Syslog:** Actúa como el sistema nervioso del monitoreo. Permite a múltiples dispositivos enviar continuamente registros de eventos (_logs_) hacia un servidor central. En lugar de auditar máquina por máquina, Syslog consolida la información en un solo lugar para que las herramientas de análisis la procesen y detecten amenazas en tiempo real.
 - **Directorios de red (LDAP / Active Directory):** Funcionan como el mapa central de una organización, almacenando cuentas de usuarios, dispositivos, grupos y políticas de permisos. **LDAP** es el protocolo de red utilizado para consultar, leer y modificar esa información. **Active Directory (AD)**, por su parte, es el ecosistema de Microsoft que agrupa LDAP para organizar la estructura, DNS para que los equipos se encuentren entre sí, y Kerberos para la autenticación segura.
 
-> Es crucial entender la diferencia operativa en la gestión de accesos (IAM): La **gestión de identidades** define quiénes son los usuarios y qué atributos tienen en el directorio (LDAP/AD); la **autenticación** verifica que el usuario es quien dice ser (validando credenciales); y la **autorización** determina a qué recursos específicos tiene permiso de acceder una vez validado.
+> [!NOTE]
+> Es crucial entender la diferencia operativa en la gestión de accesos (IAM): la **gestión de identidades** define quiénes son los usuarios y qué atributos tienen en el directorio (LDAP/AD); la **autenticación** verifica que el usuario es quien dice ser (validando credenciales); y la **autorización** determina a qué recursos específicos tiene permiso de acceder una vez validado.
 
 Estos servicios no operan de forma aislada; forman una cadena de dependencias críticas. Si el servidor DNS se cae, la red queda a ciegas y los equipos no pueden localizar el Active Directory. Si un servidor DHCP fraudulento reparte parámetros maliciosos, el tráfico interno es secuestrado. Si el NTP pierde sincronización, los procesos de autenticación fallan y se destruye la trazabilidad forense de los _logs_. Proteger la integridad de la infraestructura de redes es el paso cero en cualquier arquitectura de seguridad.
 
@@ -840,14 +841,14 @@ Comprender los protocolos de aplicación permite identificar cómo interactúan 
 
 ### Navegación web y comunicación con aplicaciones
 
-| Protocolo | Función | Puertos | Consideraciones de Seguridad |
-| :--- | :--- | :--- | :--- |
-| **HTTP** | Permite la comunicación entre navegadores web y servidores mediante solicitudes (GET, POST) y códigos de estado (200, 404, 500). | TCP 80 | Transmite toda la información en texto plano sin cifrar. Considerado inherentemente inseguro para datos sensibles como contraseñas. |
+| Protocolo | Función                                                                                                                                                                         | Puertos | Consideraciones de Seguridad                                                                                                                                                                                      |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **HTTP**  | Permite la comunicación entre navegadores web y servidores mediante solicitudes (GET, POST) y códigos de estado (200, 404, 500).                                                | TCP 80  | Transmite toda la información en texto plano sin cifrar. Considerado inherentemente inseguro para datos sensibles como contraseñas.                                                                               |
 | **HTTPS** | Protege los datos para evitar que sean interceptados por terceros durante la transmisión. Es la versión segura de HTTP, transportado sobre una conexión protegida mediante TLS. | TCP 443 | Protege la comunicación mediante cifrado y mecanismos de integridad, y permite autenticar el servidor mediante certificados. Aunque no garantiza que la aplicación sea segura ni que el usuario esté autenticado. |
 
-**TLS** (_Transport Layer Security_) es el estándar actual de cifrado para proteger la integridad y confidencialidad en tránsito. SSL es su predecesor histórico yus versiones están obsoletas y contienen vulnerabilidades; Su uso debe estar prohibido en configuraciones modernas.
+**TLS** (_Transport Layer Security_) es el estándar actual de cifrado para proteger la integridad y confidencialidad en tránsito. SSL es su predecesor histórico y sus versiones están obsoletas y contienen vulnerabilidades; su uso debe estar prohibido en configuraciones modernas.
 
-HTTPS utiliza certificados digitales TLS para autenticar el nombre del servidor y establecer parámetros criptográficos. En el uso habitual de la web pública, el cliente verifica la cadena de certificados contra autoridades certificantes (_Certificate Authorities_, CA) de confianza. Esto garantiza que sitio es legítimo y no una suplantación, y que los datos transmitidos no han sido alterados en el camino.
+HTTPS utiliza certificados digitales TLS para autenticar el nombre del servidor y establecer parámetros criptográficos. En el uso habitual de la web pública, el cliente verifica la cadena de certificados contra autoridades certificantes (_Certificate Authorities_, CA) de confianza. Esto garantiza que el sitio es legítimo y no una suplantación, y que los datos transmitidos no han sido alterados en el camino.
 
 Existen diferentes niveles de certificados TLS:
 
@@ -879,7 +880,7 @@ El acceso remoto administrativo es el mecanismo que permite gestionar sistemas s
 
 - **FTP (File Transfer Protocol) y FTPS:** Permite transferir archivos. En el modo activo tradicional suele utilizar TCP 21 para el canal de control y TCP 20 para el canal de datos; en modo pasivo, el canal de datos utiliza puertos negociados. FTP no cifra por sí mismo las credenciales ni el contenido. **FTPS** es FTP protegido mediante cifrado TLS.
 
-- **SFTP** (_SSH File Transfer Protocol_): Permite transfierir archivos de forma segura operando a través de una conexión SSH (puerto TCP 22).
+- **SFTP** (_SSH File Transfer Protocol_): Permite transferir archivos de forma segura operando a través de una conexión SSH (puerto TCP 22).
 
 - **SMB y NFS:** Son protocolos utilizados para compartir archivos y recursos en red. SMB (_Server Message Block_) es común en entornos Windows y suele utilizar TCP 445. NFS (_Network File System_) es el equivalente en sistemas Unix/Linux y puede utilizar distintos servicios y puertos según la versión. Ambos deben limitarse a los segmentos y usuarios que realmente los necesitan. La exposición innecesaria de servicios de compartición a Internet aumenta significativamente el riesgo; el incidente de _ransomware WannaCry_ es un ejemplo histórico de ello.
 
@@ -912,7 +913,7 @@ Estas herramientas son muy útiles para examinar aspectos como el establecimient
 
 ### Segmentación en arquitectura de red
 
-La arquitectura de red define cómo se conectan los sistemas, cómo circula el tráfico y qué controles limitan la comunicación entre ellos. En una red plana, los dispositivos comparten un mismo segmento o dominio de comunicación amplio y, según la configuración, pueden tener conectividad directa con muchos otros sistemas Este modelo es altamente vulnerable para una empresa: si un atacante compromete un equipo, podría acceder sin restricciones a otros dipositivos y propagar el incidente.
+La arquitectura de red define cómo se conectan los sistemas, cómo circula el tráfico y qué controles limitan la comunicación entre ellos. En una red plana, los dispositivos comparten un mismo segmento o dominio de comunicación amplio y, según la configuración, pueden tener conectividad directa con muchos otros sistemas. Este modelo es altamente vulnerable para una empresa: si un atacante compromete un equipo, podría acceder sin restricciones a otros dispositivos y propagar el incidente.
 
 Para resolver este problema, se implementa la **segmentación**, que consiste en dividir una red en zonas o segmentos con límites de comunicación definidos. Su objetivo es reducir la exposición innecesaria, limitar el movimiento lateral y aplicar controles adecuados a cada tipo de recurso. Y no basta sólo con crear segmentos: es necesario definir y verificar las reglas que determinan qué tráfico puede atravesarlos.
 
@@ -933,7 +934,7 @@ Una zona de seguridad es un segmento o conjunto de recursos que comparte requisi
 El tráfico dentro y entre estas zonas se clasifica por su dirección:
 
 - **Tráfico norte-sur (_north-south_)**: entra o sale de un entorno definido, por ejemplo, entre la red corporativa e Internet.
-- **Tráfico este-oeste (_east-west_)**: circula entre sistemas o segmentos dentro de ese entorno, por ejemplo, entre un servidor web y uno de bases de dato en la misma empresa.
+- **Tráfico este-oeste (_east-west_)**: circula entre sistemas o segmentos dentro de ese entorno, por ejemplo, entre un servidor web y uno de bases de datos en la misma empresa.
 
 Para controlar estos flujos, se emplean **Listas de Control de Acceso (ACL)** y _**firewalls**_. Una ACL permite o deniega tráfico según criterios definidos por la tecnología que la implementa, como direcciones IP, protocolos y puertos. Un firewall puede incorporar funciones adicionales, como seguimiento de estado, inspección de aplicaciones o integración con identidades.
 
@@ -1304,6 +1305,30 @@ file muestra_sospechosa.txt
 
 :::
 
+#### Variables en Linux y Entorno ($USER, $HOME, etc.)
+
+Una **variable** almacena datos dinámicos en memoria. Se define con `NOMBRE="valor"` (sin espacios alrededor del `=`) y su valor se recupera anteponiendo el signo `$`, que actúa como **operador de expansión** (la shell reemplaza la variable por su contenido antes de ejecutar la orden):
+
+```bash:terminal
+# Crear una variable local y consultar su valor con expansión ($)
+IP="192.168.1.50"
+echo "Conectando a: $IP"
+
+# Exportar una variable para que esté disponible en programas hijos y scripts
+export ENTORNO="laboratorio"
+```
+
+El sistema operativo incluye variables de entorno predefinidas clave:
+- **`$USER`:** Nombre de la cuenta conectada actualmente (ej. `estudiante` o `root`).
+- **`$HOME`:** Ruta absoluta al directorio personal del usuario (ej. `/home/estudiante`).
+- **`$PATH`:** Directorios donde la terminal busca binarios para ejecutar comandos por su nombre.
+- **`$PWD`:** Ruta de la carpeta de trabajo actual.
+
+> [!TIP:¿Por qué los tutoriales y comandos usan $USER y $HOME?]
+> En guías y comandos como `sudo usermod -aG wireshark $USER` o `cp archivo $HOME/`, **no debes reemplazar `$USER` por tu nombre**: escríbelo tal cual. La shell sustituye automáticamente `$USER` por tu usuario conectado en ese instante. Los autores lo usan como comodín dinámico para que el comando sea **universal y portátil**, funcionando en cualquier equipo y usuario sin necesidad de editarlo.
+> 
+> *Comillas:* Con comillas dobles (`"Hola $USER"`) el valor se expande; con comillas simples (`'Hola $USER'`) se interpreta como texto literal.
+
 #### Editores de Texto en la Terminal
 
 Al configurar servidores o modificar políticas de acceso, es habitual trabajar a través de conexiones de texto sin entorno gráfico. Conocer editores de terminal resulta imprescindible:
@@ -1391,6 +1416,28 @@ sha256sum instalador.iso
 #### Introducción a la Automatización con Scripts
 
 Cuando una serie de instrucciones operativas o de diagnóstico debe ejecutarse con frecuencia sobre múltiples máquinas, no es necesario escribirlas manualmente una y otra vez en la consola. Linux permite agrupar comandos secuenciales dentro de archivos de texto estructurados denominados **scripts** (generalmente utilizando el lenguaje propio de la shell, como Bash, o lenguajes versátiles como Python). De esta manera, tareas como la verificación periódica de espacio en disco, la rotación de bitácoras o la recolección inicial de telemetría ante una sospecha pueden ejecutarse de forma automática, uniforme y sin errores humanos.
+
+El uso de **variables de entorno y variables locales** resulta crucial en la creación de scripts, ya que les otorga portabilidad para funcionar en cualquier máquina sin requerir ajustes manuales:
+
+```bash:terminal
+#!/bin/bash
+# Script de diagnóstico y recolección rápida de telemetría
+FECHA=$(date +%Y-%m-%d_%H-%M)
+REPORTE="$HOME/auditoria_${USER}_${FECHA}.log"
+
+echo "=== Telemetría del Sistema: $HOSTNAME ===" > "$REPORTE"
+echo "Ejecutado por: $USER (UID: $UID)" >> "$REPORTE"
+echo "Directorio de trabajo: $PWD" >> "$REPORTE"
+echo "Shell activa: $SHELL" >> "$REPORTE"
+echo "Espacio en disco actual:" >> "$REPORTE"
+df -h >> "$REPORTE"
+
+echo "Reporte generado con éxito en: $REPORTE"
+```
+
+- **`$HOME` y `$USER`:** Aseguran que el archivo de reporte se guarde siempre en la carpeta personal de quien ejecute el script (`/home/maria/...` o `/root/...`), sin importar la distribución ni el usuario.
+- **`$(date ...)` (Sustitución de comandos):** Ejecuta la orden `date` y asigna su salida textual a la variable `FECHA`, demostrando cómo las variables almacenan datos dinámicos generados en tiempo real.
+- **Comillas dobles en `"$REPORTE"`:** Protegen la ruta frente a posibles espacios en blanco en nombres de carpetas, evitando errores de sintaxis en el intérprete.
 
 ### Usuarios, Permisos y Privilegios en Linux
 
