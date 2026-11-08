@@ -23,7 +23,7 @@ Este módulo está dirigido a quienes ya comprenden los controles preventivos de
 title="Índice del módulo"
 :::
 
-## 5.1. Básicos de Visibilidad <!-- id: fundamentos-visibilidad-logs, icon: CommandLineIcon -->
+## 5.1. Básicos de Visibilidad <!-- id: fundamentos-visibilidad-logs, icon: CommandLineIcon, description: Introducción a la etapa de detección: Qué logs generar, cómo proteger su integridad y auditar la infraestructura respetando la privacidad. -->
 
 Implementar controles de seguridad reduce drásticamente la superficie de exposición de una empresa, pero ninguna barrera preventiva es infalible. Cuando un atacante logra saltear un control inicial —por ejemplo, empleando las credenciales válidas de un empleado obtenidas mediante ingeniería social—, la diferencia entre un incidente contenido a tiempo y una catástrofe operativa reside en una única capacidad: la visibilidad. En la mayoría de las pequeñas empresas, los servidores y estaciones de trabajo operan a ciegas; no registran qué ocurre en su interior o sobrescriben sus historiales cada pocos días, permitiendo que un intruso explore la red durante semanas sin que nadie note su presencia.
 
@@ -1637,34 +1637,37 @@ Montar un clúster de varios servidores dedicados para correr un SIEM empresaria
 | **Nivel Avanzado (CIS IG3)**<br><br>_(Organización con operación continua o datos críticos regulados)_  | Incorporar detección estadística de anomalías (`UEBA` / `ML`), ajuste continuo de umbrales y correlación cruzada de alta fidelidad.                         | Con las reglas deterministas ya estables y depuradas, habilitar los módulos de detección de anomalías / `UEBA` sobre los índices de autenticación y transferencia de datos para detectar exfiltraciones silenciosas y desviaciones de horario o volumen.                                                                                                                                                                                                             |
 | _Hoja de ruta progresiva para centralizar registros y adoptar correlación y análisis de comportamiento_ |                                                                                                                                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
-### 5.4.1. Centralización en práctica <!-- id: siem-correlacion-practica, icon: ToolsIcon, displayTitle: 05.4.1 — Práctica: Centralización y Reglas de Correlación, description: Tutorial para centralizar eventos y probar reglas de correlación con Wazuh SIEM. -->
+### 5.4.1. Centralización en práctica <!-- id: siem-correlacion-practica, icon: ToolsIcon, displayTitle: 05.4.1 — Práctica: Centralización y Reglas de Correlación, description: Tutorial para centralizar eventos, aprovechar las reglas nativas de Wazuh y ajustar detecciones sin escribir XML desde cero. -->
 
-En esta subsección aprenderás a llevar a la práctica los dos pilares de la detección centralizada:
+En esta subsección aprenderás a llevar a la práctica la centralización de registros y la aplicación inteligente de reglas de detección. En lugar de escribir reglas complejas en XML desde cero, aprenderás el flujo real de trabajo: **descubrir las miles de reglas que Wazuh incluye de fábrica, ajustar sus umbrales a las necesidades de tu red y silenciar falsos positivos.**
 
-1. **Centralización (De local a remoto):** Cómo hacer que los registros de auditoría salgan automáticamente del equipo donde se originan y viajen hacia el SIEM central, evitando que un atacante borre sus huellas.
-2. **Correlación determinista (De ruido a incidente real):** Cómo escribir y verificar una regla inteligente que detecte un ataque de fuerza bruta SSH (`MITRE ATT&CK T1110`), diferenciando un simple fallo de contraseña aislado de una intrusión activa en tiempo real.
-
-Para que la práctica sea 100% segura y realizable desde el primer minuto, utilizaremos la herramienta oficial integrada **`wazuh-logtest`**. Este simulador nativo de Wazuh permite probar decodificadores y reglas de correlación temporal de forma inmediata, sin necesidad de atacar servidores reales ni arriesgar infraestructura de producción.
+Para facilitar el aprendizaje sin exigir una instalación compleja, utilizaremos un contenedor ligero de Docker con la imagen oficial de `wazuh-manager`. Esto permite experimentar, probar decodificadores y validar reglas en cuestión de segundos en cualquier computadora personal con un consumo mínimo (<300 MB de RAM). Si ya cuentas con un servidor Linux con Wazuh Manager instalado, puedes realizar exactamente los mismos pasos ejecutando los comandos directamente en tu terminal sin el prefijo `docker exec`.
 
 :::steps
 
-### 1. El punto de partida: El registro local en el host
+### 1. Iniciar el entorno de laboratorio rápido (Docker para aprendizaje)
 
-En cualquier servidor Linux, cada intento de autenticación SSH genera una línea en el archivo de registro local `/var/log/auth.log` (o en el Visor de Eventos de Windows). Cuando un atacante intenta adivinar contraseñas, el servicio genera líneas crudas como esta:
+Descarga e inicia el motor de Wazuh Manager en segundo plano. Este contenedor incluye el catálogo completo de reglas oficiales y la herramienta de pruebas `wazuh-logtest`:
 
-```text:log-crudo
-Nov  7 14:20:10 srv-app sshd[1245]: Failed password for invalid user admin from 192.168.1.150 port 43120 ssh2
+```bash:terminal
+docker run -d --name wazuh-lab -p 1514:1514/tcp -p 514:514/udp wazuh/wazuh-manager:latest
 ```
 
-Si este registro permanece únicamente guardado en el disco del propio servidor (`srv-app`), un intruso que consiga acceder solo necesita ejecutar `cat /dev/null > /var/log/auth.log` para destruir la evidencia. Por eso, el primer paso indispensable es la centralización inmediata.
+Verifica que el servicio esté respondiendo abriendo el simulador de reglas interactivo:
 
-### 2. Centralizar el registro hacia el SIEM
+```bash:terminal
+docker exec -it wazuh-lab /var/ossec/bin/wazuh-logtest
+```
 
-Para centralizar eventos con el agente de Wazuh (`wazuh-agent`), basta con indicarle qué archivo debe vigilar y transmitir en tiempo real. En el equipo que deseas supervisar, añade la directiva `<localfile>` dentro de su archivo de configuración `/var/ossec/etc/ossec.conf`:
+Si ves en pantalla el mensaje `Type one log per line`, tu entorno de laboratorio está listo para recibir registros. Presiona `Ctrl + C` para salir por el momento.
+
+### 2. Centralizar registros desde el host hacia el SIEM
+
+Para que los eventos viajen desde los servidores monitoreados hacia el SIEM central en tiempo real, el agente de Wazuh (`wazuh-agent`) vigila los archivos de log locales mediante la directiva `<localfile>` dentro de su archivo `/var/ossec/etc/ossec.conf`:
 
 ```xml:/var/ossec/etc/ossec.conf
 <ossec_config>
-  <!-- Centralizacion continua de registros de autenticacion -->
+  <!-- Envio automatico de registros de autenticacion al servidor central -->
   <localfile>
     <log_format>syslog</log_format>
     <location>/var/log/auth.log</location>
@@ -1672,32 +1675,25 @@ Para centralizar eventos con el agente de Wazuh (`wazuh-agent`), basta con indic
 </ossec_config>
 ```
 
-Reinicia el servicio del agente para aplicar la directiva:
+Al reiniciar el agente (`sudo systemctl restart wazuh-agent`), cada intento de acceso en `/var/log/auth.log` se cifra y se reenvía de inmediato por el puerto `1514 TCP`. Aunque un atacante obtenga acceso de administrador y borre el archivo local con `cat /dev/null > /var/log/auth.log`, la evidencia ya está resguardada en el SIEM.
 
-```bash:terminal
-sudo systemctl restart wazuh-agent
-```
+### 3. Diagnosticar para rescubrir reglas oficiales
 
-**¿Qué logramos con esto?**
-El agente lee cada nueva línea en `/var/log/auth.log` en el milisegundo en que se escribe, la cifra y la envía por la red hacia el **Wazuh Manager** (puerto `1514 TCP`). Aunque el atacante apague o manipule el servidor local más tarde, la evidencia ya quedó resguardada de forma inalterable en el colector central.
+Imagina que un atacante intenta adivinar contraseñas SSH en tu servidor. El servicio genera una línea de registro como esta:
 
-### 3. Inspeccionar cómo el SIEM decodifica el evento
-
-Cuando el texto crudo llega al servidor central, el SIEM no puede trabajar con texto plano desordenado; necesita extraer los campos clave (Fase de Parsing y Normalización). Para comprobar cómo interpreta Wazuh este evento sin necesidad de enviar tráfico de red real, abrimos en el servidor central la herramienta oficial de prueba:s
-
-```bash:terminal
-sudo /var/ossec/bin/wazuh-logtest
-```
-
-Cuando aparezca el mensaje `Type one log per line`, pega la línea de registro que obtuvimos en el Paso 1:
-
-```text:entrada-logtest
+```text:log-crudo
 Nov  7 14:20:10 srv-app sshd[1245]: Failed password for invalid user admin from 192.168.1.150 port 43120 ssh2
 ```
 
-El simulador mostrará cómo el motor procesa el evento en tres fases automáticas:
+Antes de inventar una regla nueva, comprueba cómo responde Wazuh por defecto usando el simulador:
 
-```text:salida-logtest-fase1-2
+```bash:terminal
+docker exec -it wazuh-lab /var/ossec/bin/wazuh-logtest
+```
+
+Pega la línea de registro anterior y presiona Enter:
+
+```text:salida-logtest
 **Phase 1: Completed pre-decoding.
     program_name: 'sshd'
 
@@ -1710,34 +1706,42 @@ El simulador mostrará cómo el motor procesa el evento en tres fases automátic
     id: '5716'
     level: '5'
     description: 'SSHD authentication failed.'
+    groups: '["syslog","sshd","authentication_failed"]'
 ```
 
 **Diagnóstico:**
 
-- El SIEM extrajo con éxito el usuario destino (`dstuser: admin`) y la IP atacante (`srcip: 192.168.1.150`).
-- Activó la **regla base 5716** con nivel de severidad `5` (bajo).
-- Un único fallo aislado es común (un usuario legítimo puede equivocarse al escribir su clave). Por eso el SIEM no genera pánico. La solución es agregar **correlación temporal**.
+- Wazuh ya extrajo automáticamente el usuario atacado (`dstuser: admin`) y la dirección IP de origen (`srcip: 192.168.1.150`).
+- Activó la **regla oficial 5716** (severidad 5).
 
-### 4. Crear la Regla de Correlación temporal
-
-Definiremos una regla de correlación: si una misma dirección IP acumula 5 fallos de autenticación en menos de 60 segundos, el SIEM debe reconocer el patrón de fuerza bruta y disparar una alerta de severidad alta (nivel 10).
-
-Abre el archivo de reglas locales en el servidor central:
+Puedes comprobar dónde vive esta regla oficial ejecutando una búsqueda en el catálogo:
 
 ```bash:terminal
-sudo nano /var/ossec/etc/rules/local_rules.xml
+docker exec -it wazuh-lab grep -rn 'id="5716"' /var/ossec/ruleset/rules/
 ```
 
-Agrega el siguiente bloque de regla dentro de la sección `<group name="local,sshd,">`:
+Verás que pertenece a `/var/ossec/ruleset/rules/0095-sshd_rules.xml`. Wazuh cuenta con más de 3.500 reglas probadas por la comunidad. **Regla de oro:** nunca edites los archivos en `/var/ossec/ruleset/rules/` directamente, ya que las actualizaciones los sobrescribirán. Toda personalización se realiza en el archivo local de reglas.
+
+### 4. Ajustar reglas existentes con `overwrite="yes"` (La mejor práctica)
+
+Dentro de `0095-sshd_rules.xml`, Wazuh ya incluye la regla **`5712`** para detectar ataques de fuerza bruta SSH, pero por defecto exige 8 intentos en 120 segundos. Si en tu PyME deseas un umbral más estricto (por ejemplo, alertar tras 4 intentos en 60 segundos), **no debes crear una regla nueva desde cero**. Lo correcto es sobreescribir la regla oficial para mantener su compatibilidad y etiquetas MITRE ATT&CK.
+
+Abre el archivo de reglas locales:
+
+```bash:terminal
+docker exec -it wazuh-lab nano /var/ossec/etc/rules/local_rules.xml
+```
+
+Agrega el siguiente bloque dentro de la etiqueta `<group name="local,sshd,">`:
 
 ```xml:/var/ossec/etc/rules/local_rules.xml
 <group name="local,sshd,">
 
-  <!-- Regla de Correlacion: 5 fallos SSH en 60 segundos desde la misma IP -->
-  <rule id="100050" level="10" frequency="5" timeframe="60">
-    <if_matched_sid>5716</if_matched_sid>
+  <!-- Ajuste de la regla oficial 5712: umbral mas estricto para nuestra PyME -->
+  <rule id="5712" level="10" frequency="4" timeframe="60" overwrite="yes">
+    <if_matched_sid>5710</if_matched_sid>
     <same_source_ip />
-    <description>Ataque de fuerza bruta SSH detectado (5 fallos en menos de 60s desde la misma IP).</description>
+    <description>SSHD: Intento de fuerza bruta detectado (4 fallos en 60s desde la misma IP).</description>
     <mitre>
       <id>T1110</id>
     </mitre>
@@ -1746,50 +1750,103 @@ Agrega el siguiente bloque de regla dentro de la sección `<group name="local,ss
 </group>
 ```
 
-**¿Cómo funciona cada parámetro de la regla?**
+Con solo el atributo `overwrite="yes"`, reutilizas toda la lógica oficial de correlación y elevas la severidad al nivel 10 adaptada a tu entorno, sin tocar archivos del sistema.
 
-1. **`frequency="5"` y `timeframe="60"`:** Le ordenan al motor mantener un contador en memoria durante una ventana de 60 segundos.
-2. **`<if_matched_sid>5716</if_matched_sid>`:** Enlaza la regla base de fallo que vimos en el paso anterior.
-3. **`<same_source_ip />`:** Garantiza que los 5 intentos provengan de la **misma dirección IP**. Si cinco empleados diferentes fallan su clave una vez en toda la oficina, no habrá falsa alarma; si una sola IP falla 5 veces, la condición se cumple.
-4. **`level="10"` y `<mitre><id>T1110</id></mitre>`:** Eleva la alerta a severidad operativa alta y la etiqueta automáticamente bajo la técnica MITRE ATT&CK correspondiente.
+### 5. Silenciar ruido y falsos positivos con reglas de nivel 0 (`level="0"`)
 
-### 5. Probar y verificar la correlación
+En toda empresa existen fuentes que generan fallos legítimos (por ejemplo, un escáner de vulnerabilidades interno o un script de inventario en `192.168.1.50`). Si estas alertas suenan constantemente, el equipo desarrollará fatiga de alertas y terminará ignorando el SIEM.
 
-Inicia nuevamente el simulador para comprobar la correlación en acción:
+Para silenciar una IP de confianza sin apagar la detección para el resto de la red, se utiliza una regla de **nivel 0**:
 
-```bash:terminal
-sudo /var/ossec/bin/wazuh-logtest
+```xml:/var/ossec/etc/rules/local_rules.xml
+<group name="local,sshd,">
+
+  <!-- Silenciar alertas legitimas provocadas por el escaner de seguridad interno -->
+  <rule id="100002" level="0">
+    <if_sid>5716</if_sid>
+    <srcip>192.168.1.50</srcip>
+    <description>Falso positivo: Ignorar intentos SSH fallidos desde la IP del escaner de TI.</description>
+  </rule>
+
+</group>
 ```
 
-Pega la misma línea de fallo SSH **4 veces consecutivas**:
+Cuando un evento tiene nivel 0, Wazuh lo descarta silenciosamente: no genera alarmas sonoras ni llena la base de datos de alertas. Si cualquier otra dirección IP falla su contraseña, la regla base `5716` y la de fuerza bruta `5712` seguirán funcionando normalmente.
+
+### 6. Aplicar reglas comunitarias de la industria (De Sigma a Wazuh)
+
+Como vimos en la introducción a Sigma, los centros de ciberdefensa publican miles de reglas abiertas en formato YAML. En lugar de traducirlas manualmente a XML, puedes convertirlas de forma automática con la herramienta `sigma-cli`:
+
+```bash:terminal
+# Convierte una regla comunitaria Sigma directamente a una regla lista para Wazuh
+sigma convert -t wazuh -p wazuh regla_deteccion.yml -o /var/ossec/etc/rules/sigma_rules.xml
+```
+
+Este comando genera la regla XML exacta con sus condiciones de búsqueda y categorías MITRE sin necesidad de escribir código a mano, permitiéndote incorporar inteligencia contra amenazas recién descubiertas en minutos.
+
+### 7. Validar sintaxis y recargar el servicio con seguridad
+
+Antes de aplicar cualquier cambio en un entorno real, es fundamental verificar que los archivos XML no tengan errores de formato para evitar que el servicio se detenga:
+
+```bash:terminal
+# 1. Comprobar la sintaxis de las reglas (debe responder: Configuration OK)
+docker exec -it wazuh-lab /var/ossec/bin/wazuh-analysisd -t
+
+# 2. Recargar las reglas en caliente sin interrumpir la recepcion de logs
+docker exec -it wazuh-lab /var/ossec/bin/wazuh-control reload
+```
+
+### 8. Probar la correlación en el simulador
+
+Abre nuevamente el simulador:
+
+```bash:terminal
+docker exec -it wazuh-lab /var/ossec/bin/wazuh-logtest
+```
+
+Pega la línea de fallo SSH **4 veces consecutivas** desde la IP atacante (`192.168.1.150`):
 
 ```text:log-prueba
 Nov  7 14:20:10 srv-app sshd[1245]: Failed password for invalid user admin from 192.168.1.150 port 43120 ssh2
 ```
 
-En las primeras 4 líneas, verás que el SIEM responde siempre con la regla base `5716` (severidad 5). El sistema recuerda la secuencia en memoria, pero aún no dispara la alarma.
-
-Ahora ingresa la línea por **quinta vez**:
+En las primeras 3 líneas verás la regla informativa `5716`. Al pegarla por **cuarta vez**, el motor evaluará la ventana de tiempo y disparará tu regla ajustada:
 
 ```text:salida-correlacionada
 **Phase 3: Completed filtering (rules).
-    id: '100050'
+    id: '5712'
     level: '10'
-    description: 'LILIUM-SIEM: Ataque de fuerza bruta SSH detectado (5 fallos en menos de 60s desde la misma IP).'
-    groups: '["local","sshd"]'
+    description: 'SSHD: Intento de fuerza bruta detectado (4 fallos en 60s desde la misma IP).'
+    groups: '["syslog","sshd","authentication_failed"]'
     firedtimes: '1'
     mitre.id: '["T1110"]'
 **Alert to be generated.
 ```
 
-El SIEM evaluó el historial temporal reciente, identificó la recurrencia desde `192.168.1.150` y disparó la alerta crítica `100050` junto con su indicador MITRE ATT&CK.
-
-### 6. Inspección de la alerta estructurada y respuesta activa
-
-Una vez verificada la regla en el simulador, aplica la configuración reiniciando el servicio central (`sudo systemctl restart wazuh-manager`).
-
-Cuando la regla se active con tráfico real, el SIEM generará un evento estructurado en `/var/ossec/logs/alerts/alerts.json` y lo reflejará en el panel de Wazuh Dashboard.
+Si pruebas la misma línea cambiando la IP por `192.168.1.50` (nuestro escáner autorizado), verás que entra en la regla `100002` con nivel 0 y no genera ninguna alerta. Has logrado una detección precisa con cero alertas ruidosas y sin programar decodificadores desde cero.
 :::
+
+#### Cómo localizar las reglas relevantes para tu empresa
+
+El caso anterior de fuerza bruta SSH es solo una ilustración práctica para entender cómo se modifica una regla para adaptarla a los estándares de tu organización. En un entorno real, no se ajustan reglas al azar: la prioridad de monitoreo surge de la **identificación de activos y análisis de riesgos realizado en los módulos anteriores**:
+
+- Si en el inventario identificaste servidores críticos con **Windows Active Directory**, tus prioridades serán los eventos de inicio de sesión fallido (`EventID 4625`), bloqueos de cuenta (`4740`) o altas de usuarios no autorizadas (`4720`).
+- Si tu activo principal es una **aplicación web o API**, te enfocarás en picos de errores HTTP (401, 403, 500) o inyecciones SQL en los registros de Nginx o Apache.
+- Si gestionas servidores **Linux**, supervisarás el abuso de privilegios en comandos administrativos (`sudo`) o modificaciones en archivos del sistema.
+
+#### Estrategia en 3 pasos para encontrar las reglas que necesitas en Wazuh
+
+Para localizar qué regla oficial cubre tus activos prioritarios sin tener que leer miles de líneas de código, aplica esta estrategia sencilla:
+
+1. **Búsqueda por servicio o tecnología:** Las reglas oficiales en `/var/ossec/ruleset/rules/` están organizadas con nombres descriptivos. Puedes listar rápidamente las que correspondan a tu tecnología:
+
+```bash:terminal
+# Ejemplo: buscar archivos de reglas por palabras clave (reemplazar por las específicas para tu organización)
+ls /var/ossec/ruleset/rules/ | grep -E "win|sudo|web|nginx|apache"
+```
+
+2. **Descubrimiento directo con `wazuh-logtest`:** Es el camino más rápido. Toma una línea de log real de tu servidor y pégala en `wazuh-logtest`. La herramienta te devolverá inmediatamente el identificador (`id`) de la regla que respondió por defecto. A partir de ese número, ya sabes con certeza qué regla sobreescribir con `overwrite="yes"` o silenciar con `level="0"` en tu archivo `local_rules.xml`.
+3. **Investigar en referencias oficiales:** Wazuh cuenta con un catálogo llamado [Wazuh Ruleset](https://github.com/wazuh/wazuh/tree/master/ruleset) con miles de reglas listas para usar, que puedes buscar según servicio y fabricante.
 
 Si necesitas centralizar registros desde dispositivos de red donde no es posible instalar un agente de Wazuh (como firewalls perimetrales, routers o switches), Wazuh Manager incluye un receptor Syslog nativo por red. Basta con configurar en el equipo de red el reenvío de logs hacia la dirección IP del servidor Wazuh por el puerto `514 UDP` o `TCP`. Los decodificadores y las reglas de correlación procesarán esos registros de la misma forma que si provinieran de un agente local.
 
@@ -1806,7 +1863,7 @@ La combinación de centralización y reglas de correlación deterministas ofrece
 Para consultar más ejemplos de decodificadores y reglas oficiales de Wazuh:
 
 - [Documentación oficial de reglas de Wazuh](https://documentation.wazuh.com/current/user-manual/ruleset/index.html): Guía completa de sintaxis XML, variables y opciones de correlación.
-- [Repositorio de reglas y decodificadores en GitHub](https://github.com/wazuh/wazuh-ruleset): Catálogo comunitario con miles de reglas listas para usar ordenadas por servicio y fabricante.
+- [Repositorio de reglas y decodificadores en GitHub](https://github.com/wazuh/wazuh/tree/master/ruleset): Catálogo comunitario con miles de reglas listas para usar ordenadas por servicio y fabricante.
 
 ### Verificación rápida de la subsección
 
@@ -1823,4 +1880,272 @@ Ejecuta `timedatectl status` en tus servidores Linux y `w32tm /query /status` en
 #### 3. Priorización de reglas deterministas
 
 Confirma que tu arquitectura de monitoreo cuente primero con reglas deterministas claras y probadas para los casos de alto impacto (creación de cuentas administrativas, vaciado de registros de auditoría, inicios de sesión exitosos tras múltiples fallos y modificaciones de archivos críticos en FIM), tratando cualquier módulo estadístico de `ML` o `UEBA` como un complemento analítico secundario sujeto a validación humana.
+
+## 5.5. Inteligencia de Amenazas <!-- id: threat-intelligence, icon: Bookmark01Icon, displayTitle: 5.5 — Inteligencia de Amenazas y Triaje, description: Integración de inteligencia externa para validar hallazgos de forma segura, clasificación de indicadores y ejecución del triaje para escalar incidentes confirmados hacia la fase de respuesta. -->
+
+En las secciones anteriores construimos la estructura técnica para observar la red, supervisar el interior de los dispositivos y reunir todos esos eventos en un sistema centralizado. Sin embargo, cuando los sensores comienzan a funcionar en una pequeña empresa, nos encontramos frente a un panel lleno de notificaciones no equivale a estar protegidos. Si el sistema de monitoreo emite doscientas alertas diarias por actualizaciones legítimas, errores de contraseñas o tráfico habitual, el personal técnico sufrirá rápidamente **fatiga de alertas** y terminará silenciando las notificaciones o ignorando la consola justo el día en que ocurra una intrusión real.
+
+Para transformar una avalancha de alertas en decisiones claras, no basta con acumular datos: hay que saber investigar las pistas correctas y separar rápido las falsas alarmas de los peligros reales. Esta última sección del módulo explica como aprovechar el conocimiento global sobre atacantes para dar contexto a lo que ocurre en tu red, a verificar archivos o direcciones sospechosas en plataformas públicas sin filtrar por error datos privados de la empresa, y a dominar el triaje.
+
+### Inteligencia de Amenazas: Entender qué estamos buscando
+
+Cuando una alerta aparece en pantalla —por ejemplo, una conexión hacia una dirección desconocida o la aparición de un archivo extraño—, analizar el evento únicamente con los datos internos de la empresa suele ser insuficiente. Aquí interviene la **Inteligencia de Amenazas Cibernéticas** (CTI, por sus siglas en inglés: _Cyber Threat Intelligence_), que consiste en el conocimiento recopilado y verificado por la comunidad global de seguridad acerca de las herramientas, infraestructuras y métodos que utilizan los adversarios en sus campañas activas.
+
+Para aprovechar esta inteligencia dentro de nuestros sistemas de monitoreo, debemos diferenciar con precisión las dos clases de pistas que puede dejar un intruso: los **Indicadores de Compromiso** y los **Indicadores de Ataque**.
+
+:::group title="Categorías de Indicadores en Detección"
+
+- Indicadores de Compromiso (IoC - Indicators of Compromise): Son artefactos forenses estáticos y observables que demuestran que una intrusión ya ocurrió o que un elemento malicioso está presente en el sistema. Funcionan como las huellas dactilares o el casquillo de bala en una escena del crimen: incluyen el resumen criptográfico (hash) de un archivo infectado, una dirección IP externa asociada a un servidor de comando y control, un nombre de dominio malicioso o una ruta específica en el Registro de Windows. Son muy rápidos y económicos de buscar en los registros históricos, pero tienen una vida útil muy corta porque el atacante puede modificarlos fácilmente.
+
+- Indicadores de Ataque (IoA - Indicators of Attack): Son secuencias de acciones y comportamientos dinámicos que revelan la intención y los pasos que un adversario necesita ejecutar para cumplir su objetivo, sin importar qué programa o dirección IP utilice. En lugar de buscar una huella estática conocida, un IoA observa la película en movimiento: por ejemplo, detectar que el proceso de un servidor web (`nginx` en Linux o `w3wp.exe` en Windows) abre repentinamente una consola de comandos (`bash` o `cmd.exe`) y comienza a explorar qué otros equipos responden en la red local.
+  :::
+
+Existen diferencias operativas entre la búsqueda de artefactos estáticos (IoC) y la detección de comportamientos adversarios (IoA).
+
+| Criterio de comparación | Indicador de Compromiso (IoC)                        | Indicador de Ataque (IoA) |
+| ----------------------- | ---------------------------------------------------- | ------------------------- |
+| **Enfoque temporal**    | Reactivo y forense (evidencia de lo que ya ingresó). |
+
+| Proactivo y en tiempo real (secuencia de acciones en curso).
+
+|
+| **Naturaleza del dato** | Estática (un valor fijo de texto, IP, dominio o hash).
+
+| Dinámica (relación entre procesos, comandos y conexiones).
+
+|
+| **Ejemplo práctico** | El archivo descargado coincide con el hash conocido de un troyano.
+
+| Un documento de factura abierto en Word invoca a PowerShell con argumentos ocultos.
+
+|
+| **Resistencia a la evasión** | Baja: si el atacante cambia de servidor o recompila el archivo, el indicador deja de servir. | Alta: aunque el atacante use herramientas legítimas del sistema (_Living off the Land_), aún necesita ejecutar la acción.
+
+|
+
+### El rol de MITRE ATT&CK y la Pirámide del Dolor
+
+Si los indicadores estáticos caducan tan rápido, ¿cómo estructuramos la defensa basada en comportamientos? El marco **MITRE ATT&CK** (_Adversarial Tactics, Techniques, and Common Knowledge_), que referenciamos en módulos anteriores, nos permite clasificar el comportamiento de los atacantes a partir de incidentes reales observados en todo el mundo.
+
+Su estructura se organiza como una tabla donde las columnas representan las **Tácticas** (el _por qué_ o la meta técnica que persigue el intruso en cada etapa, como obtener acceso inicial, escalar privilegios, lograr persistencia o exfiltrar datos) y las celdas contienen las **Técnicas y Subtécnicas** (el _cómo_ concreto con el que logra ese objetivo, junto con ejemplos de procedimientos reales).
+
+> [!NOTE:MITRE ATT&CK no es un catálogo de vulnerabilidades ni un estándar de cumplimiento]
+> Ninguna PyME debe intentar "cubrir el 100% de las casillas de MITRE"; su función es proporcionar un vocabulario común para diseñar reglas basadas en Indicadores de Ataque (IoA) sobre los riesgos que realmente afectan al negocio.
+
+#### La Pirámide del Dolor (_Pyramid of Pain_)
+
+Para explicar visualmente por qué una organización debe evolucionar desde el simple bloqueo de direcciones IP hacia la detección de técnicas de MITRE ATT&CK, el especialista en detección David J. Bianco formuló en 2013 el modelo conocido como **La Pirámide del Dolor**.
+
+Este concepto clasifica los distintos tipos de indicadores en seis niveles escalonados desde la base hasta la cúspide. El modelo mide cuánto esfuerzo, tiempo y costo operativo (cuánto "dolor") le causamos al atacante cuando somos capaces de detectar y neutralizar sus indicadores en cada nivel:
+
+```filetree:Piramide_del_Dolor_Bianco
+Cuanto_le_cuesta_al_atacante_adaptarse_si_lo_detectas/
+├── 6_Comportamiento_TTPs/    # [DOLOR MAXIMO] Detectar su metodo de accion: atacante debe reinventar su forma de atacar desde cero
+├── 5_Herramientas/           # [DIFICIL] Bloquear su programa de ataque: debe buscar, aprender o programar otro software
+├── 4_Rastros_Tecnicos/       # [MOLESTO] Detectar sus huellas en el sistema o la red: debe detenerse a modificar su codigo
+├── 3_Dominios_Web/           # [SIMPLE] Bloquear su direccion web (ej. sitio-falso.com): compra y configura otro en horas
+├── 2_Direcciones_IP/         # [FACIL] Bloquear su conexion: cambia de servidor o VPN en un par de minutos
+└── 1_Huellas_Hash/           # [SIN ESFUERZO] Bloquear un archivo especifico: modifica una letra y el hash cambia al instante
+```
+
+Analicemos qué ocurre en la práctica dentro de una organización al recorrer esta pirámide desde la base hasta la cima:
+
+1. **Valores Hash (Esfuerzo para el atacante: Trivial):** En la base se encuentran los resúmenes criptográficos (`SHA-256`, `MD5`) de archivos maliciosos conocidos. Son exactos y no generan falsos positivos, pero si un atacante agrega un solo carácter irrelevante al final de su código, el hash cambia por completo en menos de un segundo y burla cualquier lista negra basada únicamente en esa firma.
+
+2. **Direcciones IP (Esfuerzo: Fácil):** Bloquear en el firewall una dirección IP que está atacando a la empresa es necesario para frenar el ruido inmediato, pero al adversario le toma poco tiempo alquilar otro servidor virtual privado (VPS) o cambiar de nodo proxy para continuar desde una dirección nueva.
+
+3. **Nombres de Dominio (Esfuerzo: Simple):** Los programas maliciosos suelen conectarse a nombres de dominio (por ejemplo, `actualizacion-segura-panel.net`) en lugar de direcciones IP fijas. Si bloqueamos ese dominio en nuestro servidor DNS, el atacante debe registrar uno nuevo, modificar su configuración y esperar a que se propague en Internet, lo cual le exige algo más de trabajo que cambiar de IP, aunque muchos ataques automatizan esto mediante algoritmos de generación de dominios (DGA, _Domain Generation Algorithms_).
+
+4. **Artefactos de Red y de Host (Esfuerzo: Molesto):** Aquí comenzamos a salir de los datos efímeros para observar rastros técnicos repetitivos que deja la herramienta del intruso: por ejemplo, que sus peticiones web utilicen siempre un encabezado `User-Agent` particular con un error ortográfico, que cree siempre un archivo temporal con el mismo nombre en `/tmp/` o que modifique una clave específica del Registro de Windows. Cuando detectamos esto, el atacante se ve obligado a detenerse, buscar en su código dónde dejó ese rastro y volver a configurar o compilar su herramienta.
+
+5. **Herramientas (Esfuerzo: Difícil):** En este escalón logramos identificar la utilidad de software completa que emplea el intruso (como un programa específico para extraer contraseñas de memoria o un VPN determinado), independientemente del nombre de archivo, hash o servidor desde el que la descargue. Al neutralizar su herramienta preferida, obligamos al atacante a invertir días en conseguir, probar o programar una utilidad diferente.
+6. **Tácticas, Técnicas y Procedimientos — TTPs (Esfuerzo: Muy difícil / Doloroso):** En la cúspide de la pirámide ya no buscamos un archivo ni una marca de software, sino la secuencia de comportamiento humana y técnica catalogada en MITRE ATT&CK. Cuando una organización detecta a nivel de TTPs, al atacante solo le quedan dos caminos: abandonar el intento contra esa empresa y buscar una víctima más fácil, o invertir semanas en aprender y desarrollar un método de ataque completamente nuevo desde cero.
+
+### Seguridad Operativa (OPSEC) al investigar en fuentes abiertas (OSINT)
+
+Cuando nuestro sistema de monitoreo detecta un archivo desconocido, un dominio extraño en los registros de Zeek o una dirección IP realizando intentos de conexión, el paso natural para enriquecer ese hallazgo consiste en consultar fuentes públicas de **Inteligencia de Fuentes Abiertas** (OSINT, por sus siglas en inglés: _Open Source Intelligence_).
+
+Existen plataformas gratuitas de alto valor que cualquier empresa puede utilizar:
+
+- **VirusTotal:** Analiza hashes de archivos, direcciones URL, dominios y direcciones IP cruzándolos contra más de setenta motores antivirus y listas de reputación internacionales.
+- **Abuse.ch (MalwareBazaar, ThreatFox y URLhaus):** Proyectos comunitarios dedicados a rastrear muestras de malware activas, servidores de comando y control (C2) y enlaces de distribución de amenazas.
+- **Urlscan.io:** Visita sitios web sospechosos desde un navegador aislado en la nube y toma una captura de pantalla junto con el detalle de todas las conexiones ocultas que realiza la página, sin que el analista tenga que abrir el enlace en su propia computadora.
+- **GreyNoise y AbuseIPDB:** Permiten verificar si una dirección IP externa que está golpeando nuestro firewall es un escáner masivo que barre todo Internet de forma genérica o un atacante dirigido específicamente contra nuestra red.
+
+Sin embargo, el uso descuidado de estas plataformas públicas durante una investigación puede provocar un incidente grave de confidencialidad o alertar al intruso de que ha sido descubierto. Para evitarlo, todo equipo técnico debe aplicar estrictamente las reglas de **Seguridad Operativa** (OPSEC, por sus siglas en inglés: _Operations Security_).
+
+> [!CRITICAL: Nunca se deben subir archivos internos de la empresa a VirusTotal]
+> El error de OPSEC más frecuente y peligroso en las organizaciones ocurre cuando un empleado o administrador recibe un archivo adjunto dudoso —por ejemplo, una planilla de cálculo o un documento PDF con un contrato comercial— y, para sacarse la duda de si tiene virus, **sube el archivo completo al sitio web público de VirusTotal**.
+> Todo archivo que se sube a la versión gratuita de VirusTotal se almacena en su base de datos y **pasa a estar disponible para ser descargado por miles de suscriptores e investigadores comerciales en todo el mundo**. Si ese documento contenía datos personales de clientes, presupuestos, claves de acceso o información financiera real de una empresa, esto provocaría una fuga de datos autoinfligida irreversible.
+> **La regla de oro:** Nunca subir archivos. Debes calcular localmente en tu computadora su resumen criptográfico (`SHA-256`) y **buscar únicamente esa cadena de texto de 64 caracteres** en el buscador de la plataforma.
+
+Si en los registros de red descubres que un servidor interno se conectó a un dominio desconocido o a una dirección IP extraña que sospechas que pertenece a un atacante, **nunca escribas esa dirección en el navegador de tu computadora de trabajo ni le hagas un `ping` o `curl` directo desde la conexión a Internet de tu empresa**.
+
+Si ese servidor pertenece realmente a un atacante dedicado, él está mirando sus propios registros de acceso: al ver que una computadora de la empresa entra a su dirección con un navegador común a inspeccionar qué hay allí, sabrá inmediatamente que fue descubierto (_tipping off_). Eso hará que acelere su ataque, active un cifrado destructivo de emergencia o cambie sus puertas traseras antes de que puedas contenerlo. Realiza siempre las consultas a través de bases de datos pasivas o servicios intermedios externos.
+
+#### Validación de artefactos sin exponer datos
+
+A continuación se detalla cómo obtener de forma local y segura la huella criptográfica de cualquier archivo sospechoso en Linux, Windows y macOS —tanto por terminal como mediante herramientas visuales— para consultar su reputación sin filtrar su contenido.
+
+- **Requisitos previos:** Acceso de lectura al archivo sospechoso (sin ejecutarlo ni abrirlo con doble clic) en cualquier estación de trabajo o servidor Linux, Windows 10/11/Server o macOS.
+
+:::steps
+
+### 1. Obtener el hash SHA-256 en Linux y macOS
+
+Abre una terminal en el directorio donde se encuentra el archivo bajo sospecha (sin ejecutarlo ni darle permisos de ejecución) y calcula su resumen criptográfico `SHA-256` utilizando las herramientas nativas del sistema:
+
+```bash:terminal
+# En Linux (Debian/Ubuntu/RHEL)
+sha256sum /ruta/al/archivo_sospechoso
+
+# En macOS (utilidad nativa shasum indicando algoritmo 256)
+shasum -a 256 /ruta/al/archivo_sospechoso
+```
+
+Ambos comandos devolverán en pantalla únicamente una cadena hexadecimal de 64 caracteres seguida del nombre del archivo:
+
+```text:salida-terminal
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /ruta/al/archivo_sospechoso
+```
+
+### 2. Obtener el hash SHA-256 en Windows (PowerShell e Interfaz Gráfica)
+
+En sistemas Windows, utiliza el comando nativo `Get-FileHash` incluido de fábrica en PowerShell:
+
+```powershell:terminal
+Get-FileHash -LiteralPath "C:\Users\Analista\Downloads\archivo_sospechoso.pdf" -Algorithm SHA256 | Format-List
+```
+
+Verás la salida estructurada lista para copiar el valor del campo `Hash`:
+
+```text:salida-powershell
+Algorithm : SHA256
+Hash      : E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855
+Path      : C:\Users\Analista\Downloads\archivo_sospechoso.pdf
+```
+
+- **Alternativa por Interfaz Gráfica (GUI) en Windows:** Si tienes instalado el compresor gratuito de código abierto _7-Zip_, no necesitas abrir la consola: basta con hacer clic derecho sobre el archivo en el Explorador de Windows, posar el cursor sobre el menú **CRC SHA** y seleccionar **SHA-256**. Se abrirá una ventana emergente mostrando el código exacto para copiarlo al portapapeles con un clic.
+
+### 3. Consultar la reputación del hash y de direcciones IP de forma pasiva
+
+Copia únicamente los 64 caracteres del hash obtenido y pégalos en el cuadro de búsqueda (_Search_) de [VirusTotal](https://www.virustotal.com/gui/home/search).
+
+- Si se trata de un malware conocido que ha atacado a otras organizaciones, verás inmediatamente qué motores lo detectan, a qué familia pertenece y qué comportamiento tiene.
+- Si la plataforma responde _"No matches found"_ (sin coincidencias), significa que nadie en el mundo ha subido antes exactamente ese archivo (algo normal si es un documento interno legítimo de tu empresa o un archivo modificado exclusivamente para ti), habiendo mantenido tus datos 100% privados.
+
+Del mismo modo, si necesitas investigar el dominio o la dirección IP `198.51.100.45` que viste en una alerta de red, consúltala de forma pasiva mediante un servidor DNS público o buscando el texto de la IP dentro de VirusTotal o AbuseIPDB, **nunca** conectándote directamente al servidor sospechoso.
 :::
+
+### Ingeniería de Alertas y el Ciclo de Vida de una Detección
+
+Una vez que comprendemos qué indicadores buscar y cómo validarlos externamente, debemos resolver cómo administrar las reglas dentro de nuestro sistema de monitoreo (ya sea Suricata en red, Wazuh en los servidores o el panel central del SIEM) para erradicar la fatiga de alertas.
+
+En una operación profesional, una regla de detección nunca se escribe y se conecta directamente al teléfono de guardia del administrador en el mismo minuto. Toda regla debe atravesar un **ciclo de vida controlado de cinco etapas**:
+
+1. **Diseño basado en amenazas reales:** La regla nace para cubrir un riesgo concreto que afecta a los activos de la empresa (por ejemplo, vigilar modificaciones en la carpeta de un sistema de facturación o detectar intentos de acceso remoto fuera de horario).
+
+2. **Prueba en modo silencioso (_Silent Mode_ / Auditoría):** Antes de que la regla tenga permiso para enviar avisos urgentes o correos de alerta, se activa en un nivel bajo o en un canal de prueba durante varios días frente al tráfico real de la empresa. Esto permite descubrir si una tarea diaria benigna dispara la alerta por error.
+
+3. **Ajuste y calibración (_Tuning_):** Con los datos de la prueba silenciosa, el analista refina las condiciones e incorpora exclusiones precisas y documentadas para las actividades legítimas conocidas, reduciendo el ruido sin cegar la regla.
+
+4. **Despliegue en producción con guía de atención:** La regla se activa formalmente acompañada de una nota clara sobre qué significa esa alerta y qué debe verificar quien la reciba.
+
+5. **Revisión periódica o retiro:** Las empresas cambian constantemente. Cuando un servidor antiguo se da de baja o cambia un sistema, las reglas asociadas deben actualizarse o retirarse para mantener limpio el motor de detección.
+
+#### Cómo clasificar lo que suena: Severidad vs. Confianza vs. Prioridad
+
+Uno de los errores operativos más comunes al revisar un panel de monitoreo consiste en atender las alertas únicamente por el color o el número de "Nivel" que trae la regla de fábrica. Para decidir con criterio humano qué alerta requiere dejar todo lo que estamos haciendo y cuál puede revisarse más tarde, debemos separar tres variables distintas:
+
+:::group title="Variables de Clasificación de una Alerta"
+
+- Severidad [Severity]: Es la gravedad técnica teórica del evento en sí mismo, asumiendo que fuera real. Por ejemplo, una alerta llamada _"Posible ejecución remota de comandos como administrador"_ tiene una **Severidad Alta**, mientras que _"Consulta DNS hacia dominio de publicidad"_ tiene una **Severidad Baja**.
+
+- Confianza o Fidelidad [Confidence]: Es la probabilidad real de que la alerta sea un ataque verdadero (Verdadero Positivo) y no una falsa alarma, según qué tan precisa sea la fuente que la generó. Una alerta de anomalía por "aumento de tráfico web un viernes por la tarde" tiene **Confianza Baja**; en cambio, una alerta porque alguien modificó el archivo `/etc/shadow` fuera de una ventana de mantenimiento tiene **Confianza Muy Alta**.
+
+- Prioridad [Priority]: Es el orden de urgencia real con el que el equipo de la empresa debe actuar. No viene escrito en la regla de fábrica, sino que resulta de combinar **Severidad + Confianza + Criticidad del Activo afectado** (definida en nuestro inventario del Módulo 2).
+  :::
+
+Observa en la siguiente matriz cómo cambia radicalmente la decisión humana al cruzar estos tres factores en situaciones cotidianas de una PyME:
+
+| Alerta disparada en el panel                                       | Severidad de la regla | Confianza de la detección                             | Activo involucrado (Módulo 2)                        | Prioridad Real Resultante y Acción                                                             |
+| ------------------------------------------------------------------ | --------------------- | ----------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Intento de explotación web genérico bloqueado en el perímetro.     | **Alta**              | **Baja** _(escaneo automático de Internet sin éxito)_ | Sitio web institucional estático sin datos privados. | **Prioridad Baja:** No requiere interrumpir tareas; se revisa en el control rutinario semanal. |
+| Pico inusual de transferencia de 25 GB de archivos a las 11:00 AM. |
+
+| **Media** | **Media** _(puede ser trabajo real o exfiltración)_
+
+| Computadora del área de Diseño Gráfico y Video. | **Prioridad Media:** Consultar rápidamente con el usuario si acaba de subir un proyecto audiovisual pesado. |
+| Creación de un usuario local nuevo seguida de modificación en configuración SSH.
+
+| **Alta** | **Muy Alta** _(evento exacto y determinista)_
+
+| Servidor principal de Base de Datos y Facturación (`Crítico`). | **Prioridad Crítica (Inmediata):** Detener tareas actuales, validar en minutos y escalar como incidente al Módulo 06. |
+| _Ejemplos prácticos de cómo la combinación de Severidad, Confianza y Criticidad del Activo define la Prioridad real de atención._ | | | | |
+
+### El proceso estructurado de Triaje
+
+El término **triaje** (_triage_, originado en la medicina de emergencias para clasificar rápidamente a los pacientes según su gravedad al llegar a la guardia) describe el procedimiento metódico mediante el cual un analista toma una alerta pendiente, investiga su contexto en pocos minutos y toma una determinación definitiva: **descartarla como Falso Positivo o declararla como un Incidente de Seguridad confirmado**.
+
+Durante el triaje no debemos precipitarnos a apagar servidores a ciegas, borrar archivos sospechosos ni formatear discos; hacerlo sin seguir un protocolo de respuesta destruiría pruebas valiosas o alertaría al atacante mientras aún tiene control sobre otros equipos de la red. Todo triaje de alertas en la organización debe ejecutarse siguiendo este flujo estandarizado de tres pasos:
+
+:::steps
+
+### 1. Recepción, contextualización y las 5 preguntas (Validación Inicial)
+
+Cuando tomas una alerta del panel para analizarla, el primer paso es asignarla a tu nombre (para que dos personas no investiguen lo mismo en paralelo) y responder en menos de diez minutos a las **cinco preguntas de validación** cruzando los registros disponibles:
+
+- **¿Quién? (_Who_):** ¿Qué cuenta de usuario, proceso o dirección IP externa originó la actividad?
+
+- **¿Qué? (_What_):** ¿Qué acción exacta se ejecutó (modificación de archivo, login exitoso, descarga de datos, ejecución de comando)?
+
+- **¿Cuándo? (_When_):** ¿En qué fecha y hora exacta (`UTC`) ocurrió, y qué otros eventos sucedieron en ese equipo cinco minutos antes y cinco minutos después?
+- **¿Dónde? (_Where_):** ¿Qué servidor o estación de trabajo recibió la acción, y qué nivel de criticidad tiene ese equipo en el inventario del Módulo 2?
+
+- **¿Por qué / Cómo? (_Why / How_):** ¿Existía una ventana de mantenimiento programada o una orden de trabajo autorizada que justifique este cambio? Si involucra un hash o IP externa, ¿qué dicen las fuentes OSINT consultadas bajo reglas de OPSEC?
+
+**Punto de decisión:** Si compruebas que fue una actividad legítima autorizada (Falso Positivo), documentas brevemente el motivo, evalúas si conviene ajustar la regla (_tuning_) y cierras la alerta. Si la actividad no tiene justificación legítima, pasas de inmediato al Paso 2.
+
+### 2. Categorización, evaluación de impacto y Declaración del Incidente
+
+Al confirmar que estás frente a un **Verdadero Positivo** (actividad no autorizada o maliciosa real), evalúas rápidamente su alcance preliminar:
+
+- ¿El evento quedó frenado por un control preventivo (por ejemplo, un virus que el antivirus bloqueó antes de ejecutarse y no dejó procesos activos), o el atacante logró ejecutar código, robar credenciales o alterar el sistema?
+
+- ¿Están comprometidas la confidencialidad de los datos, la integridad del servidor o la continuidad operativa del negocio?
+
+Cuando un Verdadero Positivo compromete o pone en riesgo activo un componente de la organización, **se declara formalmente la existencia de un Incidente de Seguridad**.
+
+### 3. Preservación de evidencia inicial y Traspaso formal
+
+Antes de ejecutar cualquier medida drástica sobre los equipos afectados, empaqueta y pon a resguardo los datos del hallazgo en el registro o ticket del incidente para que no se pierdan por rotación de logs:
+
+1. Copia y guarda el bloque completo de las alertas originales (en texto o JSON) con sus marcas de tiempo exactas en `UTC`.
+
+2. Anota la lista de activos afectados (nombres de host y direcciones IP internas).
+
+3. Registra las cuentas de usuario involucradas y los procesos o archivos identificados (incluyendo sus hashes `SHA-256` y rutas completas).
+
+4. Registra los indicadores externos observados (direcciones IP remotas, puertos y dominios).
+
+Con esta ficha técnica completa, realizas el se pasa a la etapa de respuesta y recuperación (Módulo 6), donde se activarán de inmediato los procedimientos de contención, aislamiento del equipo, revocación de credenciales, erradicación de la amenaza y restauración segura desde copias de respaldo.
+:::
+
+### Escalonamiento PyME: Del triaje básico a la caza proactiva
+
+Al igual que con el resto de los controles de detección, una pequeña empresa no necesita un Centro de Operaciones de Seguridad (SOC) dedicado con múltiples para aplicar estas prácticas. La adopción debe ajustarse al tamaño y madurez de la organización:
+
+| Nivel de Madurez         | Objetivo Operativo                                                                                        | Prácticas concretas a implementar en la PyME                                                                                                                                                                                                                                                                                                       |
+| ------------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Nivel Base (CIS IG1)** | Investigar avisos puntuales sin filtrar datos privados y saber cuándo pedir ayuda o activar la respuesta. | Aplicar estrictamente la regla de OPSEC (buscar solo hashes `SHA-256` en VirusTotal, nunca subir documentos de la empresa); revisar diariamente las alertas de alta prioridad de los paneles nativos (antivirus, cortafuegos, correo en la nube); y utilizar la ficha de las 5 preguntas para validar eventos antes de tocar un equipo sospechoso. |
+
+|
+| **Nivel Intermedio (CIS IG2)** | Automatizar el cruce de indicadores conocidos y formalizar el ciclo de ajuste de reglas y triaje. | Integrar listas públicas gratuitas de indicadores (como listas de IPs y dominios de Abuse.ch o Emerging Threats en Suricata y Wazuh); aplicar el ciclo de prueba silenciosa y ajuste (_tuning_) para eliminar falsos positivos recurrentes; y documentar cada escalamiento desde el SIEM hacia el flujo de respuesta del Módulo 06.
+
+|
+| **Nivel Maduro (CIS IG3)** | Detectar adversarios sigilosos mediante Indicadores de Ataque (TTPs) y búsqueda proactiva basada en hipótesis (_Threat Hunting_). | Diseñar reglas centradas en los niveles superiores de la Pirámide del Dolor (comportamientos y técnicas de MITRE ATT&CK) y realizar sesiones periódicas de **Caza Proactiva de Amenazas (_Threat Hunting_)**: formular una hipótesis (ej. _"¿Algún servidor web ejecutó comandos de consola este mes sin disparar alertas?"_) y buscar activamente en los registros históricos de Zeek y del SIEM.
+
+|
+| _Escalonamiento operativo para integrar inteligencia de amenazas y triajesegún la capacidad de la empresa._
+
+| | |
