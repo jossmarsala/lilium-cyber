@@ -28,21 +28,6 @@ Este módulo posee un perfil eminentemente práctico, prescriptivo y técnico. A
 title="Índice del módulo"
 :::
 
-## **Laboratorio interactivo — Escenario react-ui-os**
-
-Para afianzar los conocimientos y destrezas de este módulo sin exponer a riesgo sistemas en producción, dispones de un escenario de simulación integrado en el navegador mediante nuestro entorno virtualizado react-ui-os.
-
-:::group title="Escenario virtualizado: Migración y blindaje de infraestructura en react-ui-os" description="Entorno multi-nodo interactivo con simulación de zonas de red, terminal de comandos e inspector de estados"
-
-- **Contexto del entorno** [default]: Iniciarás sesión en una topología funcional que emula la infraestructura previa a la transición: una red plana donde el servidor web público, el motor de base de datos PostgreSQL y el almacenamiento de respaldos conviven sin aislamiento, con la cuenta de superusuario (`root`) accesible por SSH, cuentas de exempleados activas y permisos abiertos.
-- **Misión técnica** [required]: Utilizando la terminal interactiva, el editor de archivos de configuración y el inspector de topología, ejecutarás los hitos prioritarios del POA&M: aislar la subred de resiliencia (VLAN 40), sanear el directorio de cuentas aplicando la matriz RBAC, activar reglas de cortafuegos con `nftables` sin cortar el tráfico web en el puerto `TCP 443`, levantar el túnel WireGuard y asegurar el servicio SSH y PostgreSQL.
-- **Habilidades en juego**: Gestión de permisos y módulos PAM en Linux, programación de reglas de cortafuegos con estado, manipulación de certificados TLS y llaves asimétricas, configuración de volúmenes cifrados LUKS, ejecución de procedimientos de reversión (_rollback_) ante contingencias y validación con escaneos de `nmap` y pruebas de conectividad con `ss` y `curl`.
-- **Sistema de validación en vivo**: El motor evaluará en tiempo real la efectividad de las defensas (simulando ataques de fuerza bruta, intentos de inyección SQL mediante cuentas de servicio y tentativas de movimiento lateral entre subredes) verificando simultáneamente que los servicios comerciales permanezcan operativos.
-  :::
-
-> [!NOTE:Precaución con configuraciones de red]
-> En el entorno de prácticas, al igual que en un servidor de producción, si aplicas una regla de cortafuegos con política de descarte (_DROP ALL_) o reinicias el servicio SSH sin haber autorizado previamente tu canal de gestión en la VLAN administrativa, perderás la conexión de red y deberás recurrir a la consola de emergencia para ejecutar el plan de reversión.
-
 ## **Cómo abordar este módulo**
 
 :::steps

@@ -13,6 +13,7 @@
   padding: 0;
   box-sizing: border-box;
   overflow: hidden;
+  transition: width 0.26s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Gradient top border blending from transparent to soft hairline */
@@ -188,6 +189,87 @@
 /* Mobile drawer header (hidden on desktop) */
 .mobileHeader {
   display: none;
+}
+
+/* ── Folded rail mode (desktop only) ───────────────────────────────────────── */
+
+.folded {
+  width: 68px;
+}
+
+/* In folded mode, center the scroll area content */
+.folded .scrollArea {
+  padding-left: 0;
+  padding-right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+/* Footer in folded mode: icon only, centered */
+.folded .sidebarFooter {
+  padding: 0.65rem 0.5rem 0.75rem;
+  align-items: center;
+}
+
+.folded .footerButton {
+  justify-content: center;
+  padding: 0.45rem;
+  min-width: 0;
+  width: 44px;
+}
+
+/* Fold toggle button (desktop only, top-right of sidebar) */
+.foldToggle {
+  position: absolute;
+  top: calc(var(--nav-height, 56px) + 10px);
+  right: 8px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  background: transparent;
+  color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease,
+    border-color 0.16s ease,
+    opacity 0.16s ease,
+    right 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+}
+
+.sidebar:hover .foldToggle,
+.folded .foldToggle {
+  opacity: 1;
+}
+
+.foldToggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.foldToggle:active {
+  background: rgba(0, 0, 0, 0.08);
+  transform: scale(0.94);
+}
+
+/* When folded: center the toggle and flip icon */
+.folded .foldToggle {
+  right: calc(50% - 13px);
+}
+
+.folded .foldToggle svg {
+  transform: scaleX(-1);
 }
 
 @media (max-width: 768px) {

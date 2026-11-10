@@ -5,11 +5,14 @@
  *
  * Data flows: DocSection[] → BranchedMenuItem[] → BranchedMenu
  * Navigation: BranchedMenu.onSelect → react-router useNavigate
+ *
+ * Supports a folded rail mode (desktop only): click the toggle chevron to
+ * collapse the sidebar to a narrow strip showing only module numbers + icons.
  */
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
-import { ToolsIcon, Book02Icon, Cancel01Icon } from '@hugeicons/core-free-icons'
+import { ToolsIcon, Book02Icon, Cancel01Icon, SidebarLeft01Icon } from '@hugeicons/core-free-icons'
 import type { DocSection } from '@/data/docs'
 import BranchedMenu, { type BranchedMenuItem } from './BranchedMenu'
 import { resolveDocIcon } from '@/utils/docIcons'
@@ -22,6 +25,7 @@ interface Props {
   activeSubSubSectionId?: string
   isOpen?: boolean
   onClose?: () => void
+  onFoldChange?: (folded: boolean) => void
 }
 
 const SUBSECTION_CHAR_LIMIT = 48
@@ -92,6 +96,7 @@ export default function DocsSidebar({
   activeSubSubSectionId,
   isOpen = false,
   onClose,
+  onFoldChange,
 }: Props) {
   const navigate = useNavigate()
 
@@ -106,6 +111,27 @@ export default function DocsSidebar({
     setIsMobile(mq.matches)
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  // Desktop-only folded rail state — persisted in sessionStorage
+  const [isFolded, setIsFolded] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return sessionStorage.getItem('sidebar-folded') === 'true'
+  })
+
+  const toggleFolded = () => {
+    setIsFolded((prev) => {
+      const next = !prev
+      sessionStorage.setItem('sidebar-folded', String(next))
+      onFoldChange?.(next)
+      return next
+    })
+  }
+
+  // Notify parent of initial fold state on mount
+  useEffect(() => {
+    if (isFolded) onFoldChange?.(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const isShowcaseActive =
@@ -165,7 +191,7 @@ export default function DocsSidebar({
 
   return (
     <aside
-      className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}
+      className={`${styles.sidebar} ${isOpen ? styles.open : ''} ${!isMobile && isFolded ? styles.folded : ''}`}
       aria-label="Documentation navigation"
     >
       {/* Mobile drawer header with close button */}
@@ -203,6 +229,24 @@ export default function DocsSidebar({
       <div className={styles.topFade} aria-hidden="true" />
       <div className={styles.bottomFade} aria-hidden="true" />
 
+      {/* Desktop fold toggle button */}
+      {!isMobile && (
+        <button
+          type="button"
+          className={styles.foldToggle}
+          onClick={toggleFolded}
+          aria-label={isFolded ? 'Expandir índice' : 'Contraer índice'}
+          title={isFolded ? 'Expandir índice' : 'Contraer índice'}
+        >
+          <HugeiconsIcon
+            icon={SidebarLeft01Icon as IconSvgElement}
+            size={14}
+            strokeWidth={1.9}
+            aria-hidden="true"
+          />
+        </button>
+      )}
+
       <div className={styles.scrollArea}>
         <BranchedMenu
           items={items}
@@ -213,7 +257,7 @@ export default function DocsSidebar({
           color="#1a1a1a"
           accentColor="#000"
           lineColor="rgba(0, 0, 0, 0.09)"
-          width={isMobile ? '100%' : 280}
+          width={isMobile ? '100%' : isFolded ? '100%' : 280}
           rowHeight={isMobile ? 42 : 34}
           indent={isMobile ? 38 : 36}
           trunk={12}
@@ -222,6 +266,7 @@ export default function DocsSidebar({
           fontSize={isMobile ? 14 : 13}
           drawDuration={400}
           foldDuration={280}
+          folded={!isMobile && isFolded}
         />
       </div>
 
@@ -244,11 +289,15 @@ export default function DocsSidebar({
               strokeWidth={1.8}
               aria-hidden="true"
             />
-            <span className={styles.footerLabel}>
-              {isShowcaseActive ? 'Volver al Playbook' : 'Component Showcase'}
-            </span>
+            {!isFolded && (
+              <span className={styles.footerLabel}>
+                {isShowcaseActive ? 'Volver al Playbook' : 'Component Showcase'}
+              </span>
+            )}
           </div>
-          <span className={styles.footerBadge}>{isShowcaseActive ? 'activo' : 'oculto'}</span>
+          {!isFolded && (
+            <span className={styles.footerBadge}>{isShowcaseActive ? 'activo' : 'oculto'}</span>
+          )}
         </button>
       </div>
     </aside>

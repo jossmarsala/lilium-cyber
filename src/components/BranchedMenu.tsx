@@ -49,6 +49,8 @@ export interface BranchedMenuProps {
   drawDuration?: number
   foldDuration?: number
   className?: string
+  /** Compact rail mode: shows only number prefix on heads and icon+number on items */
+  folded?: boolean
 }
 
 const PAD = 6
@@ -64,6 +66,17 @@ const renderIcon = (icon: ReactNode | IconSvgElement, size = 16) => {
 
 const toSet = (open: number | number[]) =>
   new Set(Array.isArray(open) ? open : open >= 0 ? [open] : [])
+
+/**
+ * Extracts the leading number/prefix from a label for compact folded display.
+ * e.g. "1) Comprender" → "1)", "1.1. Fundamentos" → "1.1", "¡Bienvenido!" → "·"
+ */
+function extractPrefix(label: string): string {
+  // Match patterns like "1)", "1.1.", "1.1.2.", "2.3" at start of string
+  const m = label.match(/^(\d+(?:\.\d+)*)[.)]\s*/)
+  if (m) return m[1]
+  return '·'
+}
 
 const BranchedMenu: React.FC<BranchedMenuProps> = ({
   items = [],
@@ -85,6 +98,7 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
   drawDuration = 400,
   foldDuration = 300,
   className = '',
+  folded = false,
 }) => {
   const [open, setOpen] = useState<Set<number>>(() => toSet(defaultOpen))
   const [internalActive, setInternalActive] = useState(() => {
@@ -228,7 +242,7 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
   return (
     <nav
       ref={navRef}
-      className={`branched-menu${className ? ` ${className}` : ''}`}
+      className={`branched-menu${folded ? ' branched-menu--folded' : ''}${className ? ` ${className}` : ''}`}
       style={
         {
           '--bm-w': typeof width === 'number' ? `${width}px` : width || '100%',
@@ -243,6 +257,7 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
           '--bm-fold': `${foldDuration}ms`,
         } as CSSProperties
       }
+      data-folded={folded ? '' : undefined}
     >
       <span ref={markerRef} className="branched-menu__marker" aria-hidden="true" />
       {items.map((item, i) => {
@@ -258,6 +273,7 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
         // Compute dynamic vertical metrics based on expanded subsections
         const kidHeights = kids
           ? kids.map((kid) => {
+              if (folded) return rowHeight
               const isSubOpen = isKidSubOpen(kid)
               const subCount = kid.children?.length ?? 0
               const subH = isSubOpen && subCount > 0 ? subCount * subRowHeight + 6 : 0
@@ -322,7 +338,13 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
               }}
               title={item.label}
             >
-              {item.label}
+              {folded ? (
+                <span className="branched-menu__head-folded">
+                  <span className="branched-menu__head-prefix">{extractPrefix(item.label)}</span>
+                </span>
+              ) : (
+                item.label
+              )}
             </button>
             {kids ? (
               <div className="branched-menu__body">
@@ -394,42 +416,53 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
                             }}
                             title={kid.label}
                           >
-                            {kid.icon ? (
-                              <span className="branched-menu__icon" aria-hidden="true">
-                                {renderIcon(kid.icon)}
+                            {folded ? (
+                              <span className="branched-menu__item-folded">
+                                <span className="branched-menu__icon" aria-hidden="true">
+                                  {renderIcon(kid.icon ?? undefined)}
+                                </span>
+                                <span className="branched-menu__item-number">{extractPrefix(kid.label)}</span>
                               </span>
-                            ) : null}
-                            <span className="branched-menu__label">{kid.label}</span>
-                            {hasSubKids && (
-                              <span
-                                className="branched-menu__chevron"
-                                data-open={isSubOpen ? '' : undefined}
-                                aria-label={
-                                  isSubOpen ? 'Contraer subíndices' : 'Desplegar subíndices'
-                                }
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  toggleSub(kid.value, isSubOpen)
-                                }}
-                              >
-                                <svg
-                                  width="12"
-                                  height="12"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  aria-hidden="true"
-                                >
-                                  <polyline points="9 18 15 12 9 6" />
-                                </svg>
-                              </span>
+                            ) : (
+                              <>
+                                {kid.icon ? (
+                                  <span className="branched-menu__icon" aria-hidden="true">
+                                    {renderIcon(kid.icon)}
+                                  </span>
+                                ) : null}
+                                <span className="branched-menu__label">{kid.label}</span>
+                                {hasSubKids && (
+                                  <span
+                                    className="branched-menu__chevron"
+                                    data-open={isSubOpen ? '' : undefined}
+                                    aria-label={
+                                      isSubOpen ? 'Contraer subíndices' : 'Desplegar subíndices'
+                                    }
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      toggleSub(kid.value, isSubOpen)
+                                    }}
+                                  >
+                                    <svg
+                                      width="12"
+                                      height="12"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth="2.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      aria-hidden="true"
+                                    >
+                                      <polyline points="9 18 15 12 9 6" />
+                                    </svg>
+                                  </span>
+                                )}
+                              </>
                             )}
                           </button>
 
-                          {hasSubKids && (
+                          {hasSubKids && !folded && (
                             <div
                               className="branched-menu__sub-body"
                               data-open={isSubOpen ? '' : undefined}

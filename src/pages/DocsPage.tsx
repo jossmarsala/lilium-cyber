@@ -28,6 +28,10 @@ export default function DocsPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [isSidebarFolded, setIsSidebarFolded] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return sessionStorage.getItem('sidebar-folded') === 'true'
+  })
 
   // Support aliases: /docs/components or /docs/component-showcase -> /docs/showcase
   const resolvedSectionId =
