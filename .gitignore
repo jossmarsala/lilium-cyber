@@ -26,4 +26,6 @@ dist-ssr
 
 # Generated documentation PDF
 dist-pdf
-  
+
+# Headless browser screenshots and traces
+.browser/

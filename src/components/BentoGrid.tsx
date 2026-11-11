@@ -30,7 +30,7 @@ const DEFAULT_ITEMS: BentoItem[] = [
   },
   {
     title: '100% Open-Source',
-    subtitle: 'Todo el software aplicado es gratuito y de código abierto.',
+    subtitle: 'Tanto el software enseñado como el mismo proyecto es gratuito y de código abierto.',
   },
   {
     title: 'Aprendizaje, capa por capa',
@@ -52,7 +52,7 @@ export default function BentoGrid({
     <>
       Más que un playbook,
       <br />
-      Una forma de entender y construir seguridad.
+      Una plataforma para aprender a construir seguridad.
     </>
   ),
   items = DEFAULT_ITEMS,

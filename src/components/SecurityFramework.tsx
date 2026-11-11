@@ -125,7 +125,7 @@ export default function SecurityFramework() {
         <p className={styles.subtitle}>
           Framework estructurado en 6 capas: <strong>L</strong>ineamientos, <strong>I</strong>
           nventario, <strong>L</strong>ógica, <strong>I</strong>mplementación,
-          <strong>U</strong>mbrales y <strong>M</strong>itigación.".
+          <strong>U</strong>mbrales y <strong>M</strong>itigación
         </p>
       </div>
 

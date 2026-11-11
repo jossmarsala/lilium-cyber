@@ -38,6 +38,10 @@ LILIUM combines two complementary components:
 
 The workflow connects theory with practice.
 
+### 🤖 Agent browser automation
+
+A Playwright-based headless browser lives in [`scripts/browser`](scripts/browser/README.md). It exposes the app to agents over MCP (configured in [`opencode.json`](opencode.json)) and through a local HTTP API for navigation, live DOM inspection, UI interaction, and screenshots.
+
 ## 🔗 References
 
 LILIUM draws on recognized cybersecurity frameworks, knowledge bases, and technical guidance.
