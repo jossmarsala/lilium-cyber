@@ -337,10 +337,11 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
                 }
               }}
               title={item.label}
+              aria-label={folded ? item.label : undefined}
             >
               {folded ? (
                 <span className="branched-menu__head-folded">
-                  <span className="branched-menu__head-prefix">{extractPrefix(item.label)}</span>
+                  <span className="branched-menu__head-prefix">{String(i).padStart(2, '0')}</span>
                 </span>
               ) : (
                 item.label
@@ -384,6 +385,7 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
                       const hasSubKids = Boolean(kid.children && kid.children.length > 0)
                       const isSubOpen = isKidSubOpen(kid)
                       const subKids = kid.children ?? []
+                      const kidPrefix = extractPrefix(kid.label)
                       const subHeight =
                         isSubOpen && hasSubKids ? subKids.length * subRowHeight + 6 : 0
                       const isKidDirectActive = kid.value === active
@@ -415,13 +417,16 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
                               }
                             }}
                             title={kid.label}
+                            aria-label={folded ? kid.label : undefined}
                           >
                             {folded ? (
                               <span className="branched-menu__item-folded">
                                 <span className="branched-menu__icon" aria-hidden="true">
-                                  {renderIcon(kid.icon ?? undefined)}
+                                  {renderIcon(kid.icon ?? undefined, 18)}
                                 </span>
-                                <span className="branched-menu__item-number">{extractPrefix(kid.label)}</span>
+                                {kidPrefix !== '·' && (
+                                  <span className="branched-menu__item-number">{kidPrefix}</span>
+                                )}
                               </span>
                             ) : (
                               <>

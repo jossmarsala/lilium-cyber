@@ -44,6 +44,8 @@ interface Props {
   section?: DocSection
   subSection?: DocSubSection
   subSubSection?: DocSubSection
+  /** Center the reading column when the docs sidebar is collapsed */
+  centered?: boolean
 }
 
 /* ── Body parser for plain-text / Markdown fallback ── */
@@ -339,9 +341,10 @@ function renderBlock(block: DocBlock, index: number, section?: DocSection): Reac
   }
 }
 
-export default function DocsContent({ section, subSection, subSubSection }: Props) {
+export default function DocsContent({ section, subSection, subSubSection, centered }: Props) {
   const articleRef = useRef<HTMLElement>(null)
   const rafRef = useRef<number | null>(null)
+  const innerClass = centered ? `${styles.inner} ${styles.innerCentered}` : styles.inner
 
   const isSubIndex = Boolean(subSection || subSubSection)
 
@@ -421,7 +424,7 @@ export default function DocsContent({ section, subSection, subSubSection }: Prop
   if (!section) {
     return (
       <div className={styles.content}>
-        <div className={styles.inner}>
+        <div className={innerClass}>
           <p className={styles.empty}>Select a section from the sidebar.</p>
         </div>
         <Footer showCta={false} className={styles.docsFooter} />
@@ -446,7 +449,7 @@ export default function DocsContent({ section, subSection, subSubSection }: Prop
       className={styles.content}
       onScroll={handleScroll}
     >
-      <div className={styles.inner}>
+      <div className={innerClass}>
         <header className={styles.header}>
           <span className={styles.breadcrumb}>
             {subSubSection && subSection ? (

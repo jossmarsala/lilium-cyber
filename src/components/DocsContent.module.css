@@ -14,19 +14,23 @@
 
 /* ── Inner scroll column ── */
 .inner {
-  width: 100%;
+  width: auto;
   max-width: 900px;
   margin-left: 5rem;
   padding: calc(var(--nav-height, 56px) + clamp(2rem, 4vh, 3.25rem)) clamp(2rem, 4vw, 3.5rem)
     clamp(2.5rem, 5vh, 4rem) 2.25rem;
   box-sizing: border-box;
-  transition: margin 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    margin 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* When sidebar is folded, center the reading column in the extra space */
 .innerCentered {
   margin-left: auto;
   margin-right: auto;
+  padding-left: clamp(2rem, 4vw, 3.5rem);
+  padding-right: clamp(2rem, 4vw, 3.5rem);
 }
 
 .docsFooter {

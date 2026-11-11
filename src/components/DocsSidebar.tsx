@@ -12,7 +12,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
-import { ToolsIcon, Book02Icon, Cancel01Icon, SidebarLeft01Icon } from '@hugeicons/core-free-icons'
+import { Book02Icon, Cancel01Icon, SidebarLeft01Icon } from '@hugeicons/core-free-icons'
 import type { DocSection } from '@/data/docs'
 import BranchedMenu, { type BranchedMenuItem } from './BranchedMenu'
 import { resolveDocIcon } from '@/utils/docIcons'
@@ -120,32 +120,20 @@ export default function DocsSidebar({
   })
 
   const toggleFolded = () => {
-    setIsFolded((prev) => {
-      const next = !prev
-      sessionStorage.setItem('sidebar-folded', String(next))
-      onFoldChange?.(next)
-      return next
-    })
+    const next = !isFolded
+    setIsFolded(next)
+    sessionStorage.setItem('sidebar-folded', String(next))
+    onFoldChange?.(next)
   }
 
-  // Notify parent of initial fold state on mount
+  // Notify parent of the current fold state on mount
   useEffect(() => {
-    if (isFolded) onFoldChange?.(true)
+    onFoldChange?.(isFolded)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const isShowcaseActive =
-    activeSectionId === 'showcase' ||
-    activeSectionId === 'components' ||
-    activeSectionId === 'component-showcase'
-
-  // Filter hidden sections unless currently viewing that section
-  const visibleSections = sections.filter(
-    (s) =>
-      !s.hidden ||
-      s.id === activeSectionId ||
-      ((s.id === 'showcase' || s.id === 'components') && isShowcaseActive)
-  )
+  // Respect the `hidden` flag on sections (e.g. Component Showcase)
+  const visibleSections = sections.filter((s) => !s.hidden)
 
   const items = toMenuItems(visibleSections)
 
@@ -182,11 +170,6 @@ export default function DocsSidebar({
 
     // value is either "sectionId/subSectionId" or plain "sectionId"
     navigate(`/docs/${value}`)
-  }
-
-  const handleFooterClick = () => {
-    onClose?.()
-    navigate(isShowcaseActive ? '/docs/layer-1' : '/docs/showcase')
   }
 
   return (
@@ -268,37 +251,6 @@ export default function DocsSidebar({
           foldDuration={280}
           folded={!isMobile && isFolded}
         />
-      </div>
-
-      {/* Discreet footer button for hidden Component Showcase */}
-      <div className={styles.sidebarFooter}>
-        <button
-          type="button"
-          onClick={handleFooterClick}
-          className={`${styles.footerButton} ${isShowcaseActive ? styles.footerButtonActive : ''}`}
-          title={
-            isShowcaseActive
-              ? 'Volver a la documentación'
-              : 'Explorar Component Showcase (sección oculta)'
-          }
-        >
-          <div className={styles.footerButtonLeft}>
-            <HugeiconsIcon
-              icon={(isShowcaseActive ? Book02Icon : ToolsIcon) as IconSvgElement}
-              size={14}
-              strokeWidth={1.8}
-              aria-hidden="true"
-            />
-            {!isFolded && (
-              <span className={styles.footerLabel}>
-                {isShowcaseActive ? 'Volver al Playbook' : 'Component Showcase'}
-              </span>
-            )}
-          </div>
-          {!isFolded && (
-            <span className={styles.footerBadge}>{isShowcaseActive ? 'activo' : 'oculto'}</span>
-          )}
-        </button>
       </div>
     </aside>
   )

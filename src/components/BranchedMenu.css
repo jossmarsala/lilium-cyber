@@ -360,7 +360,7 @@
 
 /* ── Folded rail mode ─────────────────────────────────────────────────────── */
 
-/* Head: compact number badge, centered */
+/* Head: number tile, centered and roomy */
 .branched-menu__head-folded {
   display: flex;
   align-items: center;
@@ -372,48 +372,63 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 650;
+  font-size: 0.8125rem;
+  font-weight: 700;
   letter-spacing: -0.01em;
   color: inherit;
-  min-width: 28px;
-  height: 22px;
-  border-radius: 5px;
-  background: rgba(0, 0, 0, 0.04);
-  padding: 0 5px;
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  background: transparent;
+  padding: 0 6px;
   font-variant-numeric: tabular-nums;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .branched-menu__section[data-open] .branched-menu__head-prefix {
-  background: rgba(0, 0, 0, 0.07);
+  background: rgba(0, 0, 0, 0.045);
 }
 
-/* Item folded: icon stacked on number, centered */
+.branched-menu[data-folded] .branched-menu__head:hover .branched-menu__head-prefix {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.branched-menu[data-folded] .branched-menu__head[data-active] .branched-menu__head-prefix {
+  background: #ffffff;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.07);
+}
+
+/* Item folded: icon stacked on number, generous spacing */
 .branched-menu__item-folded {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 5px;
   width: 100%;
 }
 
 .branched-menu__item-number {
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  font-size: 0.625rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
   color: inherit;
-  opacity: 0.65;
+  opacity: 0.55;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
-/* When folded, items become square icon buttons */
+/* When folded, items become tall icon buttons */
 .branched-menu__item:has(.branched-menu__item-folded) {
   height: auto;
-  min-height: var(--bm-row);
-  padding: 6px 4px;
+  min-height: 50px;
+  padding: 7px 4px;
   justify-content: center;
+  border-radius: 10px;
 }
 
 /* Hide branch tree lines when folded (no room for them) */
@@ -423,24 +438,40 @@
   display: none;
 }
 
-/* Folded tree: no extra padding, just stack items */
+/* Folded tree: a little air around the item stack */
 .branched-menu[data-folded] .branched-menu__tree {
-  padding: 4px 0;
+  padding: 2px 0 6px;
 }
 
-/* Folded head: tight square look */
+/* Folded head: full-width tile */
 .branched-menu[data-folded] .branched-menu__head {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
-  margin: 2px 0;
+  padding: 0;
+  margin: 0 0 6px;
 }
 
-/* Folded items: centered */
+/* Folded items: centered tiles with vertical breathing room */
 .branched-menu[data-folded] .branched-menu__item {
   padding: 0 4px;
+  margin: 3px 0;
   justify-content: center;
+}
+
+.branched-menu[data-folded] .branched-menu__item:hover {
+  background: rgba(0, 0, 0, 0.045);
+}
+
+.branched-menu[data-folded] .branched-menu__item[data-active] {
+  background: #ffffff;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.07);
+}
+
+.branched-menu[data-folded] .branched-menu__item[data-active] .branched-menu__item-number {
+  opacity: 0.75;
 }
 
 /* Marker: hidden in folded mode */
@@ -448,16 +479,21 @@
   display: none;
 }
 
-/* Compact the nav padding */
+/* Compact the nav padding and let the rail fill its column */
 .branched-menu[data-folded] {
-  padding-left: 4px;
-  padding-right: 0;
+  padding: 0 0.6rem;
   width: 100% !important;
 }
 
-/* Folded nav width should fill its container */
+/* Folded nav fills its container, sections breathe apart */
 .branched-menu[data-folded] .branched-menu__section {
-  align-items: center;
+  align-items: stretch;
+}
+
+.branched-menu[data-folded] .branched-menu__section + .branched-menu__section {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 /* Hide scrollbar in folded mode */

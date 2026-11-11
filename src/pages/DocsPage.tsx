@@ -19,6 +19,9 @@ import DocsContent from '@/components/DocsContent'
 import SEO from '@/components/SEO'
 import styles from './DocsPage.module.css'
 
+/** Sections marked as hidden (e.g. Component Showcase) never reach navigation */
+const visibleDocs = docs.filter((s) => !s.hidden)
+
 export default function DocsPage() {
   const { sectionId, subSectionId, subSubSectionId } = useParams<{
     sectionId?: string
@@ -38,7 +41,7 @@ export default function DocsPage() {
     sectionId === 'components' || sectionId === 'component-showcase' ? 'showcase' : sectionId
 
   const activeSection =
-    docs.find((s) => s.id === resolvedSectionId || s.id === sectionId) ?? docs[0]
+    visibleDocs.find((s) => s.id === resolvedSectionId || s.id === sectionId) ?? visibleDocs[0]
   const activeSubSection = subSectionId
     ? activeSection?.subsections.find((ss) => ss.id === subSectionId)
     : undefined
@@ -74,11 +77,18 @@ export default function DocsPage() {
     }
   }, [isMobileOpen])
 
+  // Hidden sections (e.g. Component Showcase) and unknown ids fall back to the docs root
+  useEffect(() => {
+    if (sectionId && !visibleDocs.some((s) => s.id === resolvedSectionId)) {
+      navigate('/docs', { replace: true })
+    }
+  }, [sectionId, resolvedSectionId, navigate])
+
   // Default to first section / subsection when arriving at /docs with no params,
   // or when navigating to an index with no standalone content of its own
   useEffect(() => {
-    if (!sectionId && docs.length > 0) {
-      const first = docs[0]
+    if (!sectionId && visibleDocs.length > 0) {
+      const first = visibleDocs[0]
       if (
         (first.id === '00-introduccion' ||
           (first.subsections.length === 1 && (!first.blocks || first.blocks.length === 0))) &&
@@ -236,17 +246,19 @@ export default function DocsPage() {
       </div>
 
       <DocsSidebar
-        sections={docs}
+        sections={visibleDocs}
         activeSectionId={activeSection?.id}
         activeSubSectionId={activeSubSection?.id}
         activeSubSubSectionId={activeSubSubSection?.id}
         isOpen={isMobileOpen}
         onClose={() => setIsMobileOpen(false)}
+        onFoldChange={setIsSidebarFolded}
       />
       <DocsContent
         section={activeSection}
         subSection={activeSubSection}
         subSubSection={activeSubSubSection}
+        centered={isSidebarFolded}
       />
     </div>
   )
