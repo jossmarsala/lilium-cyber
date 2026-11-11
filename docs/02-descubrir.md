@@ -27,7 +27,7 @@ El módulo 2 articula este relevamiento a través de cinco bloques secuenciales:
 title="Índice del módulo"
 :::
 
-## 2.1. Red Actual y Superficie <!-- id: auditoria-red-superficie-ataque, icon: NetworkIcon, displayTitle: 02.1 — Red Actual y Superficie, description: Relevamiento de flujos de tráfico, topología y zonas de seguridad para establecer una línea de base operativa. -->
+## 2.1. Red Actual y Superficie <!-- id: auditoria-red-superficie-ataque, icon: NetworkIcon, displayTitle: 2.1 — Red Actual y Superficie, description: Relevamiento de flujos de tráfico, topología y zonas de seguridad para establecer una línea de base operativa. -->
 
 Para planificar y diseñar una arquitectura de red segura, es indispensable relevar y comprender cómo opera la infraestructura existente. Una estrategia de seguridad no se impone de forma teórica sobre una empresa; se diseña a partir de la dinámica real del negocio: las modalidades de trabajo del personal, el volumen habitual de tráfico, el número de usuarios concurrentes, las transferencias diarias de archivos y el grado de dependencia de servicios externos alojados en la nube (_Software as a Service_ o SaaS). El objetivo de este primer bloque es descubrir las comunicaciones existentes para trabajar sobre datos objetivos.
 
@@ -72,7 +72,7 @@ El diseño de red organiza estos activos en distintas zonas de seguridad según 
 > [!NOTE:Alineación con marcos de referencia]
 > El marco de ciberseguridad NIST CSF 2.0 formaliza este control en la subcategoría `ID.AM-03`, exigiendo el mantenimiento de mapas actualizados de comunicación y flujos de datos. A su vez, los Controles de Seguridad Críticos de CIS (versión 8.1, Salvaguarda 12.4) establecen la obligación de revisar y actualizar los diagramas de arquitectura de red al menos una vez al año o tras modificaciones de infraestructura.
 
-## 2.2. Cuentas y Dispositivos <!-- id: deteccion-cuentas-dispositivos, icon: ServerIcon, displayTitle: 02.2 — Cuentas y Dispositivos, description: Inventario de hardware, identificación de activos no autorizados y saneamiento de identidades inactivas o huérfanas. -->
+## 2.2. Cuentas y Dispositivos <!-- id: deteccion-cuentas-dispositivos, icon: ServerIcon, displayTitle: 2.2 — Cuentas y Dispositivos, description: Inventario de hardware, identificación de activos no autorizados y saneamiento de identidades inactivas o huérfanas. -->
 
 Durante la etapa de descubrimiento se debe relevar la totalidad de los dispositivos físicos y virtuales conectados al entorno, así como auditar las cuentas de usuario existentes en el sistema. Documentar estos elementos en inventarios formales permite determinar con precisión qué activos son indispensables para la operación del negocio, qué identidades permanecen activas y qué privilegios posee cada una dentro de la infraestructura.
 
@@ -128,7 +128,7 @@ Usuario: juan.perez | UID: 1001 | Directorio: /home/juan.perez | Shell: /bin/bas
 > [!WARNING:Desvinculación y preservación de evidencia]
 > Al gestionar la baja de un exempleado, la Salvaguarda 6.2 de CIS Controls v8.1 recomienda deshabilitar la cuenta de inmediato en lugar de eliminarla del directorio de forma abrupta. Esta medida bloquea el acceso en tiempo real y, simultáneamente, preserva la coherencia de los identificadores de usuario (_UID_) y la trazabilidad de los registros históricos (_logs_) asociados a sus actividades pasadas.
 
-## 2.3. Clasificación de Datos <!-- id: clasificacion-mapeo-datos, icon: Database01Icon, displayTitle: 02.3 — Clasificación de Datos, description: Esquemas de sensibilidad (PII, SPII, PHI), ciclo de vida y protección del dato en reposo, tránsito y uso. -->
+## 2.3. Clasificación de Datos <!-- id: clasificacion-mapeo-datos, icon: Database01Icon, displayTitle: 2.3 — Clasificación de Datos, description: Esquemas de sensibilidad (PII, SPII, PHI), ciclo de vida y protección del dato en reposo, tránsito y uso. -->
 
 La eficacia de los controles preventivos depende de la capacidad de la organización para identificar qué información almacena y qué valor representa para el negocio. Aplicar mecanismos extremos de cifrado y aislamiento sobre la totalidad de los archivos de una empresa resulta económicamente inviable y degrada la productividad operativa. Por el contrario, no clasificar la información expone los activos críticos a fugas, sanciones legales y pérdidas financieras severas.
 
@@ -173,7 +173,7 @@ Adicionalmente, se debe documentar el ciclo de vida de los datos, abarcando desd
 > - **Propietario de los datos (_Data Owner_):** Representante del área de negocio o directivo que define la clasificación de la información y autoriza formalmente los privilegios de acceso.
 > - **Custodio de los datos (_Data Custodian_):** Equipo técnico, administrador de sistemas o proveedor de servicios en la nube responsable de implementar los controles técnicos para almacenar, respaldar y transportar los datos de forma segura.
 
-## 2.4. Software y Terceros <!-- id: software-permisos-terceros, icon: CpuIcon, displayTitle: 02.4 — Software y Terceros, description: Auditoría de privilegios, software sin soporte (EOL), Shadow IT y gestión de riesgos en la cadena de suministro. -->
+## 2.4. Software y Terceros <!-- id: software-permisos-terceros, icon: CpuIcon, displayTitle: 2.4 — Software y Terceros, description: Auditoría de privilegios, software sin soporte (EOL), Shadow IT y gestión de riesgos en la cadena de suministro. -->
 
 En esta fase se audita la capa lógica de los sistemas informáticos. El objetivo es identificar aplicaciones vulnerables, programas no autorizados o servicios legítimos que se ejecuten con permisos superiores a los requeridos. Simultáneamente, se identifican las dependencias externas —desde bibliotecas de programación de código abierto hasta servicios alojados en la nube— para conformar un inventario centralizado de dependencias tecnológicas.
 
@@ -205,7 +205,7 @@ Para estructurar este relevamiento, el inventario de dependencias se divide en d
 >
 > En plataformas en la nube corporativas (como Google Workspace o Microsoft 365), audita periódicamente qué aplicaciones de terceros poseen permisos delegados (_tokens_ de autorización OAuth) para leer correos, archivos compartidos o calendarios institucionales.
 
-## 2.5. Metodología y Evaluación <!-- id: metodologia-descubrimiento-evaluacion, icon: Target01Icon, displayTitle: 02.5 — Metodología y Evaluación, description: Estrategias de escaneo interno y externo, análisis con CVE/NVD y priorización de riesgo basada en CVSS. -->
+## 2.5. Metodología y Evaluación <!-- id: metodologia-descubrimiento-evaluacion, icon: Target01Icon, displayTitle: 2.5 — Metodología y Evaluación, description: Estrategias de escaneo interno y externo, análisis con CVE/NVD y priorización de riesgo basada en CVSS. -->
 
 Para trasladar los relevamientos teóricos a un proceso técnico riguroso y reproducible, la organización debe planificar y ejecutar escaneos de seguridad periódicos sobre su infraestructura. Una vez recopilados los hallazgos técnicos, se utilizan sistemas estandarizados de medición de severidad combinados con el contexto de negocio de la empresa para determinar el orden de remediación de las debilidades descubiertas.
 

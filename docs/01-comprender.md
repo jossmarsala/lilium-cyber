@@ -32,7 +32,7 @@ Tu objetivo con los laboratorios será demostrar la capacidad de comprender un s
 
 _Comprender primero es la mejor forma de proteger._
 
-## 1.1. Fundamentos <!-- id: introduction, icon: Book02Icon, displayTitle: 01.1 — Fundamentos de ciberseguridad, description: Conceptos esenciales, objetivos de seguridad y análisis de riesgos. -->
+## 1.1. Fundamentos <!-- id: introduction, icon: Book02Icon, displayTitle: 1.1 — Fundamentos de ciberseguridad, description: Conceptos esenciales, objetivos de seguridad y análisis de riesgos. -->
 
 La ciberseguridad consiste en proteger los sistemas, la información y las operaciones frente a amenazas que puedan comprometer su funcionamiento. Para una organización, esto no implica únicamente prevenir ataques: también significa preservar la confianza, reducir pérdidas y mantener la continuidad del negocio.
 
@@ -135,7 +135,7 @@ La gestión del riesgo no es un documento estático. Para comprobar que el proce
 > [!WARNING:Limitaciones]
 > La gestión del riesgo se basa en predicciones y en el conocimiento disponible en el momento. No garantiza que no ocurran incidentes (especialmente frente a vulnerabilidades de "día cero" o amenazas no documentadas), sino que asegura que la organización invierte sus recursos defensivos en los problemas que estadísticamente causarán el mayor daño.
 
-## 1.2. Panorama de amenazas <!-- id: threats-attacks, icon: threat, displayTitle: 01.2 — Amenazas y superficie de ataque, description: Identificación de elementos que podrían comprometer un sistema y comprensión de sus vías de exposición. -->
+## 1.2. Panorama de amenazas <!-- id: threats-attacks, icon: threat, displayTitle: 1.2 — Amenazas y superficie de ataque, description: Identificación de elementos que podrían comprometer un sistema y comprensión de sus vías de exposición. -->
 
 ## Panorama de amenazas y vectores de ataque
 
@@ -272,7 +272,7 @@ El Marco de Ciberseguridad del NIST (NIST CSF 2.0) organiza las medidas defensiv
 > [!NOTE]
 > Las primeras 4 funciones pueden operan de manera simultánea y continua para prevenir amenazas, mientras que "Responder" y "Recuperar" se mantienen preparadas en todo momento para activarse en el instante en que ocurre una brecha.
 
-## 1.3. Frameworks y Referencias <!-- id: frameworks-references, icon: Bookmark01Icon, displayTitle: 01.3 — Marcos de referencia, description: Una primera aproximación a los marcos, estándares y buenas prácticas que orientan el trabajo defensivo. -->
+## 1.3. Frameworks y Referencias <!-- id: frameworks-references, icon: Bookmark01Icon, displayTitle: 1.3 — Marcos de referencia, description: Una primera aproximación a los marcos, estándares y buenas prácticas que orientan el trabajo defensivo. -->
 
 ## Marcos de trabajo, controles y referencias oficiales
 
@@ -422,7 +422,7 @@ _Ejemplo práctico:_ Revisar periódicamente los registros de inicio de sesión 
 
 De esta forma, los marcos orientan la gestión de la seguridad, los controles reducen riesgos específicos, y los procedimientos convierten las decisiones estratégicas en acciones verificables. Ninguna referencia garantiza por sí sola la seguridad de una organización; su verdadero valor depende enteramente de cómo se adapta al contexto del negocio, cómo se implementa en la infraestructura y cómo se verifica su efectividad operativa de forma continua.
 
-## 1.4. Kit de Herramientas <!-- id: toolkit, icon: ToolsIcon, displayTitle: 01.4 — Ecosistema de herramientas de defensa, description: Problemas que resuelven las distintas categorías de herramientas, junto con sus alcances y limitaciones. -->
+## 1.4. Kit de Herramientas <!-- id: toolkit, icon: ToolsIcon, displayTitle: 1.4 — Ecosistema de herramientas de defensa, description: Problemas que resuelven las distintas categorías de herramientas, junto con sus alcances y limitaciones. -->
 
 ## El ecosistema de herramientas de defensa
 
@@ -541,7 +541,7 @@ Una herramienta comercial costosa no sustituye un buen control. Alternativas _op
 Asegurarse de que las herramientas seleccionadas (por ejemplo, el EDR y el firewall) puedan compartir información o integrarse a través de un SIEM/SOAR para evitar silos de información que retrasen la detección de incidentes.
 :::
 
-## 1.5. Fundamentos de Redes <!-- id: networks-operating-systems-networks, icon: ServerIcon, displayTitle: 01.5 — Fundamentos de Redes, description: Fundamentos técnicos indispensables para comprender los entornos y protocolos que deben protegerse. -->
+## 1.5. Fundamentos de Redes <!-- id: networks-operating-systems-networks, icon: ServerIcon, displayTitle: 1.5 — Fundamentos de Redes, description: Fundamentos técnicos indispensables para comprender los entornos y protocolos que deben protegerse. -->
 
 Una red informática es el conjunto de dispositivos, medios de transmisión y protocolos que permite a los sistemas de una organización intercambiar información, compartir recursos y acceder a servicios internos o externos. La red constituye una parte importante de la superficie de ataque de una organización: los servicios expuestos, las comunicaciones mal configuradas y los protocolos vulnerables pueden permitir accesos no autorizados, interceptación de información o desplazamientos laterales después de comprometer un dispositivo. Por eso, conocer la arquitectura de red permite comprender tanto cómo circulan los datos, como también dónde aplicar controles de seguridad para evitar posibles incidentes.
 
@@ -940,7 +940,7 @@ Para controlar estos flujos, se emplean **Listas de Control de Acceso (ACL)** y 
 
 La segmentación es, entonces, tanto una decisión de arquitectura como un control defensivo. Su eficacia debe verificarse comprobando que las comunicaciones permitidas funcionan y que las no autorizadas quedan efectivamente bloqueadas (disponibilidad y confidencialidad).
 
-## 1.6. Fundamentos de Sistemas Operativos <!-- id: networks-operating-systems-os, icon: CpuIcon, displayTitle: 01.6 — Fundamentos de Sistemas Operativos, description: Arquitectura y comportamiento del SO, procesos, usuarios, permisos y servicios esenciales en Linux. -->
+## 1.6. Fundamentos de Sistemas Operativos <!-- id: networks-operating-systems-os, icon: CpuIcon, displayTitle: 1.6 — Fundamentos de Sistemas Operativos, description: Arquitectura y comportamiento del SO, procesos, usuarios, permisos y servicios esenciales en Linux. -->
 
 ### Fundamentos de sistemas operativos
 
@@ -1917,7 +1917,7 @@ En la práctica, la gran mayoría de incidentes y brechas no derivan de técnica
 - **Desactualización del software y parches pendientes:** Servidores y dependencias operando con vulnerabilidades públicas conocidas (CVE) que cuentan con exploits automatizados fácilmente accesibles.
 - **Asignación de permisos excesivos:** Cuentas con privilegios administrativos universales, permisos `777` en el sistema de archivos o roles IAM en la nube con facultades irrestrictas que amplifican exponencialmente el impacto de cualquier falla.
 
-## 1.7. Mentalidad de Seguridad <!-- id: security-mentality, icon: BrainIcon, displayTitle: 01.7 — Principios de seguridad, description: Criterios fundamentales para diseñar sistemas más seguros y tomar mejores decisiones técnicas. -->
+## 1.7. Mentalidad de Seguridad <!-- id: security-mentality, icon: BrainIcon, displayTitle: 1.7 — Principios de seguridad, description: Criterios fundamentales para diseñar sistemas más seguros y tomar mejores decisiones técnicas. -->
 
 La ciberseguridad efectiva no se logra simplemente adquiriendo herramientas tecnológicas aisladas o memorizando la teoría técnica de redes y sistemas operativos. Todo el conocimiento estructurado a lo largo de este primer módulo, incluyendo la tríada CIA y la gestión del riesgo, pasando por los actores de amenazas y los marcos normativos, hasta la mecánica de paquetes, protocolos, procesos y permisos— converge en un elemento determinante: el desarrollo de una **mentalidad de seguridad** (_security mindset_).
 
