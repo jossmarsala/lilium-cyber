@@ -649,7 +649,7 @@ export default function FaultyTerminal({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        backgroundColor: lightMode ? '#ffffff' : '#08090d',
+        backgroundColor: lightMode ? '#000000ff' : '#08090d',
         ...style,
       }}
     />

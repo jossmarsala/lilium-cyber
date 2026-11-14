@@ -170,8 +170,7 @@ export default function HomePage() {
           </h1>
           <p className={styles.heroDesc}>
             Lilium es un playbook enfocado en construir una arquitectura digital segura para tu PyME
-            con prácticas interactivas, basado en los conocimientos adquiridos en la Diplomatura en
-            Ciberseguridad.
+            con prácticas interactivas
           </p>
           <div className={styles.heroCta}>
             <SpecularButton
@@ -248,24 +247,24 @@ export default function HomePage() {
               {/* ── The rounded square card containing FaultyTerminal WebGL ── */}
               <div className={styles.terminalCard}>
                 <FaultyTerminal
-                  scale={1.5}
+                  scale={2.12}
                   gridMul={[2, 1]}
                   digitSize={1.2}
                   timeScale={0.2}
                   pause={false}
-                  scanlineIntensity={0.08}
-                  glitchAmount={0.12}
-                  flickerAmount={0.15}
-                  noiseAmp={0.7}
-                  chromaticAberration={0}
-                  dither={15}
-                  curvature={0.25}
-                  tint="#4cde95ff"
-                  tintThreat="#ff3366"
+                  scanlineIntensity={0.1}
+                  glitchAmount={0.1}
+                  flickerAmount={2}
+                  noiseAmp={0.8}
+                  chromaticAberration={3}
+                  dither={35}
+                  curvature={0.4}
+                  tint="#000000ff"
+                  tintThreat="#ff4b78ff"
                   mouseReact={true}
-                  mouseStrength={0.4}
+                  mouseStrength={1}
                   pageLoadAnimation={false}
-                  brightness={5}
+                  brightness={5.5}
                   lightMode={true}
                 />
 
